@@ -2,11 +2,13 @@ module Zam
   class ZamFile
 
     SETTERS = [
+               :url,
                :subdomain,
                :email,
                :auth_token,
                :ca_file,
-               :ca_path
+               :ca_path,
+               :author
               ]
     class Dsl
       attr_reader :zam_file
@@ -15,8 +17,8 @@ module Zam
       end
 
       SETTERS.each do |setter|
-        define_method(setter) do |arg|
-          zam_file.send("#{setter}=", arg)
+        define_method(setter) do |*args|
+          zam_file.send("#{setter}=", *args)
         end
       end
 
@@ -30,8 +32,15 @@ module Zam
       @dsl.instance_eval(File.read(@zam_file), @zam_file)
     end
 
+    def author=(name, email)
+      @author = {
+        "name" => name,
+        "email" => email
+      }
+    end
+
     def url
-      "https://#{@subdomain}.zendesk.com"
+      @url || "https://#{@subdomain}.zendesk.com"
     end
   end
 end
