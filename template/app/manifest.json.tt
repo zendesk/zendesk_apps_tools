@@ -1,0 +1,9 @@
+{
+  "name": "<%= app_name %>",
+  "author": {
+    "name": "<%= author["name"] %>",
+    "email": "<%= author["email"] %>"
+  },
+  "default_locale": "en",
+  "private": true
+}
