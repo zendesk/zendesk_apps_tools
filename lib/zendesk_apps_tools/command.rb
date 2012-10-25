@@ -45,13 +45,13 @@ module ZendeskAppsTools
     def validate
       @valid = false
       begin
-        package = Zam::Package.new(self.app_dir)
+        package = Package.new(self.app_dir)
         package.validate!
-      rescue Zam::Package::MissingManifestError
+      rescue Package::MissingManifestError
         say_status "validate", "No manifest found!"
-      rescue Zam::Package::MissingSourceError
+      rescue Package::MissingSourceError
         say_status "validate", "No source found!"
-      rescue Zam::Package::MissingManifestKeysError => e
+      rescue Package::MissingManifestKeysError => e
         say_status "validate", "Missing keys in manifest: #{e.message}"
       else
         @valid = true
