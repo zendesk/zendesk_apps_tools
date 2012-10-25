@@ -25,16 +25,8 @@ class ZendeskAppsTools::Package
     end
   end
 
-  class MissingManifestError < AppValidationError
-    self.key = :missing_manifest
-  end
-
   class MissingSourceError < AppValidationError
     self.key = :missing_source
-  end
-
-  class MissingManifestKeysError < AppValidationError
-    self.key = :missing_manifest_keys
   end
 
   class JSHintError < AppValidationError
@@ -50,6 +42,8 @@ class ZendeskAppsTools::Package
     end
   end
 
+  attr_reader :manifest_path
+
   def initialize(dir)
     @dir           = dir
     @source_path   = File.join(@dir, 'app.js')
@@ -57,35 +51,17 @@ class ZendeskAppsTools::Package
   end
 
   def validate!
-    validate_presence_of_manifest!
-    validate_required_manifest_fields!
+    manifest_errors = ZendeskAppsTools::Validations::Manifest.call(self)
+    raise AppValidationError.new(manifest_errors.join("\n")) if manifest_errors.any?
+
     validate_presence_of_source!
     validate_jshint_on_source!
     true
   end
 
-  def validate_presence_of_manifest!
-    unless File.exist?(@manifest_path)
-      raise MissingManifestError
-    end
-  end
-
   def validate_presence_of_source!
     unless File.exist?(@source_path)
       raise MissingSourceError
-    end
-  end
-
-  def validate_required_manifest_fields!
-    missing = [
-               'default_locale',
-               'author'
-              ].select do |key|
-      self.manifest[key].nil?
-    end
-
-    unless missing.empty?
-      raise MissingManifestKeysError, missing.join(",")
     end
   end
 
