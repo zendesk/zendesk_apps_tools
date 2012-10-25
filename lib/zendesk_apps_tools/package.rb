@@ -19,25 +19,25 @@ class ZendeskAppsTools::Package
                 )
   }.freeze
 
-  class InvalidManifestError < StandardError
+  class AppValidationError < StandardError
     class << self
       attr_accessor :key
     end
   end
 
-  class MissingManifestError < InvalidManifestError
+  class MissingManifestError < AppValidationError
     self.key = :missing_manifest
   end
 
-  class MissingSourceError < InvalidManifestError
+  class MissingSourceError < AppValidationError
     self.key = :missing_source
   end
 
-  class MissingManifestKeysError < InvalidManifestError
+  class MissingManifestKeysError < AppValidationError
     self.key = :missing_manifest_keys
   end
 
-  class JSHintError < InvalidManifestError
+  class JSHintError < AppValidationError
     self.key = :jshint_error
 
     def initialize(warnings)
@@ -176,7 +176,7 @@ class ZendeskAppsTools::Package
     @manifest ||= begin
       path = File.join(@dir, 'manifest.json')
       if !File.exist?(path)
-        raise InvalidManifestError.new(I18n.t('txt.admin.lib.zendesk.app_market.app_package.package.errors.missing_manifest'))
+        raise AppValidationError.new(I18n.t('txt.admin.lib.zendesk.app_market.app_package.package.errors.missing_manifest'))
       end
       MultiJson.load(File.read(path))
     end
