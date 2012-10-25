@@ -7,6 +7,15 @@ Feature: validations
     When I run `zat validate`
     Then the output should contain "No manifest found!"
 
+  Scenario: manifest.json that isn't JSON
+    Given an app directory
+    And the file "manifest.json" with:
+      """json
+      { f\oo: 'Bar' }
+      """
+    When I run `zat validate`
+    Then the output should contain "manifest.json is not proper JSON"
+
   Scenario: missing manifest keys
     Given an app directory
     And the file "manifest.json" with:
