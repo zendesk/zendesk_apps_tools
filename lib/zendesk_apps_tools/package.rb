@@ -27,8 +27,8 @@ class ZendeskAppsTools::Package
 
   def validate!
     validate_presence_of_manifest!
-    validate_presence_of_source!
     validate_required_manifest_fields!
+    validate_presence_of_source!
     true
   end
 
