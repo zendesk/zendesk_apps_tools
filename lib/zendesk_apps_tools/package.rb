@@ -1,3 +1,5 @@
+require 'json'
+
 class ZendeskAppsTools::Package
   class InvalidManifestError < StandardError
     class << self
