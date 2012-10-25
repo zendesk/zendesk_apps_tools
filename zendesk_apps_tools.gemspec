@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'thor',        '~> 0.15.2'
   s.add_runtime_dependency 'multi_json'
   s.add_runtime_dependency 'rubyzip',     '~> 0.9.1'
+  s.add_runtime_dependency 'jshintrb',    '0.1.6'
 
   s.add_development_dependency 'cucumber'
   s.add_development_dependency 'aruba'
