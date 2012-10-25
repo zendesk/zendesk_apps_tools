@@ -13,6 +13,8 @@ module ZendeskAppsTools
           return [ "Missing keys in manifest: #{missing.join(', ')}" ] if missing.any?
 
           []
+        rescue MultiJson::DecodeError => e
+          return [ "manifest.json is not proper JSON. #{e}" ]
         end
 
         private
