@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'faraday',     '~> 0.8.0'
   s.add_runtime_dependency 'thor',        '~> 0.15.2'
-  s.add_runtime_dependency 'json'
+  s.add_runtime_dependency 'multi_json'
   s.add_runtime_dependency 'rubyzip',     '~> 0.9.1'
 
   s.add_development_dependency 'cucumber'
