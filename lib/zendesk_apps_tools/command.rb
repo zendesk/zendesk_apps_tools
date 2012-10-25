@@ -1,5 +1,6 @@
 require "thor"
 require "digest/md5"
+require 'zip/zip'
 
 module ZendeskAppsTools
   class Command < Thor
