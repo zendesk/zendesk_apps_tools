@@ -25,24 +25,7 @@ class ZendeskAppsTools::Package
     end
   end
 
-  class MissingSourceError < AppValidationError
-    self.key = :missing_source
-  end
-
-  class JSHintError < AppValidationError
-    self.key = :jshint_error
-
-    def initialize(warnings)
-      super
-      errors = warnings.map do |err|
-        { "line" => err['line'], "error" => err["reason"], "formatted" => "L#{err['line']}: #{err['reason']}" }
-      end
-
-      @detail = {"errors" => errors}
-    end
-  end
-
-  attr_reader :manifest_path
+  attr_reader :manifest_path, :source_path
 
   def initialize(dir)
     @dir           = dir
@@ -51,33 +34,12 @@ class ZendeskAppsTools::Package
   end
 
   def validate!
-    manifest_errors = ZendeskAppsTools::Validations::Manifest.call(self)
-    raise AppValidationError.new(manifest_errors.join("\n")) if manifest_errors.any?
+    errors = ZendeskAppsTools::Validations::Manifest.call(self) +
+             ZendeskAppsTools::Validations::Source.call(self)
 
-    validate_presence_of_source!
-    validate_jshint_on_source!
+    raise AppValidationError.new(errors.join("\n")) if errors.any?
+
     true
-  end
-
-  def validate_presence_of_source!
-    unless File.exist?(@source_path)
-      raise MissingSourceError
-    end
-  end
-
-  def validate_jshint_on_source!
-    warnings = linter.lint(src)
-    unless warnings.empty?
-      raise JSHintError.new(warnings)
-    end
-  end
-
-  def linter
-    Jshintrb::Lint.new(LINTER_OPTIONS)
-  end
-
-  def src
-    @src ||= File.read(@source_path)
   end
 
   def templates
