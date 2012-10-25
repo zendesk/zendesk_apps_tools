@@ -47,14 +47,12 @@ module ZendeskAppsTools
       begin
         package = Package.new(app_dir)
         package.validate!
-      rescue Package::MissingManifestError
-        say_status "validate", "No manifest found!"
       rescue Package::MissingSourceError
         say_status "validate", "No source found!"
-      rescue Package::MissingManifestKeysError => e
-        say_status "validate", "Missing keys in manifest: #{e.message}"
       rescue Package::JSHintError => e
         say_status 'validate', "JSHint errors in source: #{e.message}"
+      rescue Package::AppValidationError => e
+        say_status "validate", e.to_s
       else
         @valid = true
         say_status "validate", "OK"
