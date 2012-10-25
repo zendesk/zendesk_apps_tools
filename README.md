@@ -29,7 +29,7 @@ This will check the following:
 Package an app directory into a .zip file that you will upload to Zendesk.
 
 ```bash
-$ zat build [app-directory=.]
+$ zat package [app-directory=.]
 ```
 
 #### Preview Apps
