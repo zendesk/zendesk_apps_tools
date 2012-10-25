@@ -1,7 +1,3 @@
-require "rubygems"
-require "bundler"
-Bundler.require
-
 module ZendeskAppsTools
   autoload :Command,    'zendesk_apps_tools/command'
   autoload :ZamFile,    'zendesk_apps_tools/zam_file'
