@@ -1,6 +1,24 @@
 require 'multi_json'
+require 'jshintrb'
 
 class ZendeskAppsTools::Package
+
+  LINTER_OPTIONS = {
+    # ENFORCING OPTIONS:
+    :noarg => true,
+    :undef => true,
+
+    # RELAXING OPTIONS:
+    :eqnull => true,
+    :laxcomma => true,
+
+    # PREDEFINED GLOBALS:
+    :predef =>  %w(
+                  _ console services helpers alert JSON Base64
+                  clearInterval clearTimeout setInterval setTimeout
+                )
+  }.freeze
+
   class InvalidManifestError < StandardError
     class << self
       attr_accessor :key
@@ -19,6 +37,19 @@ class ZendeskAppsTools::Package
     self.key = :missing_manifest_keys
   end
 
+  class JSHintError < InvalidManifestError
+    self.key = :jshint_error
+
+    def initialize(warnings)
+      super
+      errors = warnings.map do |err|
+        { "line" => err['line'], "error" => err["reason"], "formatted" => "L#{err['line']}: #{err['reason']}" }
+      end
+
+      @detail = {"errors" => errors}
+    end
+  end
+
   def initialize(dir)
     @dir           = dir
     @source_path   = File.join(@dir, 'app.js')
@@ -29,6 +60,7 @@ class ZendeskAppsTools::Package
     validate_presence_of_manifest!
     validate_required_manifest_fields!
     validate_presence_of_source!
+    validate_jshint_on_source!
     true
   end
 
@@ -55,6 +87,17 @@ class ZendeskAppsTools::Package
     unless missing.empty?
       raise MissingManifestKeysError, missing.join(",")
     end
+  end
+
+  def validate_jshint_on_source!
+    warnings = linter.lint(src)
+    unless warnings.empty?
+      raise JSHintError.new(warnings)
+    end
+  end
+
+  def linter
+    Jshintrb::Lint.new(LINTER_OPTIONS)
   end
 
   def src
