@@ -15,3 +15,12 @@ Feature: manifest validations
       """
     When I run `zat validate`
     Then the output should contain "Missing keys in manifest:"
+
+  Scenario: missing manifest keys, specify app dir
+    Given an app directory
+    And the file "path/to/app/manifest.json" with:
+      """json
+      {}
+      """
+    When I run `zat validate path/to/app`
+    Then the output should contain "Missing keys in manifest:"

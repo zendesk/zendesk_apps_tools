@@ -42,10 +42,10 @@ module ZendeskAppsTools
     end
 
     desc "validate", "Validate your app"
-    def validate
+    def validate(app_dir = self.app_dir)
       @valid = false
       begin
-        package = Package.new(self.app_dir)
+        package = Package.new(app_dir)
         package.validate!
       rescue Package::MissingManifestError
         say_status "validate", "No manifest found!"
