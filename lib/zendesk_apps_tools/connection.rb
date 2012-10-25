@@ -1,4 +1,6 @@
 require 'openssl'
+require 'faraday'
+
 module ZendeskAppsTools
   class Connection
 
