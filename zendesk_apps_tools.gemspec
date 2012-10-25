@@ -15,6 +15,9 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'json'
   s.add_runtime_dependency 'rubyzip',     '~> 0.9.1'
 
+  s.add_development_dependency 'cucumber'
+  s.add_development_dependency 'aruba'
+
   s.files        = Dir.glob("{lib,bin}/**/*") + %w(README.md LICENSE)
   s.test_files   = Dir.glob("test/**/*")
   s.require_path = 'lib'
