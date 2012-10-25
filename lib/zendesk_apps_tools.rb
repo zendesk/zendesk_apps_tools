@@ -6,6 +6,7 @@ module ZendeskAppsTools
 
   module Validations
     autoload :Manifest, 'zendesk_apps_tools/validations/manifest'
+    autoload :Source,   'zendesk_apps_tools/validations/source'
   end
 end
 
