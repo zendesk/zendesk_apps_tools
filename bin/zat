@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require File.expand_path("../../lib/zendesk_apps_tools", __FILE__)
+require 'zendesk_apps_tools'
+ZendeskAppsTools::Command.start

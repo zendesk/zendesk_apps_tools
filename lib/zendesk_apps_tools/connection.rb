@@ -1,5 +1,5 @@
 require 'openssl'
-module Zam
+module ZendeskAppsTools
   class Connection
 
     class AuthMiddleware < Faraday::Middleware
