@@ -1,4 +1,4 @@
-require 'json'
+require 'multi_json'
 
 class ZendeskAppsTools::Package
   class InvalidManifestError < StandardError
@@ -76,14 +76,14 @@ class ZendeskAppsTools::Package
   def translations
     @translations ||= begin
       translation_dir = File.join(@dir, 'translations')
-      default_translations = JSON.parse(File.read("#{translation_dir}/#{self.default_locale}.json"))
+      default_translations = MultiJson.load(File.read("#{translation_dir}/#{self.default_locale}.json"))
 
       Dir["#{translation_dir}/*.json"].inject({}) do |h, tr|
         locale = File.basename(tr, File.extname(tr))
         locale_translations = if locale == self.default_locale
                                 default_translations
                               else
-                                default_translations.deep_merge(JSON.parse(File.read(tr)))
+                                default_translations.deep_merge(MultiJson.load(File.read(tr)))
                               end
 
         h[locale] = locale_translations
@@ -135,7 +135,7 @@ class ZendeskAppsTools::Package
       if !File.exist?(path)
         raise InvalidManifestError.new(I18n.t('txt.admin.lib.zendesk.app_market.app_package.package.errors.missing_manifest'))
       end
-      JSON.parse(File.read(path))
+      MultiJson.load(File.read(path))
     end
   end
 end
