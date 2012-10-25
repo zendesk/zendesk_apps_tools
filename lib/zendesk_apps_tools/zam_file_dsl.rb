@@ -1,4 +1,4 @@
-module Zam
+module ZendeskAppsTools
   module ZamFileDsl
     def subdomain(arg)
       @subdomain = arg.to_s

@@ -1,4 +1,4 @@
-module Zam
+module ZendeskAppsTools
   class ZamFile
 
     SETTERS = [

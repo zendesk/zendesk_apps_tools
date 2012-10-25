@@ -1,4 +1,4 @@
-class Zam::Package
+class ZendeskAppsTools::Package
   class InvalidManifestError < StandardError
     class << self
       attr_accessor :key

@@ -1,7 +1,7 @@
 require "thor"
 require "digest/md5"
 
-module Zam
+module ZendeskAppsTools
   class Command < Thor
     class_option :config_file, :type => :string, :default => "Zamfile"
 
