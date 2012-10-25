@@ -167,7 +167,7 @@ module ZendeskAppsTools
     end
 
     def app_dir
-      @app_dir ||= File.join(destination_root, "app")
+      @app_dir ||= destination_root
     end
 
     def tmp_dir
