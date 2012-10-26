@@ -3,12 +3,6 @@ require 'jshintrb'
 
 class ZendeskAppsTools::Package
 
-  class AppValidationError < StandardError
-    class << self
-      attr_accessor :key
-    end
-  end
-
   attr_reader :manifest_path, :source_path
 
   def initialize(dir)
