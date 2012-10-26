@@ -38,3 +38,22 @@ Feature: package
     And the output should contain "adding translations/zh.json"
     And the output should contain "created at "
     And the exit status should be 0
+
+  Scenario: repackage a directory
+    When I run `zat package`
+    And I overwrite "manifest.json" with:
+      """json
+      {
+        "author": { "name": "Bar", "email": "bar@example.com" },
+        "default_locale": "pt"
+      }
+      """
+    And I run `zat package`
+    Then the output should contain "adding manifest.json"
+    And the exit status should be 0
+
+  Scenario: repackage a directory with no changes
+    When I run `zat package`
+    And I run `zat package`
+    Then the output should contain "Nothing changed"
+    And the exit status should be 0
