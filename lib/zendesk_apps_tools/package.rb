@@ -28,9 +28,16 @@ class ZendeskAppsTools::Package
   attr_reader :manifest_path, :source_path
 
   def initialize(dir)
-    @dir           = dir
+    @dir           = File.expand_path(dir)
     @source_path   = File.join(@dir, 'app.js')
     @manifest_path = File.join(@dir, 'manifest.json')
+  end
+
+  def files
+    Dir["#{@dir}/**/**"].select do |f|
+      file = f.sub("#{@dir}/", '')
+      File.file?(file) && file !~ %r[^tmp#{File::SEPARATOR}]
+    end
   end
 
   def validate!
