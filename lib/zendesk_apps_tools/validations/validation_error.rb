@@ -9,7 +9,7 @@ module ZendeskAppsTools
       end
 
       def to_s
-        ZendeskAppsTools::I18n.t(key.to_s, data)
+        ZendeskAppsTools::I18n.t("errors.#{key}", data)
       end
     end
 
