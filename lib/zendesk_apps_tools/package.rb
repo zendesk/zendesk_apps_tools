@@ -5,17 +5,15 @@ require 'jshintrb'
 module ZendeskAppsTools
   class Package
 
-    def initialize(dir)
-      @dir = Pathname.new(File.expand_path(dir))
-    end
+    attr_reader :root
 
-    def root
-      @dir
+    def initialize(dir)
+      @root = Pathname.new(File.expand_path(dir))
     end
 
     def files
-      @files ||= Dir[ @dir.join('**/**') ].each_with_object([]) do |f, files|
-        relative_file_name = f.sub(/#{@dir}\/?/, '')
+      @files ||= Dir[ root.join('**/**') ].each_with_object([]) do |f, files|
+        relative_file_name = f.sub(/#{root}\/?/, '')
         next unless File.file?(f)
         next if relative_file_name =~ /^tmp\//
         files << AppFile.new(self, relative_file_name)
@@ -39,7 +37,7 @@ module ZendeskAppsTools
 
     def templates
       @templates ||= begin
-        Dir[ @dir.join('templates/*.hdbs') ].inject({}) do |h, file|
+        Dir[ root.join('templates/*.hdbs') ].inject({}) do |h, file|
           str = File.read(file)
           str.chomp!
           h[File.basename(file, File.extname(file))] = str
@@ -50,7 +48,7 @@ module ZendeskAppsTools
 
     def translations
       @translations ||= begin
-        translation_dir = @dir.join('translations')
+        translation_dir = root.join('translations')
         default_translations = MultiJson.load(File.read( translation_dir.join("#{default_locale}.json") ))
 
         Dir[ translation_dir.join('*.json') ].inject({}) do |h, tr|
