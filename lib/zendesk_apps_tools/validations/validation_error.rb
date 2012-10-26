@@ -13,5 +13,18 @@ module ZendeskAppsTools
       end
     end
 
+    class JSHintValidationError < ValidationError
+      attr_reader :filename, :jshint_errors
+
+      def initialize(filename, jshint_errors)
+        errors = jshint_errors.map { |err| "\n  L#{err['line']}: #{err['reason']}" }.join('')
+        @filename = filename, @jshint_errors = jshint_errors
+        super(:jshint_errors, {
+          :file => filename,
+          :errors => errors,
+          :count => jshint_errors.length
+        })
+      end
+    end
   end
 end

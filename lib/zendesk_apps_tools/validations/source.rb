@@ -24,17 +24,9 @@ module ZendeskAppsTools
         def call(package)
           return [ ValidationError.new(:missing_source) ] unless File.exists?(package.source_path)
 
-          errors = linter.lint( File.read(package.source_path) )
-
-          if errors.any?
-            detail = errors.map { |err| "\n  L#{err['line']}: #{err['reason']}" }.join('')
-            [
-              ValidationError.new(
-                :jshint_errors,
-                :file => package.relative_file_name( package.source_path ),
-                :errors => detail,
-                :count => errors.length)
-            ]
+          jshint_errors = linter.lint( File.read(package.source_path) )
+          if jshint_errors.any?
+            [ JSHintValidationError.new(package.relative_file_name(package.source_path), jshint_errors) ]
           else
             []
           end
