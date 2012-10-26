@@ -53,3 +53,29 @@ Feature: validations
       """
     When I run `zat validate`
     Then the output should contain "JSHint errors"
+
+  Scenario: valid app
+    Given an app directory
+    And the file "manifest.json" with:
+      """json
+      {
+        "author": { "name": "Foo", "email": "foo@example.com" },
+        "default_locale": "pt"
+      }
+      """
+    And the file "app.js" with:
+      """javascript
+      (function() {
+        return {
+          events: {
+            'app.activated': 'appActivated'
+          },
+          appActivated: function() {
+            services.notify('Activated!');
+          }
+        };
+      }());
+      """
+    When I run `zat validate`
+    Then the output should contain "OK"
+    And the exit status should be 0
