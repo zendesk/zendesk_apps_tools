@@ -1,3 +1,4 @@
+require 'pathname'
 require 'multi_json'
 require 'jshintrb'
 
@@ -6,15 +7,15 @@ class ZendeskAppsTools::Package
   attr_reader :manifest_path, :source_path
 
   def initialize(dir)
-    @dir           = File.expand_path(dir)
-    @source_path   = File.join(@dir, 'app.js')
-    @manifest_path = File.join(@dir, 'manifest.json')
+    @dir           = Pathname.new( File.expand_path(dir) )
+    @source_path   = @dir.join('app.js')
+    @manifest_path = @dir.join('manifest.json')
   end
 
   def files
-    Dir["#{@dir}/**/**"].select do |f|
-      file = f.sub("#{@dir}/", '')
-      File.file?(file) && file !~ %r[^tmp#{File::SEPARATOR}]
+    Dir[ @dir.join('**/**') ].select do |f|
+      file = f.sub("#{@dir}#{File::SEPARATOR}", '')
+      File.file?(f) && file !~ %r[#{@dir.join('tmp')}]
     end
   end
 
@@ -25,8 +26,7 @@ class ZendeskAppsTools::Package
 
   def templates
     @templates ||= begin
-      templates_dir = File.join(@dir, 'templates')
-      Dir["#{templates_dir}/*.hdbs"].inject({}) do |h, file|
+      Dir[ @dir.join('templates/*.hdbs') ].inject({}) do |h, file|
         str = File.read(file)
         str.chomp!
         h[File.basename(file, File.extname(file))] = str
@@ -37,10 +37,10 @@ class ZendeskAppsTools::Package
 
   def translations
     @translations ||= begin
-      translation_dir = File.join(@dir, 'translations')
-      default_translations = MultiJson.load(File.read("#{translation_dir}/#{self.default_locale}.json"))
+      translation_dir = @dir.join('translations')
+      default_translations = MultiJson.load(File.read( translation_dir.join("#{default_locale}.json") ))
 
-      Dir["#{translation_dir}/*.json"].inject({}) do |h, tr|
+      Dir[ translation_dir.join('*.json') ].inject({}) do |h, tr|
         locale = File.basename(tr, File.extname(tr))
         locale_translations = if locale == self.default_locale
                                 default_translations
