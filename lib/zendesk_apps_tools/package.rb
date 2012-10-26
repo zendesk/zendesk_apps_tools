@@ -19,6 +19,10 @@ class ZendeskAppsTools::Package
     end
   end
 
+  def template_files
+    files.select { |f| f =~ %r[^#{@dir.join('templates/.*.hdbs')}] }
+  end
+
   def translation_files
     files.select { |f| f =~ %r[^#{@dir.join('translations/')}] }
   end
@@ -30,6 +34,7 @@ class ZendeskAppsTools::Package
   def validate
     ZendeskAppsTools::Validations::Manifest.call(self) +
       ZendeskAppsTools::Validations::Source.call(self) +
+      ZendeskAppsTools::Validations::Templates.call(self) +
       ZendeskAppsTools::Validations::Translations.call(self)
   end
 

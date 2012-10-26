@@ -10,3 +10,4 @@ en:
         one: "Missing required field in manifest: %{missing_keys}"
         other: "Missing required fields in manifest: %{missing_keys}"
       missing_source: "Could not find app.js"
+      style_in_template: "<style> tag in %{template}. Use an app.css file instead."
