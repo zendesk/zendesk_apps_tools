@@ -10,6 +10,7 @@ module ZendeskAppsTools
     autoload :Manifest,              'zendesk_apps_tools/validations/manifest'
     autoload :Source,                'zendesk_apps_tools/validations/source'
     autoload :Translations,          'zendesk_apps_tools/validations/translations'
+    autoload :Templates,             'zendesk_apps_tools/validations/templates'
     autoload :JSHintValidationError, 'zendesk_apps_tools/validations/validation_error'
   end
 end

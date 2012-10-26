@@ -74,6 +74,21 @@ Feature: validations
     Then the output should contain "JSHint errors in translations/xy.json"
     And the exit status should not be 0
 
+  Scenario: style tag in template
+    Given an app directory
+    And a file named "templates/foo.hdbs" with:
+      """handlebars
+      <style>
+        .foo { color: green; }
+      </style>
+      <div class="foo">
+        Hello, World
+      </div>
+      """
+    When I run `zat validate`
+    Then the output should contain "<style> tag in templates/foo.hdbs"
+    And the exit status should not be 0
+
   Scenario: valid app
     Given an app directory
     And a file named "manifest.json" with:
