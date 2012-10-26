@@ -20,7 +20,7 @@ module ZendeskAppsTools
         end
       end
 
-      self.i18n_key_prefix = 'txt.apps.admin.error.app_build.'
+      self.i18n_key_prefix = 'zendesk_apps_tools.errors.'
 
       attr_reader :key, :data
 
