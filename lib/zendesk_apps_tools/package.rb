@@ -4,31 +4,29 @@ require 'jshintrb'
 
 class ZendeskAppsTools::Package
 
-  attr_reader :manifest_path, :source_path
-
   def initialize(dir)
-    @dir           = Pathname.new( File.expand_path(dir) )
-    @source_path   = @dir.join('app.js')
-    @manifest_path = @dir.join('manifest.json')
+    @dir = Pathname.new(File.expand_path(dir))
+  end
+
+  def root
+    @dir
   end
 
   def files
-    Dir[ @dir.join('**/**') ].select do |f|
-      file = f.sub("#{@dir}#{File::SEPARATOR}", '')
-      File.file?(f) && file !~ %r[#{@dir.join('tmp')}]
+    @files ||= Dir[ @dir.join('**/**') ].each_with_object([]) do |f, files|
+      relative_file_name = f.sub(/#{@dir}\/?/, '')
+      next unless File.file?(f)
+      next if relative_file_name =~ /^tmp\//
+      files << ZendeskAppsTools::AppFile.new(self, relative_file_name)
     end
   end
 
   def template_files
-    files.select { |f| f =~ %r[^#{@dir.join('templates/.*.hdbs')}] }
+    @template_files ||= files.select { |f| f =~ /^templates\/.*\.hdbs$/ }
   end
 
   def translation_files
-    files.select { |f| f =~ %r[^#{@dir.join('translations/')}] }
-  end
-
-  def relative_file_name(file)
-    file.sub %r[^#{@dir}/], ''
+    @translation_files ||= files.select { |f| f =~ /^translations\// }
   end
 
   def validate
@@ -93,8 +91,9 @@ class ZendeskAppsTools::Package
 
   def manifest
     @manifest ||= begin
+      manifest_file = files.find { |f| f.relative_path == 'manifest.json' }
       begin
-        MultiJson.load( File.read(manifest_path) )
+        MultiJson.load(manifest_file.read)
       rescue Errno::ENOENT, Errno::EACCES, MultiJson::DecodeError
         {}
       end

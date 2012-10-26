@@ -77,9 +77,8 @@ module ZendeskAppsTools
 
       Zip::ZipFile.open(archive_path, 'w') do |zipfile|
         app_package.files.each do |file|
-          relative_file = file.sub("#{app_dir}/", '')
-          say_status "package",  "adding #{relative_file}"
-          zipfile.add(relative_file, relative_file)
+          say_status "package",  "adding #{file.relative_path}"
+          zipfile.add(file.relative_path, file.relative_path)
         end
       end
 
@@ -189,8 +188,8 @@ module ZendeskAppsTools
     end
 
     def cache_app_hash
-      hash = app_package.files.each_with_object(Digest::MD5.new) do |file|
-        File.read(file)
+      hash = app_package.files.each_with_object(Digest::MD5.new) do |file, digest|
+        digest << file.read
       end
       File.open(File.join(self.tmp_dir, ".local_hash"), 'w') {|f| f.write(hash.hexdigest)}
       hash.hexdigest
