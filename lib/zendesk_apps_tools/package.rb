@@ -86,7 +86,7 @@ class ZendeskAppsTools::Package
   end
 
   def name
-    manifest["name"]
+    manifest["name"] || 'app'
   end
 
   def author
