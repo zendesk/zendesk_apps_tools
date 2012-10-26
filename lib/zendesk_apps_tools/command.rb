@@ -70,6 +70,8 @@ module ZendeskAppsTools
       return false unless invoke(:validate, [])
 
       archive_rel_path = relative_to_original_destination_root(archive_path)
+
+      mkdir_p( File.dirname(archive_path) )
       remove_file(archive_path)
 
       inside(self.app_dir) do |dir|
@@ -200,6 +202,10 @@ module ZendeskAppsTools
 
     def app_package
       @app_package ||= Package.new(self.app_dir)
+    end
+
+    def mkdir_p(path)
+      FileUtils.mkdir_p(path)
     end
   end
 end
