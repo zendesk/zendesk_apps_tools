@@ -36,25 +36,11 @@ Feature: validations
 
   Scenario: missing app.js
     Given an app directory
-    And the file "manifest.json" with:
-      """json
-      {
-        "author": { "name": "Foo", "email": "foo@example.com" },
-        "default_locale": "pt"
-      }
-      """
     When I run `zat validate`
     Then the output should contain "No source found!"
 
   Scenario: app.js with invalid globals
     Given an app directory
-    And the file "manifest.json" with:
-      """json
-      {
-        "author": { "name": "Foo", "email": "foo@example.com" },
-        "default_locale": "pt"
-      }
-      """
     And the file "app.js" with:
       """
       {
