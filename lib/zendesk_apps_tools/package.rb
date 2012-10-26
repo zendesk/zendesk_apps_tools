@@ -40,13 +40,9 @@ class ZendeskAppsTools::Package
     end
   end
 
-  def validate!
-    errors = ZendeskAppsTools::Validations::Manifest.call(self) +
-             ZendeskAppsTools::Validations::Source.call(self)
-
-    raise AppValidationError.new(errors.join("\n")) if errors.any?
-
-    true
+  def validate
+    ZendeskAppsTools::Validations::Manifest.call(self) +
+      ZendeskAppsTools::Validations::Source.call(self)
   end
 
   def templates
