@@ -78,12 +78,8 @@ class ZendeskAppsTools::Package
   end
 
   def assets
-    @assets ||= begin
-      pwd = Dir.pwd
-      Dir.chdir(@dir)
-      assets = Dir["assets/**/*"]
-      Dir.chdir(pwd)
-      assets
+    @assets ||= Dir.chdir(@dir) do
+      Dir["assets/**/*"]
     end
   end
 
