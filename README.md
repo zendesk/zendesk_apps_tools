@@ -39,4 +39,3 @@ Run a server that will let you preview your app in your live help desk environme
 ```bash
 $ zat serve [app-directory=.]
 ```
->>>>>>> master
