@@ -48,16 +48,18 @@ Feature: validations
     Given an app directory
     And a file named "app.js" with:
       """
-      {
-        events: {
-          'app.activated': function() {
-            jQuery('a').css('color', 'red');
+      (function() {
+        return {
+          events: {
+            'app.activated': function() {
+              jQuery('a').css('color', 'red');
+            }
           }
-        }
-      }
+        };
+      }());
       """
     When I run `zat validate`
-    Then the output should contain "JSHint error"
+    Then the output should contain "JSHint error in app.js"
     And the exit status should not be 0
 
   Scenario: valid app

@@ -19,6 +19,10 @@ class ZendeskAppsTools::Package
     end
   end
 
+  def relative_file_name(file)
+    file.sub %r[^#{@dir}/], ''
+  end
+
   def validate
     ZendeskAppsTools::Validations::Manifest.call(self) +
       ZendeskAppsTools::Validations::Source.call(self)

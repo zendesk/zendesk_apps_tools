@@ -28,7 +28,13 @@ module ZendeskAppsTools
 
           if errors.any?
             detail = errors.map { |err| "\n  L#{err['line']}: #{err['reason']}" }.join('')
-            [ ValidationError.new(:jshint_errors, :errors => detail, :count => errors.length) ]
+            [
+              ValidationError.new(
+                :jshint_errors,
+                :file => package.relative_file_name( package.source_path ),
+                :errors => detail,
+                :count => errors.length)
+            ]
           else
             []
           end

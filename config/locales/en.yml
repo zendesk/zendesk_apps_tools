@@ -2,8 +2,8 @@ en:
   zendesk_apps_tools:
     errors:
       jshint_errors:
-        one: "JSHint error: %{errors}"
-        other: "JSHint errors: %{errors}"
+        one: "JSHint error in %{file}: %{errors}"
+        other: "JSHint errors in %{file}: %{errors}"
       manifest_not_json: "manifest is not proper JSON. %{errors}"
       missing_manifest: "Could not find manifest.json"
       missing_manifest_keys:
