@@ -44,17 +44,19 @@ module ZendeskAppsTools
     desc "validate", "Validate your app"
     def validate(path_to_app = nil)
       @destination_stack << relative_to_original_destination_root(path_to_app) if path_to_app
-      @valid = false
-      begin
-        app_package.validate!
-      rescue Package::AppValidationError => e
-        say_status "validate", e.to_s
+      errors = app_package.validate
+      valid = errors.none?
+
+      if valid
+        say_status 'validate', 'OK'
       else
-        @valid = true
-        say_status "validate", "OK"
+        errors.each do |e|
+          say_status 'validate', e.to_s
+        end
       end
+
       @destination_stack.pop if path_to_app
-      exit 1 unless @valid
+      exit 1 unless valid
       true
     end
 
