@@ -62,6 +62,18 @@ Feature: validations
     Then the output should contain "JSHint error in app.js"
     And the exit status should not be 0
 
+  Scenario: invalid translation JSON
+    Given an app directory
+    And a file named "translations/xy.json" with:
+      """json
+      {
+        foo = "bar"
+      }
+      """
+    When I run `zat validate`
+    Then the output should contain "JSHint errors in translations/xy.json"
+    And the exit status should not be 0
+
   Scenario: valid app
     Given an app directory
     And a file named "manifest.json" with:

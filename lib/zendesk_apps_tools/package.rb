@@ -19,13 +19,18 @@ class ZendeskAppsTools::Package
     end
   end
 
+  def translation_files
+    files.select { |f| f =~ %r[^#{@dir.join('translations/')}] }
+  end
+
   def relative_file_name(file)
     file.sub %r[^#{@dir}/], ''
   end
 
   def validate
     ZendeskAppsTools::Validations::Manifest.call(self) +
-      ZendeskAppsTools::Validations::Source.call(self)
+      ZendeskAppsTools::Validations::Source.call(self) +
+      ZendeskAppsTools::Validations::Translations.call(self)
   end
 
   def templates
