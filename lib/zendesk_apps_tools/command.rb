@@ -53,7 +53,7 @@ module ZendeskAppsTools
         @valid = true
         say_status "validate", "OK"
       end
-      @valid
+      exit (@valid ? 0 : 1)
     end
 
     desc "package", "Package your app"
