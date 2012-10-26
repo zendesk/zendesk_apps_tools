@@ -156,11 +156,11 @@ module ZendeskAppsTools
     end
 
     def zam_file
-      @zam_file ||= Zam::ZamFile.new(options[:config_file])
+      @zam_file ||= ZamFile.new(options[:config_file])
     end
 
     def connection
-      @connection ||= Zam::Connection.new(zam_file)
+      @connection ||= Connection.new(zam_file)
     end
 
     def app_dir
@@ -199,7 +199,7 @@ module ZendeskAppsTools
     end
 
     def app_package
-      @app_package ||= Zam::Package.new(self.app_dir)
+      @app_package ||= Package.new(self.app_dir)
     end
   end
 end
