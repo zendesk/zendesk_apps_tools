@@ -86,12 +86,6 @@ class ZendeskAppsTools::Package
     }
   end
 
-  def assets
-    @assets ||= Dir.chdir(@dir) do
-      Dir["assets/**/*"]
-    end
-  end
-
   def manifest
     @manifest ||= begin
       begin
