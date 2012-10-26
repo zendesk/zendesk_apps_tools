@@ -22,6 +22,6 @@ module ZendeskAppsTools
       end
     end
 
-    self.i18n_key_prefix = 'zendesk_apps_tools.errors.'
+    self.i18n_key_prefix = 'zendesk_apps_tools.'
   end
 end
