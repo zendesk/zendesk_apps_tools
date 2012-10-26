@@ -76,6 +76,8 @@ module ZendeskAppsTools
         Zip::ZipFile.open(archive_path, 'w') do |zipfile|
           Dir["**/**"].each do |file|
             relative_file = file.gsub("#{self.app_dir}/",'')
+            next unless File.file?(file)
+            next if relative_file =~ %r[^tmp#{File::SEPARATOR}]
             say_status "package",  "adding #{file}"
             zipfile.add(relative_file, file)
           end
@@ -168,13 +170,13 @@ module ZendeskAppsTools
     end
 
     def tmp_dir
-      @tmp_dir ||= File.join(destination_root, "tmp").tap do |dir|
+      @tmp_dir ||= File.join(app_dir, "tmp").tap do |dir|
         mkdir_p dir
       end
     end
 
     def stale?(file)
-      !File.exist?(file) || app_changed?
+      app_changed? || !File.exist?(file)
     end
 
     def app_changed?
@@ -191,7 +193,9 @@ module ZendeskAppsTools
       hash = Digest::MD5.new
       inside(self.app_dir) do |dir|
         Dir["**/**"].each do |file|
-          hash << File.read(file) if File.file?(file)
+          next unless File.file?(file)
+          next if file =~ %r[^tmp#{File::SEPARATOR}]
+          hash << File.read(file)
         end
       end
 
