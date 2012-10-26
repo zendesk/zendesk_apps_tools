@@ -22,13 +22,13 @@ module ZendeskAppsTools
 
       class <<self
         def call(package)
-          return ['No source found!'] unless File.exists?(package.source_path)
+          return [ ValidationError.new(:missing_source) ] unless File.exists?(package.source_path)
 
           errors = linter.lint( File.read(package.source_path) )
 
           if errors.any?
-            [ "JSHint errors:" +
-              errors.map { |err| "\n  L#{err['line']}: #{err['reason']}" }.join('') ]
+            detail = errors.map { |err| "\n  L#{err['line']}: #{err['reason']}" }.join('')
+            [ ValidationError.new(:jshint_errors, :errors => detail, :count => errors.length) ]
           else
             []
           end

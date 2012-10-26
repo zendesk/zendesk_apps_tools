@@ -5,7 +5,7 @@ Feature: validations
   Scenario: missing manifest.json
     Given an app directory
     When I run `zat validate`
-    Then the output should contain "No manifest found!"
+    Then the output should contain "Could not find manifest.json"
     And the exit status should not be 0
 
   Scenario: manifest.json that isn't JSON
@@ -15,7 +15,7 @@ Feature: validations
       { f\oo: 'Bar' }
       """
     When I run `zat validate`
-    Then the output should contain "manifest.json is not proper JSON"
+    Then the output should contain "manifest is not proper JSON"
     And the exit status should not be 0
 
   Scenario: missing manifest keys
@@ -25,7 +25,7 @@ Feature: validations
       {}
       """
     When I run `zat validate`
-    Then the output should contain "Missing keys in manifest:"
+    Then the output should contain "Missing required fields in manifest:"
     And the exit status should not be 0
 
   Scenario: missing manifest keys, specify app dir
@@ -35,13 +35,13 @@ Feature: validations
       {}
       """
     When I run `zat validate path/to/app`
-    Then the output should contain "Missing keys in manifest:"
+    Then the output should contain "Missing required fields in manifest:"
     And the exit status should not be 0
 
   Scenario: missing app.js
     Given an app directory
     When I run `zat validate`
-    Then the output should contain "No source found!"
+    Then the output should contain "Could not find app.js"
     And the exit status should not be 0
 
   Scenario: app.js with invalid globals
@@ -57,7 +57,7 @@ Feature: validations
       }
       """
     When I run `zat validate`
-    Then the output should contain "JSHint errors"
+    Then the output should contain "JSHint error"
     And the exit status should not be 0
 
   Scenario: valid app

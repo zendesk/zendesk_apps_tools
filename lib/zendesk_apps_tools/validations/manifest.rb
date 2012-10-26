@@ -6,15 +6,15 @@ module ZendeskAppsTools
 
       class <<self
         def call(package)
-          return ['No manifest found!'] unless File.exists?(package.manifest_path)
+          return [ ValidationError.new(:missing_manifest) ] unless File.exists?(package.manifest_path)
 
           manifest = MultiJson.load( File.read(package.manifest_path) )
           missing = missing_keys(manifest)
-          return [ "Missing keys in manifest: #{missing.join(', ')}" ] if missing.any?
+          return [ ValidationError.new(:missing_manifest_keys, :missing_keys => missing.join(', '), :count => missing.length) ] if missing.any?
 
           []
         rescue MultiJson::DecodeError => e
-          return [ "manifest.json is not proper JSON. #{e}" ]
+          return [ ValidationError.new(:manifest_not_json, :errors => e) ]
         end
 
         private

@@ -1,0 +1,15 @@
+en:
+  txt:
+    apps:
+      admin:
+        error:
+          app_build:
+            jshint_errors:
+              one: "JSHint error: %{errors}"
+              other: "JSHint errors: %{errors}"
+            manifest_not_json: "manifest is not proper JSON. %{errors}"
+            missing_manifest: "Could not find manifest.json"
+            missing_manifest_keys:
+              one: "Missing required field in manifest: %{missing_keys}"
+              other: "Missing required fields in manifest: %{missing_keys}"
+            missing_source: "Could not find app.js"
