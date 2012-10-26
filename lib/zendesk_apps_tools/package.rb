@@ -99,11 +99,11 @@ class ZendeskAppsTools::Package
 
   def manifest
     @manifest ||= begin
-      path = File.join(@dir, 'manifest.json')
-      if !File.exist?(path)
-        raise AppValidationError.new(I18n.t('txt.admin.lib.zendesk.app_market.app_package.package.errors.missing_manifest'))
+      begin
+        MultiJson.load( File.read(manifest_path) )
+      rescue Errno::ENOENT, Errno::EACCES, MultiJson::DecodeError
+        {}
       end
-      MultiJson.load(File.read(path))
     end
   end
 end
