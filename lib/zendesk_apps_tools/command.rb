@@ -60,7 +60,7 @@ module ZendeskAppsTools
     desc "package", "Package your app"
     def package
       app_name = self.app_package.name
-      archive_path = File.join(destination_root, "tmp", "#{app_name}.zip")
+      archive_path = File.join(tmp_dir, "#{app_name}.zip")
 
       if !stale?(archive_path)
         say_status "package", "Nothing changed"
@@ -70,8 +70,6 @@ module ZendeskAppsTools
       return false unless invoke(:validate, [])
 
       archive_rel_path = relative_to_original_destination_root(archive_path)
-
-      mkdir_p( File.dirname(archive_path) )
       remove_file(archive_path)
 
       inside(self.app_dir) do |dir|
@@ -101,7 +99,7 @@ module ZendeskAppsTools
     def push
       return unless [:auth, :package].all? {|task| invoke(task)}
       app_name = self.app_package.name
-      zip_file_path = File.join(destination_root, "tmp", "#{app_name}.zip")
+      zip_file_path = File.join(tmp_dir, "#{app_name}.zip")
       resp = self.connection.upload_app(app_name, zip_file_path)
       if resp.status == 201
         say_status "push", "package uploaded"
@@ -170,7 +168,9 @@ module ZendeskAppsTools
     end
 
     def tmp_dir
-      @tmp_dir ||= File.join(destination_root, "tmp")
+      @tmp_dir ||= File.join(destination_root, "tmp").tap do |dir|
+        mkdir_p dir
+      end
     end
 
     def stale?(file)
