@@ -9,7 +9,7 @@ Feature: validations
 
   Scenario: manifest.json that isn't JSON
     Given an app directory
-    And the file "manifest.json" with:
+    And a file named "manifest.json" with:
       """json
       { f\oo: 'Bar' }
       """
@@ -18,7 +18,7 @@ Feature: validations
 
   Scenario: missing manifest keys
     Given an app directory
-    And the file "manifest.json" with:
+    And a file named "manifest.json" with:
       """json
       {}
       """
@@ -27,7 +27,7 @@ Feature: validations
 
   Scenario: missing manifest keys, specify app dir
     Given an app directory
-    And the file "path/to/app/manifest.json" with:
+    And a file named "path/to/app/manifest.json" with:
       """json
       {}
       """
@@ -41,7 +41,7 @@ Feature: validations
 
   Scenario: app.js with invalid globals
     Given an app directory
-    And the file "app.js" with:
+    And a file named "app.js" with:
       """
       {
         events: {
@@ -56,14 +56,14 @@ Feature: validations
 
   Scenario: valid app
     Given an app directory
-    And the file "manifest.json" with:
+    And a file named "manifest.json" with:
       """json
       {
         "author": { "name": "Foo", "email": "foo@example.com" },
         "default_locale": "pt"
       }
       """
-    And the file "app.js" with:
+    And a file named "app.js" with:
       """javascript
       (function() {
         return {
