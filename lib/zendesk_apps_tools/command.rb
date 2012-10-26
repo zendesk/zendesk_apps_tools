@@ -72,12 +72,11 @@ module ZendeskAppsTools
       archive_rel_path = relative_to_original_destination_root(archive_path)
       remove_file(archive_path)
 
-      inside(self.app_dir) do |dir|
-        Zip::ZipFile.open(archive_path, 'w') do |zipfile|
-          each_app_file do |relative_file|
-            say_status "package",  "adding #{relative_file}"
-            zipfile.add(relative_file, relative_file)
-          end
+      Zip::ZipFile.open(archive_path, 'w') do |zipfile|
+        app_package.files.each do |file|
+          relative_file = file.sub("#{app_dir}/", '')
+          say_status "package",  "adding #{relative_file}"
+          zipfile.add(relative_file, relative_file)
         end
       end
 
@@ -187,13 +186,10 @@ module ZendeskAppsTools
     end
 
     def cache_app_hash
-      hash = Digest::MD5.new
-      each_app_file do |relative_path|
-        hash << File.read(relative_path)
+      hash = app_package.files.each_with_object(Digest::MD5.new) do |file|
+        File.read(file)
       end
-
       File.open(File.join(self.tmp_dir, ".local_hash"), 'w') {|f| f.write(hash.hexdigest)}
-
       hash.hexdigest
     end
 
@@ -203,16 +199,6 @@ module ZendeskAppsTools
 
     def mkdir_p(path)
       FileUtils.mkdir_p(path)
-    end
-
-    def each_app_file(&block)
-      inside(self.app_dir) do |dir|
-        Dir["**/**"].each do |file|
-          next unless File.file?(file)
-          next if file =~ %r[^tmp#{File::SEPARATOR}]
-          yield file
-        end
-      end
     end
   end
 end
