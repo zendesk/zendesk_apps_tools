@@ -3,22 +3,6 @@ require 'jshintrb'
 
 class ZendeskAppsTools::Package
 
-  LINTER_OPTIONS = {
-    # ENFORCING OPTIONS:
-    :noarg => true,
-    :undef => true,
-
-    # RELAXING OPTIONS:
-    :eqnull => true,
-    :laxcomma => true,
-
-    # PREDEFINED GLOBALS:
-    :predef =>  %w(
-                  _ console services helpers alert JSON Base64
-                  clearInterval clearTimeout setInterval setTimeout
-                )
-  }.freeze
-
   class AppValidationError < StandardError
     class << self
       attr_accessor :key
