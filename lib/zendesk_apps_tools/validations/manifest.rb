@@ -6,9 +6,11 @@ module ZendeskAppsTools
 
       class <<self
         def call(package)
-          return [ ValidationError.new(:missing_manifest) ] unless File.exists?(package.manifest_path)
+          manifest = package.files.find { |f| f.relative_path == 'manifest.json' }
 
-          manifest = MultiJson.load( File.read(package.manifest_path) )
+          return [ ValidationError.new(:missing_manifest) ] unless manifest && manifest.exists?
+
+          manifest = MultiJson.load(manifest.read)
           missing = missing_keys(manifest)
           return [ ValidationError.new(:missing_manifest_keys, :missing_keys => missing.join(', '), :count => missing.length) ] if missing.any?
 

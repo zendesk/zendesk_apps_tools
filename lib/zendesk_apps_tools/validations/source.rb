@@ -22,11 +22,13 @@ module ZendeskAppsTools
 
       class <<self
         def call(package)
-          return [ ValidationError.new(:missing_source) ] unless File.exists?(package.source_path)
+          source = package.files.find { |f| f.relative_path == 'app.js' }
 
-          jshint_errors = linter.lint( File.read(package.source_path) )
+          return [ ValidationError.new(:missing_source) ] unless source && source.exists?
+
+          jshint_errors = linter.lint(source.read)
           if jshint_errors.any?
-            [ JSHintValidationError.new(package.relative_file_name(package.source_path), jshint_errors) ]
+            [ JSHintValidationError.new(source.relative_path, jshint_errors) ]
           else
             []
           end

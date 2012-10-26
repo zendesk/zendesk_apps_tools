@@ -7,9 +7,9 @@ module ZendeskAppsTools
       class <<self
         def call(package)
           package.translation_files.each_with_object([]) do |file, errors|
-            jshint_errors = linter.lint( File.read(file) )
+            jshint_errors = linter.lint(file.read)
             if jshint_errors.any?
-              errors << JSHintValidationError.new(package.relative_file_name(file), jshint_errors)
+              errors << JSHintValidationError.new(file.relative_path, jshint_errors)
             end
           end
         end
