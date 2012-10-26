@@ -83,10 +83,6 @@ class ZendeskAppsTools::Package
     end
   end
 
-  def path_to(file)
-    File.join(@dir, file)
-  end
-
   def manifest
     @manifest ||= begin
       begin
