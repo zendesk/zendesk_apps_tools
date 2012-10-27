@@ -1,6 +1,7 @@
 require "thor"
 require "digest/md5"
 require 'zip/zip'
+require 'pathname'
 
 module ZendeskAppsTools
   class Command < Thor
@@ -162,11 +163,11 @@ module ZendeskAppsTools
     end
 
     def app_dir
-      @app_dir ||= destination_root
+      @app_dir ||= Pathname.new(destination_root)
     end
 
     def tmp_dir
-      @tmp_dir ||= File.join(app_dir, "tmp").tap do |dir|
+      @tmp_dir ||= Pathname.new(File.join(app_dir, "tmp")).tap do |dir|
         mkdir_p dir
       end
     end
