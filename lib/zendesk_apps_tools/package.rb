@@ -12,6 +12,7 @@ module ZendeskAppsTools
       @files = non_tmp_files
       @template_files = files.select { |f| f =~ /^templates\/.*\.hdbs$/ }
       @translation_files = files.select { |f| f =~ /^translations\// }
+      freeze
     end
 
     def validate
