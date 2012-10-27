@@ -62,8 +62,7 @@ module ZendeskAppsTools
 
     desc "package", "Package your app"
     def package
-      app_name = self.app_package.name
-      archive_path = File.join(tmp_dir, "#{app_name}.zip")
+      archive_path = File.join(tmp_dir, "app.zip")
 
       if !stale?(archive_path)
         say_status "package", "Nothing changed"
@@ -95,11 +94,10 @@ module ZendeskAppsTools
       end
     end
 
-    desc "push", "Push a new version of your app"
-    def push
+    desc "push APP_NAME", "Push a new version of your app"
+    def push(app_name)
       return unless [:auth, :package].all? {|task| invoke(task)}
-      app_name = self.app_package.name
-      zip_file_path = File.join(tmp_dir, "#{app_name}.zip")
+      zip_file_path = File.join(tmp_dir, "app.zip")
       resp = self.connection.upload_app(app_name, zip_file_path)
       if resp.status == 201
         say_status "push", "package uploaded"
