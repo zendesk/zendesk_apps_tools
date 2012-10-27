@@ -3,13 +3,12 @@ require 'pathname'
 module ZendeskAppsTools
   class Package
 
-    attr_reader :root, :files, :template_files, :translation_files
+    attr_reader :root, :files, :template_files
 
     def initialize(dir)
       @root = Pathname.new(File.expand_path(dir))
       @files = non_tmp_files
       @template_files = files.select { |f| f =~ /^templates\/.*\.hdbs$/ }
-      @translation_files = files.select { |f| f =~ /^translations\// }
       freeze
     end
 
