@@ -1,3 +1,5 @@
+require 'multi_json'
+
 module ZendeskAppsTools
   module Validations
     module Manifest
