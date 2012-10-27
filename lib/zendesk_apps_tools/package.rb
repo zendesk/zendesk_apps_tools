@@ -34,27 +34,5 @@ module ZendeskAppsTools
         Validations::Templates.call(self) +
         Validations::Translations.call(self)
     end
-
-    def name
-      manifest["name"] || 'app'
-    end
-
-    def author
-      {
-        :name  => manifest['author']['name'],
-        :email => manifest['author']['email']
-      }
-    end
-
-    def manifest
-      @manifest ||= begin
-        manifest_file = files.find { |f| f.relative_path == 'manifest.json' }
-        begin
-          MultiJson.load(manifest_file.read)
-        rescue Errno::ENOENT, Errno::EACCES, MultiJson::DecodeError
-          {}
-        end
-      end
-    end
   end
 end
