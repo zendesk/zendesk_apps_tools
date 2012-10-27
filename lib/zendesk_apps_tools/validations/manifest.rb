@@ -10,7 +10,7 @@ module ZendeskAppsTools
         def call(package)
           manifest = package.files.find { |f| f.relative_path == 'manifest.json' }
 
-          return [ ValidationError.new(:missing_manifest) ] unless manifest && manifest.exists?
+          return [ ValidationError.new(:missing_manifest) ] unless manifest
 
           manifest = MultiJson.load(manifest.read)
           missing = missing_keys(manifest)
