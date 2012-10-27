@@ -35,48 +35,6 @@ module ZendeskAppsTools
         Validations::Translations.call(self)
     end
 
-    def templates
-      @templates ||= begin
-        Dir[ root.join('templates/*.hdbs') ].inject({}) do |h, file|
-          str = File.read(file)
-          str.chomp!
-          h[File.basename(file, File.extname(file))] = str
-          h
-        end
-      end
-    end
-
-    def translations
-      @translations ||= begin
-        translation_dir = root.join('translations')
-        default_translations = MultiJson.load(File.read( translation_dir.join("#{default_locale}.json") ))
-
-        Dir[ translation_dir.join('*.json') ].inject({}) do |h, tr|
-          locale = File.basename(tr, File.extname(tr))
-          locale_translations = if locale == self.default_locale
-                                  default_translations
-                                else
-                                  default_translations.deep_merge(MultiJson.load(File.read(tr)))
-                                end
-
-          h[locale] = locale_translations
-          h
-        end
-      end
-    end
-
-    def locales
-      translations.keys
-    end
-
-    def default_locale
-      manifest["default_locale"]
-    end
-
-    def translation(en)
-      translations[en]
-    end
-
     def name
       manifest["name"] || 'app'
     end
