@@ -1,6 +1,4 @@
 require 'pathname'
-require 'multi_json'
-require 'jshintrb'
 
 module ZendeskAppsTools
   class Package
