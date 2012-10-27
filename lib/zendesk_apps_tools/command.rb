@@ -1,5 +1,4 @@
 require "thor"
-require "digest/md5"
 require 'zip/zip'
 require 'pathname'
 
@@ -65,7 +64,7 @@ module ZendeskAppsTools
     def package
       archive_path = File.join(tmp_dir, "app.zip")
 
-      if !stale?(archive_path)
+      if !stale?
         say_status "package", "Nothing changed"
         return true
       end
@@ -88,7 +87,7 @@ module ZendeskAppsTools
 
     desc "check", "Check for changes"
     def check
-      if app_changed?
+      if stale?
         say_status "check", "Changed"
       else
         say_status "check", "No change"
@@ -172,26 +171,12 @@ module ZendeskAppsTools
       end
     end
 
-    def stale?(file)
-      app_changed? || !File.exist?(file)
+    def stale?
+      app_hash.stale?
     end
 
-    def app_changed?
-      hash_path = File.join(self.tmp_dir, ".local_hash")
-      if !File.exist?(hash_path)
-        cache_app_hash
-        true
-      else
-        File.read(hash_path) != cache_app_hash
-      end
-    end
-
-    def cache_app_hash
-      hash = app_package.files.each_with_object(Digest::MD5.new) do |file, digest|
-        digest << file.read
-      end
-      File.open(File.join(self.tmp_dir, ".local_hash"), 'w') {|f| f.write(hash.hexdigest)}
-      hash.hexdigest
+    def app_hash
+      @app_hash ||= AppHash.new(app_package, tmp_dir)
     end
 
     def app_package
