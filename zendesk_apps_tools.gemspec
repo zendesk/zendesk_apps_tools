@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'cucumber'
   s.add_development_dependency 'aruba'
 
-  s.files        = Dir.glob("{lib,bin}/**/*") + %w(README.md LICENSE)
+  s.files        = Dir.glob("{lib,bin,config,template}/**/*") + %w(README.md LICENSE)
   s.test_files   = Dir.glob("test/**/*")
   s.require_path = 'lib'
 end
