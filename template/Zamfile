@@ -1,6 +1,0 @@
-email "your_zendesk_login"
-subdomain "your_zendesk_subdomain"
-auth_token "auth_token"
-
-ca_file "/opt/local/share/curl/curl-ca-bundle.crt"
-author "Name", "support_email@email.com"

@@ -37,7 +37,7 @@ module ZendeskAppsTools
     desc "new APP_NAME", "Generate a new app"
     def new(app_name)
       @app_name = app_name
-      @author = zam_file.author
+      @author = zat_config.author
       directory('template', app_name)
     end
 
@@ -153,12 +153,12 @@ module ZendeskAppsTools
       end
     end
 
-    def zam_file
-      @zam_file ||= ZamFile.new(options[:config_file])
+    def zat_config
+      @zat_config ||= Config.new(options[:config_file])
     end
 
     def connection
-      @connection ||= Connection.new(zam_file)
+      @connection ||= Connection.new(zat_config)
     end
 
     def app_dir
