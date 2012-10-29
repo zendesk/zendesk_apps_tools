@@ -1,6 +1,0 @@
-email "shajith@zendesk.com"
-subdomain "shajith"
-auth_token "3UoCpz0dypkriKmV15MuLk4YQycVkgKE3Ro90rbW"
-ca_file "/opt/local/share/curl/curl-ca-bundle.crt"
-
-author "Zendesk", "support@zendesk.com"
