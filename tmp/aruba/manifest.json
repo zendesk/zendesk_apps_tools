@@ -1,0 +1,4 @@
+{
+  "author": { "name": "Foo", "email": "foo@example.com" },
+  "default_locale": "pt"
+}
