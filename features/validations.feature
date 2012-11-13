@@ -95,7 +95,7 @@ Feature: validations
       """json
       {
         "author": { "name": "Foo", "email": "foo@example.com" },
-        "default_locale": "pt"
+        "defaultLocale": "pt"
       }
       """
     And a file named "app.js" with:
