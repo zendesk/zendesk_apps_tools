@@ -1,11 +1,11 @@
 Gem::Specification.new do |s|
-  s.name        = "zendesk_apps_tools"
+  s.name        = "zendesk_apps_support"
   s.version     = "0.0.1"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["James A. Rosen", "Kenshiro Nakagawa", "Shajith Chacko"]
   s.email       = ["dev@zendesk.com"]
-  s.homepage    = "http://github.com/zendesk/zendesk_apps_tools"
-  s.summary     = "Tools to help you develop Zendesk Apps."
+  s.homepage    = "http://github.com/zendesk/zendesk_apps_support"
+  s.summary     = "Support to help you develop Zendesk Apps."
   s.description = s.summary
 
   s.required_rubygems_version = ">= 1.3.6"
