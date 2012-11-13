@@ -9,7 +9,7 @@ module ZendeskAppsTools
     class_option :config_file, :type => :string, :default => "Zamfile"
 
     include Thor::Actions
-    include ZendeskAppsTools
+    include ZendeskAppsSupport
     
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
