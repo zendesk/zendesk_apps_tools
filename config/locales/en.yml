@@ -1,5 +1,5 @@
 en:
-  zendesk_developer_tools:
+  zendesk_apps_support:
     errors:
       jshint_errors:
         one: "JSHint error in %{file}: %{errors}"
