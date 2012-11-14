@@ -1,4 +1,4 @@
-## Zendesk Developer Tools
+## Zendesk Apps Tools
 
 Tools to help you develop Zendesk Apps.
 
