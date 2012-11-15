@@ -14,7 +14,7 @@ module ZendeskAppsSupport
 
     BadSetting = Class.new(ConfigurationError)
 
-    attr_reader :url, :email, :auth_token, :ca_file
+    attr_reader :url, :email, :auth_token, :ca_file, :ca_path
 
     def initialize(file)
       load_config(file)
@@ -41,14 +41,18 @@ module ZendeskAppsSupport
 
     def parse_auth_token(config)
       config['auth_token'].tap do |token|
-        raise MissingSetting.new('auth_token') unless t
+        raise MissingSetting.new('auth_token') unless token
       end
     end
 
     def parse_ca_file(config)
       config['ca_file'].tap do |file|
         raise MissingSetting.new('ca_file') unless file
-        raise BadSetting.new("No such file: #{file}") unless File.file?(file)
+        if file == ''
+          puts "Warning: No ca_file defined in zat-config.json"
+        else
+          raise BadSetting.new("No such file: #{file}") unless File.file?(file)
+        end
       end
     end
 
@@ -64,6 +68,7 @@ module ZendeskAppsSupport
     def parse_author(config)
       config['author'].tap do |author|
         raise MissingSetting.new('author') unless author
+        name = author['name']
         raise MissingSetting.new('author.name') unless name
         email = author['email']
         raise MissingSetting.new('author.email') unless email
