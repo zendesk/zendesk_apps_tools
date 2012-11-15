@@ -6,7 +6,7 @@ module ZendeskAppsTools
   require 'zendesk_apps_support'
   
   class Command < Thor
-    class_option :config_file, :type => :string, :default => "Zamfile"
+    class_option :config_file, :type => :string, :default => "zat-config.json"
 
     include Thor::Actions
     include ZendeskAppsSupport
@@ -158,7 +158,8 @@ module ZendeskAppsTools
     end
 
     def zat_config
-      @zat_config ||= Config.new(options[:config_file])
+      path = "#{self.class.source_root}/template/#{options[:config_file]}"
+      @zat_config ||= Config.new(path)
     end
 
     def connection
