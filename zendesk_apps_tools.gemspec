@@ -10,7 +10,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = ">= 1.3.6"
 
-  s.add_runtime_dependency 'thor',                  '~> 0.15.2'
+  s.add_runtime_dependency 'thor',        '~> 0.15.2'
+  s.add_runtime_dependency 'faraday',     '~> 0.8.0'
   s.add_runtime_dependency 'zendesk_apps_support'
 
   s.add_development_dependency 'cucumber'
