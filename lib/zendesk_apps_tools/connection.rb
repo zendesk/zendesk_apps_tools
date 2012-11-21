@@ -1,7 +1,7 @@
 require 'openssl'
 require 'faraday'
 
-module ZendeskAppsTools
+module ZendeskAppsSupport
   class Connection
 
     class AuthMiddleware < Faraday::Middleware

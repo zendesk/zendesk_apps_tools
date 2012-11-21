@@ -1,12 +1,12 @@
 {
-  "subdomain": "Your Zendesk Subdomain",
-  "email": "Your Zendesk Email Address",
+  "subdomain": "example",
+  "email": "your@email.com",
   "auth_token": "Zendesk Auth Token",
 
-  "ca_file": "/opt/local/share/curl/curl-ca-bundle.crt",
+  "ca_file": "",
 
   "author": {
     "name": "Your Name",
-    "email": "Your Eamil"
+    "email": "author@email.com"
   }
 }

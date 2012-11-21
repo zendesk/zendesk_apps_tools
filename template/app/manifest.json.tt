@@ -4,6 +4,6 @@
     "name": "<%= author["name"] %>",
     "email": "<%= author["email"] %>"
   },
-  "default_locale": "en",
+  "defaultLocale": "en",
   "private": true
 }
