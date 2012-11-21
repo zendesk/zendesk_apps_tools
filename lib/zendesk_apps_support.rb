@@ -2,7 +2,6 @@ module ZendeskAppsSupport
   autoload :AppFile,    'zendesk_apps_support/app_file'
   autoload :AppHash,    'zendesk_apps_support/app_hash'
   autoload :Config,     'zendesk_apps_support/config'
-  autoload :Connection, 'zendesk_apps_support/connection'
   autoload :I18n,       'zendesk_apps_support/i18n'
   autoload :Package,    'zendesk_apps_support/package'
 
