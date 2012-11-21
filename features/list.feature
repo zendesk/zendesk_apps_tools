@@ -1,6 +1,6 @@
 Feature: list
 
-  ZAT can list something
+  ZAT can list your apps
 
   Background:
     Given an app directory
