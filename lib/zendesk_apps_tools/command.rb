@@ -3,10 +3,14 @@ require 'zip/zip'
 require 'pathname'
 
 module ZendeskAppsTools
+  require 'zendesk_apps_support'
+  
   class Command < Thor
-    class_option :config_file, :type => :string, :default => "Zamfile"
+    class_option :config_file, :type => :string, :default => "zat-config.json"
 
     include Thor::Actions
+    include ZendeskAppsSupport
+    
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
     attr_accessor :author, :app_name, :app_package
@@ -154,7 +158,8 @@ module ZendeskAppsTools
     end
 
     def zat_config
-      @zat_config ||= Config.new(options[:config_file])
+      path = "#{self.class.source_root}/template/#{options[:config_file]}"
+      @zat_config ||= Config.new(path)
     end
 
     def connection
