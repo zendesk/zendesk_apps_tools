@@ -2,20 +2,24 @@ require "digest/md5"
 
 module ZendeskAppsSupport
 
-  class AppHash
+    class AppHash
 
     def initialize(package, tmp_dir)
-      hashfile_path = tmp_dir.join('.local_hash')
-      old_hexdigest = read_hexdigest(hashfile_path)
-      new_hexdigest = calculate_hexdigest(package)
-
-      @stale = (old_hexdigest != new_hexdigest)
-
-      write(new_hexdigest, hashfile_path) if @stale
+      @package = package
+      @tmp_dir = tmp_dir
     end
 
     def stale?
-      @stale
+      hashfile_path = @tmp_dir.join('.zendesk_app_hash')
+      old_hexdigest = read_hexdigest(hashfile_path)
+      new_hexdigest = calculate_hexdigest(@package)
+
+      if old_hexdigest != new_hexdigest
+        write(new_hexdigest, hashfile_path)
+        return true
+      end
+
+      false
     end
 
     private
