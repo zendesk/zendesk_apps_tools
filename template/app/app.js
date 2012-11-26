@@ -1,6 +1,12 @@
-(function() {
+(function () {
 
-  return ZendeskApps.defineApp(ZendeskApps.Site.TICKET_PROPERTIES, {
-  });
+  return {
+    events:{
+      'app.activated':'doSomething'
+    },
+
+    doSomething:function () {
+    }
+  };
 
 }());

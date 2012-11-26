@@ -1,1 +1,4 @@
-/tmp
+.idea
+.bundle
+.rvmrc
+vendor

@@ -4,50 +4,59 @@ require 'pathname'
 
 module ZendeskAppsTools
   require 'zendesk_apps_support'
-  
+
   class Command < Thor
-    class_option :config_file, :type => :string, :default => "zat-config.json"
 
     include Thor::Actions
     include ZendeskAppsSupport
     
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
-    attr_accessor :author, :app_name, :app_package
-
-    desc "auth", "Try to authenticate with Zendesk App Market"
-    def auth
-      resp = self.connection.auth
-      if resp.status == 200
-        say_status "auth", "OK"
-      else
-        say_status "error", "#{resp.status}: #{resp.body}"
-      end
-    end
-
-    desc "list", "List all your apps"
-    def list
-      return unless invoke(:auth)
-      resp = self.connection.list_apps
-      if resp.status != 200
-        say_status "error", "#{resp.status}: #{resp.body}"
-      else
-        JSON.parse(resp.body).each do |app|
-          say_status "app", "name: #{app['name']}, created: #{app['created_at']}"
+    desc "new", "Generate a new app"
+    def new
+      puts "Enter this app author's name:"
+      while @author_name = $stdin.readline.chomp.strip do
+        if @author_name.empty? || @author_name =~ /^\s+$/
+          puts "Invalid name, try again:"
+        else
+          break
         end
       end
-    end
 
-    desc "new APP_NAME", "Generate a new app"
-    def new(app_name)
-      @app_name = app_name
-      @author = zat_config.author
-      directory('template', app_name)
+      puts "Enter this app author's email:"
+      while @author_email = $stdin.readline.chomp.strip do
+        if @author_email.empty? || !(@author_email =~ /^.+@.+\..+$/)
+          puts "Invalid email, try again:"
+        else
+          break
+        end
+      end
+
+      puts "Enter a name for this new app:"
+      while @app_name = $stdin.readline.chomp.strip do
+        if @app_name.empty? || @app_name =~ /^\s+$/
+          puts "Invalid app name, try again:"
+        else
+          break
+        end
+      end
+
+      puts "Enter a directory to save the new app:"
+      while @app_dir = $stdin.readline.chomp.strip do
+        unless File.directory?(@app_dir)
+          puts "Invalid dir, try again:"
+        else
+          break
+        end
+      end
+
+      directory('template', @app_dir)
     end
 
     desc "validate", "Validate your app"
-    def validate(path_to_app = nil)
-      @destination_stack << relative_to_original_destination_root(path_to_app) if path_to_app
+    method_option :path, :default => './', :required => false
+    def validate
+      setup_path(options[:path])
       errors = app_package.validate
       valid = errors.none?
 
@@ -59,29 +68,25 @@ module ZendeskAppsTools
         end
       end
 
-      @destination_stack.pop if path_to_app
+      @destination_stack.pop if options[:path]
       exit 1 unless valid
       true
     end
 
     desc "package", "Package your app"
+    method_option :path, :default => './', :required => false
     def package
-      archive_path = File.join(tmp_dir, "app.zip")
-
-      if !stale?
-        say_status "package", "Nothing changed"
-        return true
-      end
+      setup_path(options[:path])
+      archive_path = File.join(tmp_dir, "app-#{Time.now.strftime('%Y%m%d%H%M%S')}.zip")
 
       return false unless invoke(:validate, [])
 
       archive_rel_path = relative_to_original_destination_root(archive_path)
-      remove_file(archive_path)
 
       Zip::ZipFile.open(archive_path, 'w') do |zipfile|
         app_package.files.each do |file|
           say_status "package",  "adding #{file.relative_path}"
-          zipfile.add(file.relative_path, file.relative_path)
+          zipfile.add(file.relative_path, app_dir.join('app', file.relative_path).to_path)
         end
       end
 
@@ -90,7 +95,9 @@ module ZendeskAppsTools
     end
 
     desc "check", "Check for changes"
+    method_option :path, :default => './', :required => false
     def check
+      setup_path(options[:path])
       if stale?
         say_status "check", "Changed"
       else
@@ -98,72 +105,19 @@ module ZendeskAppsTools
       end
     end
 
-    desc "push APP_NAME", "Push a new version of your app"
-    def push(app_name)
-      return unless [:auth, :package].all? {|task| invoke(task)}
-      zip_file_path = File.join(tmp_dir, "app.zip")
-      resp = self.connection.upload_app(app_name, zip_file_path)
-      if resp.status == 201
-        say_status "push", "package uploaded"
-        say_status "push", "processing"
-        spin do
-          check_job_status(JSON.parse(resp.body)["job_id"])
-        end
-      else
-        say_status "error", "#{resp.status}: #{resp.body}"
+    desc "clean", "Remove temporary files"
+    method_option :path, :default => './', :required => false
+    def clean
+      setup_path(options[:path])
+      inside(self.tmp_dir) do
+        FileUtils.rm(Dir["app-*.*", ".*"] - ['.', '..'])
       end
     end
 
-    desc "clean", "Remove temporary files"
-    def clean
-      inside(self.tmp_dir) do
-        FileUtils.rm(Dir.glob(".*") - [".", ".."])
-      end
-    end
     protected
 
-    def spin
-      i = 0
-      loop do
-        print "."
-        if i % 4 == 0
-          return if yield
-        end
-        sleep 0.2
-        i = i + 1
-      end
-    end
-
-    def check_job_status(job_id)
-      resp = self.connection.job_status(job_id)
-      if resp.status != 200
-        puts
-        say_status "error", resp.body
-        return true
-      end
-
-      status = JSON.parse(resp.body)
-      case status["status"]
-      when "queued", "working"
-        false
-      when "completed"
-        puts
-        say_status "push", "OK"
-        true
-      when "failed", "killed"
-        puts
-        say_status "error", status["message"]
-        true
-      end
-    end
-
-    def zat_config
-      path = "#{self.class.source_root}/template/#{options[:config_file]}"
-      @zat_config ||= Config.new(path)
-    end
-
-    def connection
-      @connection ||= Connection.new(zat_config)
+    def setup_path(path)
+      @destination_stack << relative_to_original_destination_root(path)
     end
 
     def app_dir
@@ -185,7 +139,7 @@ module ZendeskAppsTools
     end
 
     def app_package
-      @app_package ||= Package.new(self.app_dir)
+      @app_package ||= Package.new(self.app_dir.join('app').to_path)
     end
 
     def mkdir_p(path)
