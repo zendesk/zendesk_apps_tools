@@ -1,11 +1,11 @@
-(function () {
+(function() {
 
   return {
-    events:{
+    events: {
       'app.activated':'doSomething'
     },
 
-    doSomething:function () {
+    doSomething: function() {
     }
   };
 
