@@ -1,10 +1,8 @@
 require 'rake/clean'
-require 'cucumber/rake/task'
-
 CLEAN << 'tmp'
 
-Cucumber::Rake::Task.new do |t|
-  t.cucumber_opts = %w{--format pretty}
-end
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec)
+task :spec
 
-task :default => :cucumber
+task :default => :spec
