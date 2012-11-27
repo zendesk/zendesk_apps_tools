@@ -1,11 +1,7 @@
 Feature: clean tmp folder inside the zendesk app
 
   Background: create a new zendesk app package
-    Given an app directory "tmp/aruba/" exists
-    And I run "bundle exec bin/zat new" command with the following details:
-      | author name  | John Citizen      |
-      | author email | john@example.com  |
-      | app name     | John Test App     |
+    Given an app is created in directory "tmp/aruba/"
     And I run `zat package`
     And the output should contain "package  created"
 
