@@ -19,10 +19,10 @@ describe ZendeskAppsSupport::Validations::Manifest do
   end
 
   it 'should have an error when manifest is not a valid json' do
-    manifest = mock('AppFile', :relative_path => 'manifest.json', :read => "{")
+    manifest = mock('AppFile', :relative_path => 'manifest.json', :read => "}")
     package = mock('Package', :files => [manifest])
     errors = ZendeskAppsSupport::Validations::Manifest.call(package)
 
-    errors.first().to_s.should eql 'manifest is not proper JSON. A JSON text must at least contain two octets!'
+    errors.first().to_s.should =~ /^manifest is not proper JSON/
   end
 end
