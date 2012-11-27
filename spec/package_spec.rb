@@ -3,7 +3,7 @@ require 'zendesk_apps_support'
 describe ZendeskAppsSupport::Package do
 
   before do
-    @package = ZendeskAppsSupport::Package.new('tmp/template/app')
+    @package = ZendeskAppsSupport::Package.new('spec/template/app')
   end
 
   describe 'files' do
