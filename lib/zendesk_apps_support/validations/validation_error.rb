@@ -2,6 +2,8 @@ module ZendeskAppsSupport
   module Validations
 
     class ValidationError
+      KEY_PREFIX = 'txt.apps.admin.error.app_build.'.freeze
+
       attr_reader :key, :data
 
       def initialize(key, data = nil)
@@ -9,7 +11,7 @@ module ZendeskAppsSupport
       end
 
       def to_s
-        ZendeskAppsSupport::I18n.t("errors.#{key}", data)
+        ZendeskAppsSupport::I18n.t("#{KEY_PREFIX}#{key}", data)
       end
     end
 

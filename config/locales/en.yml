@@ -1,15 +1,18 @@
 # This is a generated file. Please do not edit it.
 ---
 en:
-  zendesk_apps_support:
-    errors:
-      jshint_errors:
-        one: ! 'JSHint error in %{file}: %{errors}'
-        other: ! 'JSHint errors in %{file}: %{errors}'
-      manifest_not_json: manifest is not proper JSON. %{errors}
-      missing_manifest: Could not find manifest.json
-      missing_manifest_keys:
-        one: ! 'Missing required field in manifest: %{missing_keys}'
-        other: ! 'Missing required fields in manifest: %{missing_keys}'
-      missing_source: Could not find app.js
-      style_in_template: <style> tag in %{template}. Use an app.css file instead.
+  txt:
+    apps:
+      admin:
+        error:
+          app_build:
+            jshint_errors:
+              one: ! 'JSHint error in %{file}: %{errors}'
+              other: ! 'JSHint errors in %{file}: %{errors}'
+            manifest_not_json: manifest is not proper JSON. %{errors}
+            missing_manifest: Could not find manifest.json
+            missing_manifest_keys:
+              one: ! 'Missing required field in manifest: %{missing_keys}'
+              other: ! 'Missing required fields in manifest: %{missing_keys}'
+            missing_source: Could not find app.js
+            style_in_template: <style> tag in %{template}. Use an app.css file instead.

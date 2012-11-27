@@ -1,10 +1,8 @@
 module ZendeskAppsSupport
   module I18n
     class << self
-      attr_accessor :i18n_key_prefix
-
       def t(key, *args)
-        i18n.t(i18n_key_prefix + key, *args)
+        i18n.t(key, *args)
       end
 
       def set_locale(locale)
@@ -26,7 +24,5 @@ module ZendeskAppsSupport
           Dir[ File.expand_path('../../../config/locales/*.zendesk.yml', __FILE__) ]
       end
     end
-
-    self.i18n_key_prefix = 'zendesk_apps_support.'
   end
 end
