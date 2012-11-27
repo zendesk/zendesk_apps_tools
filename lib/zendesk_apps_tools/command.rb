@@ -41,8 +41,9 @@ module ZendeskAppsTools
         end
       end
 
-      puts "Enter a directory to save the new app:"
+      puts "Enter an existing directory to save the new app (default to current dir):"
       while @app_dir = $stdin.readline.chomp.strip do
+        @app_dir = './' and break if @app_dir.empty?
         unless File.directory?(@app_dir)
           puts "Invalid dir, try again:"
         else
@@ -117,7 +118,7 @@ module ZendeskAppsTools
     protected
 
     def setup_path(path)
-      @destination_stack << relative_to_original_destination_root(path)
+      @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
     end
 
     def app_dir
