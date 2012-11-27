@@ -7,6 +7,10 @@ module ZendeskAppsSupport
         i18n.t(i18n_key_prefix + key, *args)
       end
 
+      def set_locale(locale)
+        i18n.locale = locale
+      end
+
       private
 
       def i18n

@@ -4,7 +4,7 @@ module ZendeskAppsSupport
   module Validations
     module Manifest
 
-      REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale ).freeze
+      REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale location frameworkVersion).freeze
 
       class <<self
         def call(package)
