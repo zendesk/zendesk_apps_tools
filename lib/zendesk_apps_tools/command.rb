@@ -95,21 +95,13 @@ module ZendeskAppsTools
       true
     end
 
-    desc "check", "Check for changes"
-    method_option :path, :default => './', :required => false
-    def check
-      setup_path(options[:path])
-      if stale?
-        say_status "check", "Changed"
-      else
-        say_status "check", "No change"
-      end
-    end
-
     desc "clean", "Remove temporary files"
     method_option :path, :default => './', :required => false
     def clean
       setup_path(options[:path])
+
+      return unless File.exists?(Pathname.new(File.join(app_dir, "tmp")).to_path)
+
       inside(self.tmp_dir) do
         FileUtils.rm(Dir["app-*.*", ".*"] - ['.', '..'])
       end
@@ -129,14 +121,6 @@ module ZendeskAppsTools
       @tmp_dir ||= Pathname.new(File.join(app_dir, "tmp")).tap do |dir|
         mkdir_p dir
       end
-    end
-
-    def stale?
-      app_hash.stale?
-    end
-
-    def app_hash
-      @app_hash ||= AppHash.new(app_package, tmp_dir)
     end
 
     def app_package
