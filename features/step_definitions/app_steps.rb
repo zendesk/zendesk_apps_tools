@@ -4,6 +4,16 @@ Given /^an app directory "(.*?)" exists$/ do |app_dir|
   FileUtils.mkdir_p(@app_dir)
 end
 
+Given /^an app is created in directory "(.*?)"$/ do |app_dir|
+  steps %Q{
+    Given an app directory "#{app_dir}" exists
+    And I run "bundle exec bin/zat new" command with the following details:
+      | author name  | John Citizen      |
+      | author email | john@example.com  |
+      | app name     | John Test App     |
+  }
+end
+
 When /^I run "(.*?)" command with the following details:$/ do |cmd, table|
   IO.popen(cmd, "w+") do |pipe|
     key = table.rows_hash
@@ -18,7 +28,7 @@ When /^I run "(.*?)" command with the following details:$/ do |cmd, table|
 end
 
 Then /^the app file "(.*?)" is created with:$/ do |file, content|
-  File.read(file).gsub(' ', '').should == content.gsub(' ', '')
+  File.read(file).chomp.gsub(' ', '').should == content.gsub(' ', '')
 end
 
 
