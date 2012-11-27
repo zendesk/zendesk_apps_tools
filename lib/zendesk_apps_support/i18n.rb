@@ -22,7 +22,8 @@ module ZendeskAppsSupport
       end
 
       def locale_files
-        Dir[ File.expand_path('../../../config/locales/*.yml', __FILE__) ]
+        Dir[ File.expand_path('../../../config/locales/*.yml', __FILE__) ] -
+          Dir[ File.expand_path('../../../config/locales/*.zendesk.yml', __FILE__) ]
       end
     end
 
