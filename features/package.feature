@@ -1,7 +1,7 @@
 Feature: package a zendesk app into a zip file
 
   Background: create a new zendesk app
-    Given an app is created in directory "tmp/aruba/"
+    Given an app is created in directory "tmp/aruba"
 
   Scenario: package a zendesk app by running 'zat package' command
     When I run `zat package`

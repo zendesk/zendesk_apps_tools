@@ -1,13 +1,13 @@
 Feature: create a template for a new zendesk app
 
   Scenario: create a template for a new zendesk app by running 'zat new' command
-    Given an app directory "features/test_app" exists
+    Given an app directory "tmp/aruba" exists
     When I run "bundle exec bin/zat new" command with the following details:
       | author name  | John Citizen      |
       | author email | john@example.com  |
       | app name     | John Test App     |
 
-    Then the app file "features/test_app/app/manifest.json" is created with:
+    Then the app file "tmp/aruba/app/manifest.json" is created with:
     """
 {
   "name": "John Test App",
@@ -21,7 +21,7 @@ Feature: create a template for a new zendesk app
   "frameworkVersion": "0.5"
 }
 """
-    And the app file "features/test_app/app/app.js" is created with:
+    And the app file "tmp/aruba/app/app.js" is created with:
     """
 (function() {
 
@@ -36,7 +36,7 @@ Feature: create a template for a new zendesk app
 
 }());
 """
-    And the app file "features/test_app/app/templates/layout.hdbs" is created with:
+    And the app file "tmp/aruba/app/templates/layout.hdbs" is created with:
     """
 <header>
   <span class="logo"/>
@@ -50,7 +50,7 @@ Feature: create a template for a new zendesk app
 </footer>
 </div>
 """
-    And the app file "features/test_app/app/translations/en.json" is created with:
+    And the app file "tmp/aruba/app/translations/en.json" is created with:
     """
 {
   "app": {
