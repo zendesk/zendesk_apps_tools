@@ -15,31 +15,13 @@ module ZendeskAppsTools
     desc "new", "Generate a new app"
     def new
       puts "Enter this app author's name:"
-      while @author_name = $stdin.readline.chomp.strip do
-        if @author_name.empty? || @author_name =~ /^\s+$/
-          puts "Invalid name, try again:"
-        else
-          break
-        end
-      end
+      @author_name = get_value_from_stdin(/^\w.*$/, "Invalid name, try again:")
 
       puts "Enter this app author's email:"
-      while @author_email = $stdin.readline.chomp.strip do
-        if @author_email.empty? || !(@author_email =~ /^.+@.+\..+$/)
-          puts "Invalid email, try again:"
-        else
-          break
-        end
-      end
+      @author_email = get_value_from_stdin(/^.+@.+\..+$/, "Invalid email, try again:")
 
       puts "Enter a name for this new app:"
-      while @app_name = $stdin.readline.chomp.strip do
-        if @app_name.empty? || @app_name =~ /^\s+$/
-          puts "Invalid app name, try again:"
-        else
-          break
-        end
-      end
+      @app_name = get_value_from_stdin(/^\w.*$/, "Invalid app name, try again:")
 
       puts "Enter an existing directory to save the new app (default to current dir):"
       while @app_dir = $stdin.readline.chomp.strip do
@@ -108,6 +90,18 @@ module ZendeskAppsTools
     end
 
     protected
+
+    def get_value_from_stdin(valid_regex, error_msg)
+      while input = $stdin.readline.chomp.strip do
+        if input.empty? || !(input =~ valid_regex)
+          puts error_msg
+        else
+          break
+        end
+      end
+
+      return input
+    end
 
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
