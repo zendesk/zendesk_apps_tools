@@ -1,3 +1,14 @@
+GIT
+  remote: git@github.com:zendesk/zendesk_apps_support.git
+  revision: 0aa06baf432295e74456ce76debb3869fb3abf0b
+  ref: v0.0.1
+  specs:
+    zendesk_apps_support (0.0.1)
+      i18n
+      jshintrb (= 0.1.6)
+      multi_json
+      rubyzip (~> 0.9.1)
+
 PATH
   remote: .
   specs:
@@ -5,15 +16,6 @@ PATH
       faraday (~> 0.8.0)
       thor (~> 0.15.2)
       zendesk_apps_support
-
-PATH
-  remote: ../zendesk_apps_support
-  specs:
-    zendesk_apps_support (0.0.1)
-      i18n
-      jshintrb (= 0.1.6)
-      multi_json
-      rubyzip (~> 0.9.1)
 
 GEM
   remote: https://rubygems.org/
