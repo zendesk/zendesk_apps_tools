@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
 gemspec
-gem 'zendesk_apps_support', :path => '../zendesk_apps_support'
+gem 'zendesk_apps_support', :git => 'git@github.com:zendesk/zendesk_apps_support.git', :ref => 'v0.0.1'
