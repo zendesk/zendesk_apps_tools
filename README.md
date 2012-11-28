@@ -4,38 +4,40 @@ Tools to help you develop Zendesk Apps.
 
 ### Complete Features
 
-(nothing)
+#### Create a new zendesk app
+Create a template for a new zendesk app
 
-### In-Progress Features
-
+```bash
+$ zat new
+```
 #### Validate
 
 Run a suite of validations against your app:
 
 ```bash
-$ zat validate [app-directory=.]
+$ zat validate [--path=.]
 ```
 
 This will check the following:
 
  * presence of `app.js` and `manifest.json`
  * JSHint on `app.js`
- * Syntax check on `manifest.json` and `translations/*.json`
+ * Syntax check on `manifest.json`
  * Presence of required properties in `manifest.json`
  * No `<style>` tags in templates
 
-#### Build .zip
+#### Package the app into a zip file
 
-Package an app directory into a .zip file that you will upload to Zendesk.
+Package an app directory into a zip file that you will upload to Zendesk.
 
 ```bash
-$ zat package [app-directory=.]
+$ zat package [--path=.]
 ```
 
-#### Preview Apps
+#### Clean tmp folder inside the zendesk app
 
-Run a server that will let you preview your app in your live help desk environment. This also requires the [Zendesk Apps Chrome plugin](#does-not-exist-yet)
+Remove zip files in the tmp folder inside the the zendesk app
 
 ```bash
-$ zat serve [app-directory=.]
+$ zat clean [--path=.]
 ```
