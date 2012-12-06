@@ -23,10 +23,13 @@ module ZendeskAppsTools
       puts "Enter a name for this new app:"
       @app_name = get_value_from_stdin(/^\w.*$/, "Invalid app name, try again:")
 
-      puts "Enter an existing directory to save the new app (default to current dir):"
+      puts "Enter a directory name to save the new app (will create the dir if it dose not exist, default to current dir):"
       while @app_dir = $stdin.readline.chomp.strip do
         @app_dir = './' and break if @app_dir.empty?
-        unless File.directory?(@app_dir)
+        if !File.exists?(@app_dir)
+          FileUtils.mkdir_p(@app_dir)
+          break
+        elsif !File.directory?(@app_dir)
           puts "Invalid dir, try again:"
         else
           break
@@ -113,16 +116,12 @@ module ZendeskAppsTools
 
     def tmp_dir
       @tmp_dir ||= Pathname.new(File.join(app_dir, "tmp")).tap do |dir|
-        mkdir_p dir
+        FileUtils.mkdir_p(dir)
       end
     end
 
     def app_package
       @app_package ||= Package.new(self.app_dir.join('app').to_path)
-    end
-
-    def mkdir_p(path)
-      FileUtils.mkdir_p(path)
     end
   end
 end
