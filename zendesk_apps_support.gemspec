@@ -12,12 +12,11 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'i18n'
   s.add_runtime_dependency 'multi_json'
-  s.add_runtime_dependency 'rubyzip',     '~> 0.9.1'
   s.add_runtime_dependency 'jshintrb',    '0.1.6'
 
   s.add_development_dependency 'rspec'
 
-  s.files        = Dir.glob("{lib,config,template}/**/*") + %w(README.md LICENSE)
-  s.test_files   = Dir.glob("features/**/*")
+  s.files        = Dir.glob("{lib,config}/**/*") + %w(README.md LICENSE)
+  s.test_files   = Dir.glob("spec/**/*")
   s.require_path = 'lib'
 end
