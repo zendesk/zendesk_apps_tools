@@ -12,6 +12,17 @@ module ZendeskAppsTools
     
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
+    @@path = './'
+    @@port = 4567
+
+    def self.path
+      @@path
+    end
+
+    def self.port
+      @@port
+    end
+
     desc "new", "Generate a new app"
     def new
       puts "Enter this app author's name:"
@@ -90,6 +101,17 @@ module ZendeskAppsTools
       inside(self.tmp_dir) do
         FileUtils.rm(Dir["app-*.*", ".*"] - ['.', '..'])
       end
+    end
+
+    desc "server", "Run a http server"
+    method_option :path, :default => './', :required => false
+    method_option :port, :default => 4567, :required => false
+    def server
+      @@path = options[:path]
+      @@port = options[:port]
+      setup_path(options[:path])
+      require 'zendesk_apps_tools/sass_functions'
+      require 'zendesk_apps_tools/server'
     end
 
     protected
