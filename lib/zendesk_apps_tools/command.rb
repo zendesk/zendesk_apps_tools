@@ -104,13 +104,12 @@ module ZendeskAppsTools
     end
 
     desc "server", "Run a http server"
-    method_option :path, :default => './', :required => false
-    method_option :port, :default => 4567, :required => false
+    method_option :path, :default => @@path, :required => false
+    method_option :port, :default => @@port, :required => false
     def server
       @@path = options[:path]
       @@port = options[:port]
       setup_path(options[:path])
-      require 'zendesk_apps_tools/sass_functions'
       require 'zendesk_apps_tools/server'
     end
 

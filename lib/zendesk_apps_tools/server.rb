@@ -1,10 +1,9 @@
 require 'sinatra/base'
 require 'erb'
 require 'json'
+require 'zendesk_apps_support/package'
 
-class MyApp < Sinatra::Base
-  DEFAULT_SCSS   = File.read(File.expand_path('../default_styles.scss', __FILE__))
-
+class Server < Sinatra::Base
   set :root, File.dirname(__FILE__)
   set :port, ZendeskAppsTools::Command.port
 
@@ -19,21 +18,8 @@ class MyApp < Sinatra::Base
     @translations = {"app" => {}}
     @framework_version = manifest["frameworkVersion"]
 
-    customer_css = File.read("#{ZendeskAppsTools::Command.path}/app/app.css")
-    css = ZendeskAppsTools::StylesheetCompiler.new(DEFAULT_SCSS + customer_css, 0).compile
-
-    @templates = begin
-      Dir["#{ZendeskAppsTools::Command.path}/app/templates/*.hdbs"].inject({}) do |h, file|
-        str = File.read(file)
-        str.chomp!
-        h[File.basename(file, File.extname(file))] = str
-        h
-      end
-    end
-
-    @templates.tap do |templates|
-      templates['layout'] = "<style>\n#{css}</style>\n#{templates['layout']}"
-    end
+    package = ZendeskAppsSupport::Package.new(ZendeskAppsTools::Command.path + "/app")
+    @templates = package.compiled_templates(0, "http://localhost:#{ZendeskAppsTools::Command.port}")
 
     @settings = {}
     manifest["parameters"].select {|param| param["default"]} .inject(@settings) {|hash, element| hash[element["name"]] = element["default"]}
