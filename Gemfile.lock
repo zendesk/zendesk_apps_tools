@@ -13,7 +13,6 @@ PATH
   specs:
     zendesk_apps_tools (0.0.1)
       rubyzip (~> 0.9.1)
-      sass
       sinatra
       thor (~> 0.15.2)
       zendesk_apps_support
@@ -53,7 +52,6 @@ GEM
     rspec-expectations (2.12.0)
       diff-lcs (~> 1.1.3)
     rubyzip (0.9.9)
-    sass (3.2.3)
     sinatra (1.3.3)
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
