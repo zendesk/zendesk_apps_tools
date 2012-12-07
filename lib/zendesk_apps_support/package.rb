@@ -3,6 +3,8 @@ require 'pathname'
 module ZendeskAppsSupport
   class Package
 
+    DEFAULT_SCSS   = File.read(File.expand_path('../default_styles.scss', __FILE__))
+
     attr_reader :root
 
     def initialize(dir)
@@ -25,6 +27,25 @@ module ZendeskAppsSupport
 
     def translation_files
       files.select { |f| f =~ /^translations\// }
+    end
+
+    def compiled_templates(app_id, url_prefix)
+      css_file = File.join(root, "app.css")
+      customer_css = File.exist?(css_file) ? File.read(css_file) : ""
+      compiled_css = ZendeskAppsSupport::StylesheetCompiler.new(DEFAULT_SCSS + customer_css, app_id, url_prefix).compile
+
+      templates = begin
+        Dir["#{root.to_path}/app/templates/*.hdbs"].inject({}) do |h, file|
+          str = File.read(file)
+          str.chomp!
+          h[File.basename(file, File.extname(file))] = str
+          h
+        end
+      end
+
+      templates.tap do |templates|
+        templates['layout'] = "<style>\n#{compiled_css}</style>\n#{templates['layout']}"
+      end
     end
 
     private

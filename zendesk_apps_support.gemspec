@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'i18n'
   s.add_runtime_dependency 'multi_json'
+  s.add_runtime_dependency 'sass'
   s.add_runtime_dependency 'jshintrb',    '0.1.6'
 
   s.add_development_dependency 'rspec'
