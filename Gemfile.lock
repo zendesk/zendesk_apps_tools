@@ -2,8 +2,10 @@ PATH
   remote: .
   specs:
     zendesk_apps_support (0.0.1)
+      erubis
       i18n
       jshintrb (= 0.1.6)
+      json
       multi_json
       sass
 
@@ -11,6 +13,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.1.3)
+    erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
     i18n (0.6.1)
@@ -18,6 +21,7 @@ GEM
       execjs
       multi_json (>= 1.3)
       rake
+    json (1.7.5)
     multi_json (1.4.0)
     rake (10.0.2)
     rspec (2.12.0)

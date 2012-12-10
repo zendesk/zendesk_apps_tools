@@ -1,0 +1,24 @@
+(function() {
+    with( require('apps/framework/app_scope') ) {
+
+        var source = <%= source %>;
+
+        ZendeskApps[<%= name.to_json %>] = ZendeskApps.defineApp(source)
+                .reopenClass({ location: <%= location.to_json %> })
+                .reopen({
+                    assetUrlPrefix: <%= asset_url_prefix.to_json %>,
+                    appClassName: <%= app_class_name.to_json %>,
+                    author: {
+                        name: <%= author['name'].to_json %>,
+                        email: <%= author['email'].to_json %>
+                    },
+                    translations: <%= translations.to_json %>,
+                    templates: <%= templates.to_json %>,
+                    frameworkVersion: <%= framework_version.to_json %>
+                });
+
+    }
+
+    ZendeskApps[<%= name.to_json %>].install({"id":0,"app_id":0,"settings": <%= settings.to_json %>});
+
+}());
