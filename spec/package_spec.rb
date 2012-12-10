@@ -61,7 +61,7 @@ describe ZendeskAppsSupport::Package do
 
     }
 
-    ZendeskApps["ABC"].install({"id":0,"app_id":0,"settings": {}});
+    ZendeskApps["ABC"].install({"id":0,"app_id":0,"settings": {\"title\":\"ABC\"}});
 
 }());
 HERE

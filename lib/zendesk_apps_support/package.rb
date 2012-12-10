@@ -46,6 +46,7 @@ module ZendeskAppsSupport
       if settings.empty? && manifest["parameters"]
         manifest["parameters"].select {|param| param["default"]} .each {|param| settings[param["name"]] = param["default"]}
       end
+      settings["title"] = name
 
       SRC_TEMPLATE.result(
           :name => name,
