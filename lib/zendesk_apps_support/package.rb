@@ -39,7 +39,7 @@ module ZendeskAppsSupport
       location = manifest["location"]
       app_class_name = "app-#{app_id}"
       author = manifest["author"]
-      translations = {"app" => {}}
+      translations = JSON.parse(File.read(File.join(root, "translations/en.json")))
       framework_version = manifest["frameworkVersion"]
       templates = compiled_templates(app_id, asset_url_prefix)
 
