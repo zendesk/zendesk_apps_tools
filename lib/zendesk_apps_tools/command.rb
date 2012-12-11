@@ -12,17 +12,6 @@ module ZendeskAppsTools
     
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
-    @@path = './'
-    @@port = 4567
-
-    def self.path
-      @@path
-    end
-
-    def self.port
-      @@port
-    end
-
     desc "new", "Generate a new app"
     def new
       puts "Enter this app author's name:"
@@ -103,14 +92,17 @@ module ZendeskAppsTools
       end
     end
 
+    DEFAULT_SERVER_PATH = "./"
+    DEFAULT_SERVER_PORT = 4567
+
     desc "server", "Run a http server"
-    method_option :path, :default => @@path, :required => false
-    method_option :port, :default => @@port, :required => false
+    method_option :path, :default => DEFAULT_SERVER_PATH, :required => false
+    method_option :port, :default => DEFAULT_SERVER_PORT, :required => false
     def server
-      @@path = options[:path]
-      @@port = options[:port]
-      setup_path(options[:path])
       require 'zendesk_apps_tools/server'
+      ZendeskAppsTools::Server.set :port, options[:port]
+      ZendeskAppsTools::Server.set :root, options[:path]
+      ZendeskAppsTools::Server.run!
     end
 
     protected
