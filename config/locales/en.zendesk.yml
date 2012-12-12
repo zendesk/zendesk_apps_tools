@@ -1,0 +1,38 @@
+# This file is contains translations in Zendesk's custom format. The rake task
+# `i18n:standardize` will generate a version that is compatible with the i18n
+# gem (and thus Rails). Both versions should be checked in.
+title: "Apps Support"
+
+parts:
+  - translation:
+      key: "txt.apps.admin.error.app_build.jshint_errors.one"
+      title: "App builder job: JSHint error message"
+      value: "JSHint error in %{file}: %{errors}"
+  - translation:
+      key: "txt.apps.admin.error.app_build.jshint_errors.other"
+      title: "App builder job: JSHint error messages"
+      value: "JSHint errors in %{file}: %{errors}"
+  - translation:
+      key: "txt.apps.admin.error.app_build.manifest_not_json"
+      title: "App builder job: manifest is invalid JSON error"
+      value: "manifest is not proper JSON. %{errors}"
+  - translation:
+      key: "txt.apps.admin.error.app_build.missing_manifest"
+      title: "App builder job: missing manifest error"
+      value: "Could not find manifest.json"
+  - translation:
+      key: "txt.apps.admin.error.app_build.missing_manifest_keys.one"
+      title: "App builder job: missing manifest fields error"
+      value: "Missing required field in manifest: %{missing_keys}"
+  - translation:
+      key: "txt.apps.admin.error.app_build.missing_manifest_keys.other"
+      title: "App builder job: missing manifest fields error"
+      value: "Missing required fields in manifest: %{missing_keys}"
+  - translation:
+      key: "txt.apps.admin.error.app_build.missing_source"
+      title: "App builder job: missing app.js error"
+      value: "Could not find app.js"
+  - translation:
+      key: "txt.apps.admin.error.app_build.style_in_template"
+      title: "App builder job: <style> tags in template error"
+      value: "<style> tag in %{template}. Use an app.css file instead."
