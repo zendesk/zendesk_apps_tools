@@ -36,3 +36,19 @@ parts:
       key: "txt.apps.admin.error.app_build.style_in_template"
       title: "App builder job: <style> tags in template error"
       value: "<style> tag in %{template}. Use an app.css file instead."
+  - translation:
+      key: "txt.apps.admin.error.app_build.invalid_default_locale"
+      title: "App builder job: invalid default locale"
+      value: "%{defaultLocale} is not a valid defaultLocale. Only two- and three-letter ISO 639 language codes are allowed."
+  - translation:
+      key: "txt.apps.admin.error.app_build.translation.invalid_locale"
+      title: "App builder job: invalid locale file name"
+      value: "%{file} is not a valid locale. Only two- and three-letter ISO 639 language codes are allowed."
+  - translation:
+      key: "txt.apps.admin.error.app_build.translation.not_json"
+      title: "App builder job: translation file is invalid json"
+      value: "%{file} is not valid JSON. %{errors}"
+  - translation:
+      key: "txt.apps.admin.error.app_build.translation.not_json_object"
+      title: "App builder job: translation file is not a JSON object"
+      value: "%{file} is not a JSON object."
