@@ -102,21 +102,7 @@ module ZendeskAppsTools
       setup_path(options[:path])
       manifest = app_package.manifest_json
 
-      parameters = {}
-      manifest[:parameters] && manifest[:parameters].each do |param|
-        if param[:required]
-          puts "Enter a value for mandatory parameter '#{param[:name]}':"
-          input = get_value_from_stdin(/.+/, 'Invalid, try again:')
-        else
-          puts "Enter a value for non-mandatory parameter '#{param[:name]}': (press 'Return' to skip)"
-          input = $stdin.readline.chomp.strip
-        end
-
-        unless input.empty?
-          input = (input =~ /^(true|t|yes|y|1)$/i) if param[:type] == 'checkbox'
-          parameters[param[:name]] = input
-        end
-      end
+      settings = settings_for_parameters(manifest[:parameters])
 
       require 'zendesk_apps_tools/server'
       ZendeskAppsTools::Server.tap do |server|
@@ -157,6 +143,27 @@ module ZendeskAppsTools
 
     def app_package
       @app_package ||= Package.new(self.app_dir.join('app').to_path)
+    end
+
+    def settings_for_parameters(parameters)
+      return {} if parameters.nil?
+
+      parameters.inject({}) do |settings, param|
+        if param[:required]
+          puts "Enter a value for required parameter '#{param[:name]}':"
+          input = get_value_from_stdin(/\S+/, 'Invalid, try again:')
+        else
+          puts "Enter a value for optional parameter '#{param[:name]}': (press 'Return' to skip)"
+          input = $stdin.readline.chomp.strip
+        end
+
+        unless input.empty?
+          input = (input =~ /^(true|t|yes|y|1)$/i) if param[:type] == 'checkbox'
+          settings[param[:name]] = input
+        end
+
+        settings
+      end
     end
   end
 end
