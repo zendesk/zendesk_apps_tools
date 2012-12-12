@@ -9,7 +9,7 @@ module ZendeskAppsTools
 
     include Thor::Actions
     include ZendeskAppsSupport
-    
+
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
     desc "new", "Generate a new app"
@@ -71,7 +71,7 @@ module ZendeskAppsTools
 
       Zip::ZipFile.open(archive_path, 'w') do |zipfile|
         app_package.files.each do |file|
-          say_status "package",  "adding #{file.relative_path}"
+          say_status "package", "adding #{file.relative_path}"
           zipfile.add(file.relative_path, app_dir.join('app', file.relative_path).to_path)
         end
       end
@@ -89,6 +89,27 @@ module ZendeskAppsTools
 
       inside(self.tmp_dir) do
         FileUtils.rm(Dir["app-*.*", ".*"] - ['.', '..'])
+      end
+    end
+
+    DEFAULT_SERVER_PATH = "./"
+    DEFAULT_SERVER_PORT = 4567
+
+    desc "server", "Run a http server"
+    method_option :path, :default => DEFAULT_SERVER_PATH, :required => false
+    method_option :port, :default => DEFAULT_SERVER_PORT, :required => false
+    def server
+      setup_path(options[:path])
+      manifest = app_package.manifest_json
+
+      settings = settings_for_parameters(manifest[:parameters])
+
+      require 'zendesk_apps_tools/server'
+      ZendeskAppsTools::Server.tap do |server|
+        server.set :port, options[:port]
+        server.set :root, options[:path]
+        server.set :parameters, parameters
+        server.run!
       end
     end
 
@@ -122,6 +143,27 @@ module ZendeskAppsTools
 
     def app_package
       @app_package ||= Package.new(self.app_dir.join('app').to_path)
+    end
+
+    def settings_for_parameters(parameters)
+      return {} if parameters.nil?
+
+      parameters.inject({}) do |settings, param|
+        if param[:required]
+          puts "Enter a value for required parameter '#{param[:name]}':"
+          input = get_value_from_stdin(/\S+/, 'Invalid, try again:')
+        else
+          puts "Enter a value for optional parameter '#{param[:name]}': (press 'Return' to skip)"
+          input = $stdin.readline.chomp.strip
+        end
+
+        unless input.empty?
+          input = (input =~ /^(true|t|yes|y|1)$/i) if param[:type] == 'checkbox'
+          settings[param[:name]] = input
+        end
+
+        settings
+      end
     end
   end
 end
