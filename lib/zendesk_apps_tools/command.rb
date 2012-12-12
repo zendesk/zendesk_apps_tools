@@ -119,10 +119,12 @@ module ZendeskAppsTools
       end
 
       require 'zendesk_apps_tools/server'
-      ZendeskAppsTools::Server.set :port, options[:port]
-      ZendeskAppsTools::Server.set :root, options[:path]
-      ZendeskAppsTools::Server.set :parameters, parameters
-      ZendeskAppsTools::Server.run!
+      ZendeskAppsTools::Server.tap do |server|
+        server.set :port, options[:port]
+        server.set :root, options[:path]
+        server.set :parameters, parameters
+        server.run!
+      end
     end
 
     protected
