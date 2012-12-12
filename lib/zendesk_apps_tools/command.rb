@@ -113,7 +113,7 @@ module ZendeskAppsTools
         end
 
         unless input.empty?
-          input = (input =~ /^(true|t|yes|y|1)$/i) ? true : false if param[:type] == 'checkbox'
+          input = (input =~ /^(true|t|yes|y|1)$/i) if param[:type] == 'checkbox'
           parameters[param[:name]] = input
         end
       end
