@@ -32,6 +32,10 @@ module ZendeskAppsSupport
       files.select { |f| f =~ /^translations\// }
     end
 
+    def manifest_json
+      JSON.parse(File.read(File.join(root, "manifest.json")), :symbolize_names => true)
+    end
+
     def readified_js(app_name, app_id, asset_url_prefix, settings={})
       manifest = JSON.parse(File.read(File.join(root, "manifest.json")))
       source = File.read(File.join(root, "app.js"))
@@ -43,9 +47,6 @@ module ZendeskAppsSupport
       framework_version = manifest["frameworkVersion"]
       templates = compiled_templates(app_id, asset_url_prefix)
 
-      if settings.empty? && manifest["parameters"]
-        manifest["parameters"].select {|param| param["default"]} .each {|param| settings[param["name"]] = param["default"]}
-      end
       settings["title"] = name
 
       SRC_TEMPLATE.result(

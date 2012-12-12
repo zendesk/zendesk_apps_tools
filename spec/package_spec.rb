@@ -24,6 +24,19 @@ describe ZendeskAppsSupport::Package do
     end
   end
 
+  describe 'manifest_json' do
+    it 'should return manifest json' do
+      manifest = @package.manifest_json
+      manifest[:name].should == 'ABC'
+      manifest[:author][:name].should == 'John Smith'
+      manifest[:author][:email].should == 'john@example.com'
+      manifest[:defaultLocale].should == 'en'
+      manifest[:private].should == true
+      manifest[:location].should == 'ticket_sidebar'
+      manifest[:frameworkVersion].should == '0.5'
+    end
+  end
+
   describe 'readified_js' do
     it 'should generate js ready for installation' do
       js = @package.readified_js(nil, 0, 'http://localhost:4567')
