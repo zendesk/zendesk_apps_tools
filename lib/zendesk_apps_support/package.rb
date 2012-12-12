@@ -17,7 +17,8 @@ module ZendeskAppsSupport
     def validate
       Validations::Manifest.call(self) +
         Validations::Source.call(self) +
-        Validations::Templates.call(self)
+        Validations::Templates.call(self) +
+        Validations::Translations.call(self)
     end
 
     def files

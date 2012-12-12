@@ -13,19 +13,32 @@ module ZendeskAppsSupport
           return [ ValidationError.new(:missing_manifest) ] unless manifest
 
           manifest = MultiJson.load(manifest.read)
-          missing = missing_keys(manifest)
-          return [ ValidationError.new(:missing_manifest_keys, :missing_keys => missing.join(', '), :count => missing.length) ] if missing.any?
 
-          []
+          [].tap do |errors|
+            errors << missing_keys_error(manifest)
+            errors << default_locale_error(manifest)
+            errors.compact!
+          end
         rescue MultiJson::DecodeError => e
           return [ ValidationError.new(:manifest_not_json, :errors => e) ]
         end
 
         private
 
-        def missing_keys(manifest)
-          REQUIRED_MANIFEST_FIELDS.select do |key|
+        def missing_keys_error(manifest)
+          missing = REQUIRED_MANIFEST_FIELDS.select do |key|
             manifest[key].nil?
+          end
+
+          if missing.any?
+            ValidationError.new(:missing_manifest_keys, :missing_keys => missing.join(', '), :count => missing.length)
+          end
+        end
+
+        def default_locale_error(manifest)
+          default_locale = manifest['defaultLocale']
+          if !default_locale.nil? && default_locale !~ /^[a-z]{2,3}$/
+            ValidationError.new(:invalid_default_locale, :defaultLocale => default_locale)
           end
         end
 
