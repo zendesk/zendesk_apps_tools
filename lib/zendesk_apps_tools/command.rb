@@ -9,7 +9,7 @@ module ZendeskAppsTools
 
     include Thor::Actions
     include ZendeskAppsSupport
-    
+
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
     desc "new", "Generate a new app"
@@ -71,7 +71,7 @@ module ZendeskAppsTools
 
       Zip::ZipFile.open(archive_path, 'w') do |zipfile|
         app_package.files.each do |file|
-          say_status "package",  "adding #{file.relative_path}"
+          say_status "package", "adding #{file.relative_path}"
           zipfile.add(file.relative_path, app_dir.join('app', file.relative_path).to_path)
         end
       end
@@ -99,9 +99,29 @@ module ZendeskAppsTools
     method_option :path, :default => DEFAULT_SERVER_PATH, :required => false
     method_option :port, :default => DEFAULT_SERVER_PORT, :required => false
     def server
+      setup_path(options[:path])
+      manifest = app_package.manifest_json
+
+      parameters = {}
+      manifest[:parameters] && manifest[:parameters].each do |param|
+        if param[:required]
+          puts "Enter a value for mandatory parameter '#{param[:name]}':"
+          input = get_value_from_stdin(/.+/, 'Invalid, try again:')
+        else
+          puts "Enter a value for non-mandatory parameter '#{param[:name]}': (press 'Return' to skip)"
+          input = $stdin.readline.chomp.strip
+        end
+
+        unless input.empty?
+          input = (input =~ /^(true|t|yes|y|1)$/i) ? true : false if param[:type] == 'checkbox'
+          parameters[param[:name]] = input
+        end
+      end
+
       require 'zendesk_apps_tools/server'
       ZendeskAppsTools::Server.set :port, options[:port]
       ZendeskAppsTools::Server.set :root, options[:path]
+      ZendeskAppsTools::Server.set :parameters, parameters
       ZendeskAppsTools::Server.run!
     end
 
