@@ -9,8 +9,8 @@
                     assetUrlPrefix: <%= asset_url_prefix.to_json %>,
                     appClassName: <%= app_class_name.to_json %>,
                     author: {
-                        name: <%= author['name'].to_json %>,
-                        email: <%= author['email'].to_json %>
+                        name: <%= author[:name].to_json %>,
+                        email: <%= author[:email].to_json %>
                     },
                     translations: <%= translations.to_json %>,
                     templates: <%= templates.to_json %>,
@@ -19,6 +19,6 @@
 
     }
 
-    ZendeskApps[<%= name.to_json %>].install({"id":0,"app_id":0,"settings": <%= settings.to_json %>});
+    ZendeskApps[<%= name.to_json %>].install({"id": <%= app_id %>, "app_id": <%= app_id %>, "settings": <%= settings.to_json %>});
 
 }());
