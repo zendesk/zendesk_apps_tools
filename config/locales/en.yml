@@ -11,3 +11,4 @@ en:
         other: "Missing required fields in manifest: %{missing_keys}"
       missing_source: "Could not find app.js"
       style_in_template: "<style> tag in %{template}. Use an app.css file instead."
+      invalid_default_locale: "%{defaultLocale} is not a valid defaultLocale. Only two- or three-letter ISO 639 language codes are allowed."

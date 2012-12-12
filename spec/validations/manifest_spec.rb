@@ -1,4 +1,5 @@
 require 'zendesk_apps_support'
+require 'json'
 
 describe ZendeskAppsSupport::Validations::Manifest do
 
@@ -16,6 +17,16 @@ describe ZendeskAppsSupport::Validations::Manifest do
     errors = ZendeskAppsSupport::Validations::Manifest.call(package)
 
     errors.first().to_s.should eql 'Missing required fields in manifest: author, defaultLocale, location, frameworkVersion'
+  end
+
+  it 'should have an error when the defaultLocale is invalid' do
+    manifest = { 'defaultLocale' => 'pt-BR' }
+    manifest_file = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(manifest))
+    package = mock('Package', :files => [manifest_file])
+    errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+
+    locale_error = errors.find { |e| e.to_s =~ /defaultLocale/ }
+    locale_error.should_not be_nil
   end
 
   it 'should have an error when manifest is not a valid json' do
