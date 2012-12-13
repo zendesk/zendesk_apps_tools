@@ -31,7 +31,6 @@ module ZendeskAppsTools
       while @app_dir = $stdin.readline.chomp.strip do
         @app_dir = './' and break if @app_dir.empty?
         if !File.exists?(@app_dir)
-          FileUtils.mkdir_p(@app_dir)
           break
         elsif !File.directory?(@app_dir)
           puts "Invalid dir, try again:"
