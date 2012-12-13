@@ -108,7 +108,7 @@ module ZendeskAppsTools
       ZendeskAppsTools::Server.tap do |server|
         server.set :port, options[:port]
         server.set :root, options[:path]
-        server.set :parameters, parameters
+        server.set :parameters, settings
         server.run!
       end
     end
