@@ -1,11 +1,16 @@
 require "thor"
 require 'zip/zip'
 require 'pathname'
+require 'net/http'
+require 'json'
 
 module ZendeskAppsTools
   require 'zendesk_apps_support'
 
   class Command < Thor
+
+    ZENDESK_URL = "http://support.zendesk.com"
+    TARGET_ZAM_FRAMEWORK = "0.5"
 
     include Thor::Actions
     include ZendeskAppsSupport
@@ -42,6 +47,14 @@ module ZendeskAppsTools
     desc "validate", "Validate your app"
     method_option :path, :default => './', :required => false
     def validate
+      url = URI.parse(ZENDESK_URL)
+      response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
+      version = JSON.parse(response.body, :symbolize_names => true)
+      if TARGET_ZAM_FRAMEWORK != version[:current]
+        puts '!!! This tool is out of date. Please upgrade.'
+        exit 1
+      end
+
       setup_path(options[:path])
       errors = app_package.validate
       valid = errors.none?
