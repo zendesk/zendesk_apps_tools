@@ -3,7 +3,7 @@ require 'zendesk_apps_support'
 describe ZendeskAppsSupport::AppFile do
 
   before do
-    package = mock('Package', :root => Pathname("spec/template/app/templates/"))
+    package = mock('Package', :root => Pathname("spec/app/templates/"))
     @file = ZendeskAppsSupport::AppFile.new(package, 'layout.hdbs')
   end
 
