@@ -9,7 +9,7 @@ module ZendeskAppsTools
 
   class Command < Thor
 
-    ZENDESK_URL = "http://support.zendesk.com"
+    DEFAULT_ZENDESK_URL = "http://support.zendesk.com"
     TARGET_ZAM_FRAMEWORK = "0.5"
 
     include Thor::Actions
@@ -47,7 +47,10 @@ module ZendeskAppsTools
     desc "validate", "Validate your app"
     method_option :path, :default => './', :required => false
     def validate
-      url = URI.parse(ZENDESK_URL)
+      puts "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):"
+      zendesk = get_value_from_stdin(/^http:\/\/\w+\.\w+|^$/, 'Invalid url, try again:')
+      zendesk = DEFAULT_ZENDESK_URL if zendesk.empty?
+      url = URI.parse(zendesk)
       response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
       version = JSON.parse(response.body, :symbolize_names => true)
       if TARGET_ZAM_FRAMEWORK != version[:current]
@@ -130,7 +133,7 @@ module ZendeskAppsTools
 
     def get_value_from_stdin(valid_regex, error_msg)
       while input = $stdin.readline.chomp.strip do
-        if input.empty? || !(input =~ valid_regex)
+        unless input =~ valid_regex
           puts error_msg
         else
           break
