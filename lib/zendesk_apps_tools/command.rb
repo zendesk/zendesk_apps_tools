@@ -10,7 +10,6 @@ module ZendeskAppsTools
   class Command < Thor
 
     DEFAULT_ZENDESK_URL = "http://support.zendesk.com"
-    TARGET_ZAM_FRAMEWORK = "0.5"
 
     include Thor::Actions
     include ZendeskAppsSupport
@@ -53,7 +52,7 @@ module ZendeskAppsTools
       url = URI.parse(zendesk)
       response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
       version = JSON.parse(response.body, :symbolize_names => true)
-      if TARGET_ZAM_FRAMEWORK != version[:current]
+      if ZendeskAppsSupport::ZAM_VERSION != version[:current]
         puts 'This tool is using an out of date Zendesk App Framework. Please upgrade!'
         exit 1
       end
