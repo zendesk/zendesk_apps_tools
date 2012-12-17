@@ -1,4 +1,5 @@
 module ZendeskAppsSupport
+  ZAM_VERSION = '0.5'
   require 'zendesk_apps_support/sass_functions'
   autoload :AppFile,    'zendesk_apps_support/app_file'
   autoload :I18n,       'zendesk_apps_support/i18n'
