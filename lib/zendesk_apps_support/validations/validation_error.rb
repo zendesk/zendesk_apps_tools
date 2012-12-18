@@ -21,8 +21,8 @@ module ZendeskAppsSupport
           klass = constantize(hash['class'])
           raise DeserializationError.new(json) unless klass <= self
           klass.vivify(hash)
-        # rescue MultiJson::DecodeError, NameError
-          # raise DeserializationError.new(json)
+        rescue MultiJson::DecodeError, NameError
+          raise DeserializationError.new(json)
         end
 
         # Turn a Hash into a ValidationError. Used within deserialize.
