@@ -15,7 +15,7 @@ module ZendeskAppsSupport
       class << self
 
         # Turn a JSON string into a ValidationError.
-        def deserialize(json)
+        def from_json(json)
           hash = MultiJson.decode(json)
           raise DeserializationError.new(json) unless hash.is_a?(Hash)
           klass = constantize(hash['class'])
@@ -25,7 +25,7 @@ module ZendeskAppsSupport
           raise DeserializationError.new(json)
         end
 
-        # Turn a Hash into a ValidationError. Used within deserialize.
+        # Turn a Hash into a ValidationError. Used within from_json.
         def vivify(hash)
           new(hash['key'], hash['data'])
         end
@@ -47,7 +47,7 @@ module ZendeskAppsSupport
         ZendeskAppsSupport::I18n.t("#{KEY_PREFIX}#{key}", data)
       end
 
-      def serialize
+      def to_json
         MultiJson.encode(as_json)
       end
 

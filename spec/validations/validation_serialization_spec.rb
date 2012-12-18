@@ -3,11 +3,11 @@ require 'json'
 
 describe ZendeskAppsSupport::Validations::ValidationError do
 
-  describe '#serialize' do
+  describe '#to_json' do
     let(:key)   { 'foo.bar' }
     let(:data)  { { 'baz' => 'quux' } }
     let(:error) { ZendeskAppsSupport::Validations::ValidationError.new(key, data) }
-    subject     { error.serialize }
+    subject     { error.to_json }
 
     it do
       should == {
@@ -18,12 +18,12 @@ describe ZendeskAppsSupport::Validations::ValidationError do
     end
   end
 
-  describe '.deserialize' do
+  describe '.from_json' do
 
-    subject { ZendeskAppsSupport::Validations::ValidationError.deserialize(serialized) }
+    subject { ZendeskAppsSupport::Validations::ValidationError.from_json(json) }
 
     context 'for a generic error' do
-      let(:serialized) do
+      let(:json) do
         {
           'class' => 'ZendeskAppsSupport::Validations::ValidationError',
           'key'   => 'foo.bar.baz',
@@ -39,7 +39,7 @@ describe ZendeskAppsSupport::Validations::ValidationError do
     end
 
     context 'for a JSHint error' do
-      let(:serialized) do
+      let(:json) do
         {
           'class'         => 'ZendeskAppsSupport::Validations::JSHintValidationError',
           'file'          => 'foo.js',
