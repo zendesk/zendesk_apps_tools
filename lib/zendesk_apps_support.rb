@@ -1,9 +1,11 @@
 module ZendeskAppsSupport
-  ZAM_VERSION = '0.5'
+
   require 'zendesk_apps_support/sass_functions'
+
   autoload :AppFile,    'zendesk_apps_support/app_file'
   autoload :I18n,       'zendesk_apps_support/i18n'
   autoload :Package,    'zendesk_apps_support/package'
+  autoload :AppVersion,    'zendesk_apps_support/app_version'
   autoload :StylesheetCompiler,    'zendesk_apps_support/stylesheet_compiler'
 
   module Validations
