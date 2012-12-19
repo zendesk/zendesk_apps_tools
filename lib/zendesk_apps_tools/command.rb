@@ -52,7 +52,7 @@ module ZendeskAppsTools
       url = URI.parse(zendesk)
       response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
       version = JSON.parse(response.body, :symbolize_names => true)
-      if ZendeskAppsSupport::ZAM_VERSION != version[:current]
+      if ZendeskAppsSupport::AppVersion::CURRENT != version[:current]
         puts 'This tool is using an out of date Zendesk App Framework. Please upgrade!'
         exit 1
       end
