@@ -56,7 +56,7 @@ module ZendeskAppsSupport
         MultiJson.encode(as_json)
       end
 
-      def as_json
+      def as_json(*options)
         {
           'class' => self.class.to_s,
           'key'   => key,
@@ -82,7 +82,7 @@ module ZendeskAppsSupport
         })
       end
 
-      def as_json
+      def as_json(*options)
         {
           'class' => self.class.to_s,
           'filename' => filename,
