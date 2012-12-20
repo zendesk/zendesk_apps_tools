@@ -52,7 +52,7 @@ module ZendeskAppsSupport
         ZendeskAppsSupport::I18n.t("#{KEY_PREFIX}#{key}", data)
       end
 
-      def to_json
+      def to_json(*options)
         MultiJson.encode(as_json)
       end
 
