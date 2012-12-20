@@ -7,8 +7,8 @@ module ZendeskAppsSupport
       KEY_PREFIX = 'txt.apps.admin.error.app_build.'.freeze
 
       class DeserializationError < StandardError
-        def initialize(json)
-          super "Cannot deserialize ValidationError from #{json}"
+        def initialize(serialized)
+          super "Cannot deserialize ValidationError from #{serialized}"
         end
       end
 
@@ -18,11 +18,16 @@ module ZendeskAppsSupport
         def from_json(json)
           hash = MultiJson.decode(json)
           raise DeserializationError.new(json) unless hash.is_a?(Hash)
-          klass = constantize(hash['class'])
-          raise DeserializationError.new(json) unless klass <= self
-          klass.vivify(hash)
+          from_hash(hash)
         rescue MultiJson::DecodeError, NameError
           raise DeserializationError.new(json)
+        end
+
+        def from_hash(hash)
+          raise DeserializationError.new(hash) unless hash['class']
+          klass = constantize(hash['class'])
+          raise DeserializationError.new(hash) unless klass <= self
+          klass.vivify(hash)
         end
 
         # Turn a Hash into a ValidationError. Used within from_json.
@@ -33,7 +38,7 @@ module ZendeskAppsSupport
         private
 
         def constantize(klass)
-          klass.split('::').inject(Object) { |klass, part| klass = klass.const_get(part) }
+          klass.to_s.split('::').inject(Object) { |klass, part| klass = klass.const_get(part) }
         end
       end
 
