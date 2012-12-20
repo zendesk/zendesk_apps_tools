@@ -53,7 +53,7 @@ module ZendeskAppsSupport
       @version
     end
 
-    def to_json
+    def to_json(*options)
       MultiJson.encode(@version)
     end
 
