@@ -5,6 +5,11 @@ describe ZendeskAppsSupport::Validations::ValidationError do
 
   ValidationError = ZendeskAppsSupport::Validations::ValidationError
 
+  it 'symbolizes the keys in its data' do
+    error = ValidationError.new(:foo, 'bar' => 'baz')
+    error.data[:bar].should == 'baz'
+  end
+
   describe '#to_json' do
     let(:key)   { 'foo.bar' }
     let(:data)  { { 'baz' => 'quux' } }
@@ -37,7 +42,8 @@ describe ZendeskAppsSupport::Validations::ValidationError do
 
       its(:key) { should == 'foo.bar.baz' }
 
-      its(:data) { should == { 'quux' => 'yargle' } }
+      its(:data) { should == { :quux => 'yargle' } }
+      its(:data) { should}
     end
 
     context 'for a JSHint error' do

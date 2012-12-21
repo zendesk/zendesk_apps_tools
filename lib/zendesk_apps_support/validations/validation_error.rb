@@ -45,7 +45,7 @@ module ZendeskAppsSupport
       attr_reader :key, :data
 
       def initialize(key, data = nil)
-        @key, @data = key, data || {}
+        @key, @data = key, symbolize_keys(data || {})
       end
 
       def to_s
@@ -62,6 +62,15 @@ module ZendeskAppsSupport
           'key'   => key,
           'data'  => data
         }
+      end
+
+      private
+
+      def symbolize_keys(hash)
+        hash.inject({}) do |result, (key, value)|
+          result[key.to_sym] = value
+          result
+        end
       end
     end
 
