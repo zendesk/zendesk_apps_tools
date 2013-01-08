@@ -25,7 +25,7 @@ module ZendeskAppsSupport
 
           jshint_errors = linter.lint(source.read)
           if jshint_errors.any?
-            [ JSHintValidationError.new(source.relative_path, jshint_error) ]
+            [ JSHintValidationError.new(source.relative_path, jshint_errors) ]
           else
             []
           end
