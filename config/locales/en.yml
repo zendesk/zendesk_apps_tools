@@ -6,7 +6,7 @@ en:
       admin:
         error:
           app_build:
-            jshint_errors:
+            jshint_error:
               one: ! 'JSHint error in %{file}: %{errors}'
               other: ! 'JSHint errors in %{file}: %{errors}'
             manifest_not_json: manifest is not proper JSON. %{errors}

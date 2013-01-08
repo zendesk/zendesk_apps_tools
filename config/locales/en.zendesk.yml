@@ -5,11 +5,11 @@ title: "Apps Support"
 
 parts:
   - translation:
-      key: "txt.apps.admin.error.app_build.jshint_errors.one"
+      key: "txt.apps.admin.error.app_build.jshint_error.one"
       title: "App builder job: JSHint error message"
       value: "JSHint error in %{file}: %{errors}"
   - translation:
-      key: "txt.apps.admin.error.app_build.jshint_errors.other"
+      key: "txt.apps.admin.error.app_build.jshint_error.other"
       title: "App builder job: JSHint error messages"
       value: "JSHint errors in %{file}: %{errors}"
   - translation:
