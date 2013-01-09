@@ -1,6 +1,7 @@
 module ZendeskAppsSupport
 
   require 'zendesk_apps_support/sass_functions'
+  require 'zendesk_apps_support/engine'
 
   autoload :AppFile,    'zendesk_apps_support/app_file'
   autoload :I18n,       'zendesk_apps_support/i18n'
@@ -17,4 +18,3 @@ module ZendeskAppsSupport
     autoload :JSHintValidationError, 'zendesk_apps_support/validations/validation_error'
   end
 end
-
