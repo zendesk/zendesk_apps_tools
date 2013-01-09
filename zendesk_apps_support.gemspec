@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "zendesk_apps_support"
-  s.version     = "0.2.5"
+  s.version     = "0.2.6"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["James A. Rosen", "Kenshiro Nakagawa", "Shajith Chacko"]
   s.email       = ["dev@zendesk.com"]
