@@ -18,7 +18,7 @@ end
 
 require 'pathname'
 project_root = Pathname.new(File.dirname(__FILE__))
-zendesk_i18n_file = project_root.join('config/locales/en.zendesk.yml')
+zendesk_i18n_file = project_root.join('config/locales/translations/zendesk_apps_support.yml')
 standard_i18n_file = project_root.join('config/locales/en.yml')
 
 file standard_i18n_file => zendesk_i18n_file do |task|
