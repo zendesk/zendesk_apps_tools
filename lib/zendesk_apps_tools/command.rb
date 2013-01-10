@@ -101,9 +101,7 @@ module ZendeskAppsTools
 
       return unless File.exists?(Pathname.new(File.join(app_dir, "tmp")).to_path)
 
-      inside(self.tmp_dir) do
-        FileUtils.rm(Dir["app-*.*", ".*"] - ['.', '..'])
-      end
+      FileUtils.rm(Dir["#{tmp_dir}/app-*.zip"])
     end
 
     DEFAULT_SERVER_PATH = "./"
