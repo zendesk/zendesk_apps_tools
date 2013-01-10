@@ -87,12 +87,14 @@ module ZendeskAppsSupport
     end
 
     def non_tmp_files
-      Dir[ root.join('**/**') ].each_with_object([]) do |f, files|
+      files = []
+      Dir[ root.join('**/**') ].each do |f|
         next unless File.file?(f)
         relative_file_name = f.sub(/#{root}\/?/, '')
         next if relative_file_name =~ /^tmp\//
         files << AppFile.new(self, relative_file_name)
       end
+      files
     end
   end
 end

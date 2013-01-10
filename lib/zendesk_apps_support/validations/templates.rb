@@ -4,12 +4,14 @@ module ZendeskAppsSupport
 
       class <<self
         def call(package)
-          package.template_files.each_with_object([]) do |template, errors|
+          errors = []
+          package.template_files.each do |template|
             contents = template.read
             if contents =~ /<\s*style\b/
               errors << ValidationError.new(:style_in_template, :template => template.relative_path)
             end
           end
+          errors
         end
       end
 
