@@ -57,7 +57,7 @@ describe ZendeskAppsSupport::Validations::ValidationError do
 
       it { should be_a(ZendeskAppsSupport::Validations::JSHintValidationError) }
 
-      its(:key) { should == :jshint_error }
+      its(:key) { should == :jshint }
 
       its(:jshint_errors) do
         should == [ { 'line' => 55, 'reason' => 'Yuck' } ]

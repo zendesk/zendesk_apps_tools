@@ -5,11 +5,11 @@ title: "Apps Support"
 
 parts:
   - translation:
-      key: "txt.apps.admin.error.app_build.jshint_error.one"
+      key: "txt.apps.admin.error.app_build.jshint.one"
       title: "App builder job: JSHint error message"
       value: "JSHint error in %{file}: %{errors}"
   - translation:
-      key: "txt.apps.admin.error.app_build.jshint_error.other"
+      key: "txt.apps.admin.error.app_build.jshint.other"
       title: "App builder job: JSHint error messages"
       value: "JSHint errors in %{file}: %{errors}"
   - translation:
@@ -21,11 +21,11 @@ parts:
       title: "App builder job: missing manifest error"
       value: "Could not find manifest.json"
   - translation:
-      key: "txt.apps.admin.error.app_build.missing_manifest_keys.one"
+      key: "txt.apps.admin.error.app_build.manifest_keys.missing.one"
       title: "App builder job: missing manifest fields error"
       value: "Missing required field in manifest: %{missing_keys}"
   - translation:
-      key: "txt.apps.admin.error.app_build.missing_manifest_keys.other"
+      key: "txt.apps.admin.error.app_build.manifest_keys.missing.other"
       title: "App builder job: missing manifest fields error"
       value: "Missing required fields in manifest: %{missing_keys}"
   - translation:

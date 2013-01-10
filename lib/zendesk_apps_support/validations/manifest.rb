@@ -31,7 +31,7 @@ module ZendeskAppsSupport
           end
 
           if missing.any?
-            ValidationError.new(:missing_manifest_keys, :missing_keys => missing.join(', '), :count => missing.length)
+            ValidationError.new('manifest_keys.missing', :missing_keys => missing.join(', '), :count => missing.length)
           end
         end
 
