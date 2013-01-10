@@ -1,11 +1,15 @@
 require "thor"
 require 'zip/zip'
 require 'pathname'
+require 'net/http'
+require 'json'
 
 module ZendeskAppsTools
   require 'zendesk_apps_support'
 
   class Command < Thor
+
+    DEFAULT_ZENDESK_URL = "http://support.zendesk.com"
 
     include Thor::Actions
     include ZendeskAppsSupport
@@ -41,6 +45,17 @@ module ZendeskAppsTools
     desc "validate", "Validate your app"
     method_option :path, :default => './', :required => false
     def validate
+      puts "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):"
+      zendesk = get_value_from_stdin(/^http:\/\/\w+\.\w+|^$/, 'Invalid url, try again:')
+      zendesk = DEFAULT_ZENDESK_URL if zendesk.empty?
+      url = URI.parse(zendesk)
+      response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
+      version = JSON.parse(response.body, :symbolize_names => true)
+      if ZendeskAppsSupport::AppVersion::CURRENT != version[:current]
+        puts 'This tool is using an out of date Zendesk App Framework. Please upgrade!'
+        exit 1
+      end
+
       setup_path(options[:path])
       errors = app_package.validate
       valid = errors.none?
@@ -71,7 +86,7 @@ module ZendeskAppsTools
       Zip::ZipFile.open(archive_path, 'w') do |zipfile|
         app_package.files.each do |file|
           say_status "package", "adding #{file.relative_path}"
-          zipfile.add(file.relative_path, app_dir.join(file.relative_path).to_path)
+          zipfile.add(file.relative_path, app_dir.join(file.relative_path).to_s)
         end
       end
 
@@ -84,11 +99,9 @@ module ZendeskAppsTools
     def clean
       setup_path(options[:path])
 
-      return unless File.exists?(Pathname.new(File.join(app_dir, "tmp")).to_path)
+      return unless File.exists?(Pathname.new(File.join(app_dir, "tmp")).to_s)
 
-      inside(self.tmp_dir) do
-        FileUtils.rm(Dir["app-*.*", ".*"] - ['.', '..'])
-      end
+      FileUtils.rm(Dir["#{tmp_dir}/app-*.zip"])
     end
 
     DEFAULT_SERVER_PATH = "./"
@@ -116,7 +129,7 @@ module ZendeskAppsTools
 
     def get_value_from_stdin(valid_regex, error_msg)
       while input = $stdin.readline.chomp.strip do
-        if input.empty? || !(input =~ valid_regex)
+        unless input =~ valid_regex
           puts error_msg
         else
           break
@@ -141,7 +154,7 @@ module ZendeskAppsTools
     end
 
     def app_package
-      @app_package ||= Package.new(self.app_dir.to_path)
+      @app_package ||= Package.new(self.app_dir.to_s)
     end
 
     def settings_for_parameters(parameters)
