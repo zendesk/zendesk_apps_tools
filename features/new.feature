@@ -2,7 +2,7 @@ Feature: create a template for a new zendesk app
 
   Scenario: create a template for a new zendesk app by running 'zat new' command
     Given an app directory "tmp/aruba" exists
-    When I run "bundle exec bin/zat new" command with the following details:
+    When I run "zat new" command with the following details:
       | author name  | John Citizen      |
       | author email | john@example.com  |
       | app name     | John Test App     |

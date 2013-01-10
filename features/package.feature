@@ -4,15 +4,12 @@ Feature: package a zendesk app into a zip file
     Given an app is created in directory "tmp/aruba"
 
   Scenario: package a zendesk app by running 'zat package' command
-    When I run `zat package`
-    Then the output should contain "validate  OK"
-    And the output should contain "package  adding app.js"
-    And the output should contain "package  adding assets/logo-small.png"
-    And the output should contain "package  adding assets/logo.png"
-    And the output should contain "package  adding manifest.json"
-    And the output should contain "package  adding templates/layout.hdbs"
-    And the output should contain "package  adding translations/en.json"
-    And the output should contain "package  created"
+    When I run the command "zat package --path tmp/aruba" to package the app
+    And the command output should contain "adding app.js"
+    And the command output should contain "adding assets/logo-small.png"
+    And the command output should contain "adding assets/logo.png"
+    And the command output should contain "adding manifest.json"
+    And the command output should contain "adding templates/layout.hdbs"
+    And the command output should contain "adding translations/en.json"
+    And the command output should contain "created"
     And the zip file should exist in directory "tmp/aruba/tmp"
-    And the exit status should be 0
-
