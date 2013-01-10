@@ -7,7 +7,7 @@ end
 Given /^an app is created in directory "(.*?)"$/ do |app_dir|
   steps %Q{
     Given an app directory "#{app_dir}" exists
-    And I run "bundle exec bin/zat new" command with the following details:
+    And I run "zat new" command with the following details:
       | author name  | John Citizen      |
       | author email | john@example.com  |
       | app name     | John Test App     |
@@ -21,6 +21,15 @@ When /^I run "(.*?)" command with the following details:$/ do |cmd, table|
     pipe.puts key["author email"]
     pipe.puts key["app name"]
     pipe.puts @app_dir
+    pipe.close_write
+    @output = pipe.readlines
+    @output.each {|line| puts line}
+  end
+end
+
+When /^I run the command "(.*?)" to (validate|package|clean) the app$/ do |cmd, action|
+  IO.popen(cmd, "w+") do |pipe|
+    pipe.puts "\n"
     pipe.close_write
     @output = pipe.readlines
     @output.each {|line| puts line}
@@ -42,4 +51,13 @@ end
 
 Then /^the zip file in "(.*?)" folder should not exist$/ do |path|
   Dir[path + '/app-*.zip'].size.should == 0
+end
+
+Then /^it should pass the validation$/ do
+  @output.last.should =~ /OK/
+  $?.should == 0
+end
+
+Then /^the command output should contain "(.*?)"$/ do |output|
+  @output.join.should =~ /#{output}/
 end

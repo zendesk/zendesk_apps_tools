@@ -6,12 +6,10 @@ Feature: validate a zendesk app
     Given an app is created in directory "tmp/aruba"
 
   Scenario: valid app
-    When I run `zat validate`
-    Then the output should contain "validate  OK"
-    And the exit status should be 0
+    When I run the command "zat validate --path tmp/aruba" to validate the app
+    Then it should pass the validation
 
   Scenario: invalid app (missing manifest.json
     Given I remove file "tmp/aruba/manifest.json"
-    When I run `zat validate`
-    Then the output should contain "Could not find manifest.json"
-    And the exit status should not be 0
+    When I run the command "zat validate --path tmp/aruba" to validate the app
+    Then the command output should contain "Could not find manifest.json"
