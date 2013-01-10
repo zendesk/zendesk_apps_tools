@@ -86,7 +86,7 @@ module ZendeskAppsTools
       Zip::ZipFile.open(archive_path, 'w') do |zipfile|
         app_package.files.each do |file|
           say_status "package", "adding #{file.relative_path}"
-          zipfile.add(file.relative_path, app_dir.join(file.relative_path).to_path)
+          zipfile.add(file.relative_path, app_dir.join(file.relative_path).to_s)
         end
       end
 
@@ -99,7 +99,7 @@ module ZendeskAppsTools
     def clean
       setup_path(options[:path])
 
-      return unless File.exists?(Pathname.new(File.join(app_dir, "tmp")).to_path)
+      return unless File.exists?(Pathname.new(File.join(app_dir, "tmp")).to_s)
 
       FileUtils.rm(Dir["#{tmp_dir}/app-*.zip"])
     end
@@ -154,7 +154,7 @@ module ZendeskAppsTools
     end
 
     def app_package
-      @app_package ||= Package.new(self.app_dir.to_path)
+      @app_package ||= Package.new(self.app_dir.to_s)
     end
 
     def settings_for_parameters(parameters)
