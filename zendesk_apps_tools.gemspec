@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.version     = "0.0.1"
   s.executables << 'zat'
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["James A. Rosen", "Kenshiro Nakagawa", "Shajith Chacko"]
+  s.authors     = ["James A. Rosen", "Kenshiro Nakagawa", "Shajith Chacko", "Likun Liu"]
   s.email       = ["dev@zendesk.com"]
   s.homepage    = "http://github.com/zendesk/zendesk_apps_tools"
   s.summary     = "Tools to help you develop Zendesk Apps."
