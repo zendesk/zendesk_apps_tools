@@ -115,7 +115,3 @@ Improvements are always welcome. To contribute, please submit detailed Pull Requ
 # Issues
 
 Please submit bug reports to <a href="https://support.zendesk.com/requests/new">Zendesk</a>.
-
-# License
-
-Copyright 2013, Zendesk Inc. Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License Version 2.0</a>.
