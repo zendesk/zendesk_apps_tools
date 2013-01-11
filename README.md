@@ -1,14 +1,14 @@
-## Zendesk Apps Tools
+# Zendesk Apps Tools
 
-Tools to help you develop Zendesk Apps. For more documentation about Zendesk Apps, please see [http://developer.zendesk.com/](http://developer.zendesk.com/).
+These tools make it easy to develop [Zendesk Apps](http://developer.zendesk.com/documentation/apps/).
 
-## How to use
+# How to use
 
-STEP 1: Install 'zat' using RubyGems.
+**STEP 1**: Install 'zat' using [RubyGems](http://rubygems.org/gems/zendesk_apps_tools).
 
     $ gem install zendesk_apps_tools
 
-STEP 2: Create a new app using 'zat'. Here's an example:
+**STEP 2**: Create a new app using 'zat'. Here's an example:
 
     $ zat new
     Enter this app author's name:
@@ -28,13 +28,13 @@ STEP 2: Create a new app using 'zat'. Here's an example:
           create  /tmp/test-app/templates/layout.hdbs
           create  /tmp/test-app/translations/en.json
 
-STEP 3: Work on the new app by editing/adding the files in /tmp/test-app folder.
+**STEP 3**: Work on the new app by editing/adding the files in /tmp/test-app folder.
 
-STEP 4: Validate the app.
+**STEP 4**: Validate the app.
 
     $ zat validate --path /tmp/test-app
 
-STEP 5: Preview the app.
+**STEP 5**: Preview the app.
 
 To preview a local app, follow these steps:
 
@@ -47,15 +47,18 @@ To preview a local app, follow these steps:
     == Sinatra/1.3.3 has taken the stage on 4567 for development with backup from WEBrick
     [2013-01-10 16:54:48] INFO  WEBrick::HTTPServer#start: pid=76568 port=4567
 
-2) Using browser to open one ticket from your zendesk account, the URL showing in the browser address bar will look like this: https://xxx.zendesk.com/agent/#/tickets/1
+2) In your favorite browser, navigate to a ticket in New Zendesk. The URL should be something like https://subdomain.zendesk.com/agent/#/tickets/1
 
-3) Edit the URL in the address bar to include a 'zat' parameter, like this: https://xxx.zendesk.com/agent/?zat=http://localhost:4567/app.js#/tickets/1, then reload the page.
+3) Edit the URL in the address bar to include a 'zat' parameter `?zat=http://localhost:4567/app.js`, then reload the page.
+
+The full url should look something like this: https://subdomain.zendesk.com/agent/?zat=http://localhost:4567/app.js#/tickets/1
+
 The value of 'zat' is the web address to serve the app locally. The port number should match the 'zat server' port number from previous step.
 
-4) Reload the app by clicking on the 'APPS' button on the page, then clicking the 'Reload Apps' link. The local app will appear in the app panel.
+4) Reload the apps by clicking the 'Reload Apps' link. The local app will appear in the app panel.
 (Note: if you are using Chrome, and you see a 'Shield' icon in the address bar, click that icon, and it says 'This page has insecure content', then click 'Load Anyway'. This is because the page is using https, but we are loading the local app using http.)
 
-STEP 5: Package the app.
+**STEP 6**: Package the app.
 
     $ zat package --path /tmp/test-app
     Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to 'http://support.zendesk.com'):
@@ -70,70 +73,49 @@ STEP 5: Package the app.
          package  adding translations/en.json
          package  created at /tmp/test-app/tmp/app-20130110164906.zip
 
-Now you can upload this new app /tmp/test-app/tmp/app-20130110164906.zip into zendesk App Market by using zendesk agent web portal.
+Now you can [upload the created zip](http://developer.zendesk.com/documentation/apps/uploading.html).
 
-You can get some zat help info by running the help command, for example:
+# Features
 
-    $ zat help
-    Tasks:
-      zat clean        # Remove app packages in temp folder
-      zat help [TASK]  # Describe available tasks or one specific task
-      zat new          # Generate a new app
-      zat package      # Package your app
-      zat server       # Run a http server to serve the local app
-      zat validate     # Validate your app
-
-    $ zat help package
-    Usage:
-      zat package
-
-    Options:
-      [--path=PATH]
-                     # Default: ./
-
-## Features
-
-### Create a new zendesk app
-Create a template for a new zendesk app
+### Create a Zendesk App
+Create a template for a Zendesk App.
 
     $ zat new
 
-### Validate the app
-Run a suite of validations against your app:
+### Validate an App
+Run a suite of validations against your App:
 
     $ zat validate
 
-This will check the following:
+This will run the same validations that run when an App is uploaded to the Zendesk App Market.
 
- * presence of `app.js` and `manifest.json`
- * JSHint on `app.js`
- * Syntax check on `manifest.json`
- * Presence of required properties in `manifest.json`
- * No `<style>` tags in templates
-
-### Preview the app
-Run a http server to serve the app to Zendesk app panel locally.
+### Preview the App
+Run a http server to serve the App locally.
 
     $ zat server
 
 ### Package the app
-Package an app directory into a zip file that you will upload to Zendesk.
+Create a zip file that you can [upload](http://developer.zendesk.com/documentation/apps/uploading.html).
 
     $ zat package
 
-### Clean tmp folder inside the zendesk app
-Remove zip files in the tmp folder inside the the zendesk app
+### Clean tmp folder inside an App
+Remove zip files in the tmp folder.
 
     $ zat clean
 
-## Contribution
-
-## Supported Ruby Versions
+# Supported Ruby Versions
 
 Tested with Ruby 1.8.7 and 1.9.3
 
-## License
+# Contribution
 
+Improvements are always welcome. To contribute, please submit detailed Pull Requests.
 
-## Support
+# Issues
 
+Please submit bug reports to <a href="https://support.zendesk.com/requests/new">Zendesk</a>.
+
+# License
+
+Copyright 2013, Zendesk Inc. Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License Version 2.0</a>.
