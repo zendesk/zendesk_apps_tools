@@ -43,11 +43,13 @@ Feature: create a template for a new zendesk app
   <h3>{{setting "name"}}</h3>
 </header>
 <section data-main/>
+
 <footer>
   <a href="mailto:{{author.email}}">
     {{author.name}}
   </a>
 </footer>
+
 </div>
 """
     And the app file "tmp/aruba/translations/en.json" is created with:
@@ -58,4 +60,21 @@ Feature: create a template for a new zendesk app
     "name":         "Buddha Machine"
   }
 }
+"""
+
+  Scenario: create a template for a new zendesk app by running 'zat new --no-footer' command
+    Given an app directory "tmp/aruba" exists
+    When I run "zat new --no-footer" command with the following details:
+      | author name  | John Citizen      |
+      | author email | john@example.com  |
+      | app name     | John Test App     |
+    Then the app file "tmp/aruba/templates/layout.hdbs" is created with:
+    """
+<header>
+  <span class="logo"/>
+  <h3>{{setting "name"}}</h3>
+</header>
+<section data-main/>
+
+</div>
 """
