@@ -3,9 +3,11 @@
   <h3>{{setting "name"}}</h3>
 </header>
 <section data-main/>
+<% if @footer %>
 <footer>
   <a href="mailto:{{author.email}}">
     {{author.name}}
   </a>
 </footer>
+<% end %>
 </div>
