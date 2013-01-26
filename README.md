@@ -4,11 +4,11 @@ These tools make it easy to develop [Zendesk Apps](http://developer.zendesk.com/
 
 # How to use
 
-Please refer to please refer to [our guide](tools.md)
+Please refer to please refer to [our guide](http://developer.zendesk.com/documentation/apps/reference/tools.html)
 
 # Features
 
-Please refer to please refer to [our guide](tools.md)
+Please refer to please refer to [our guide](http://developer.zendesk.com/documentation/apps/reference/tools.html)
 
 # Supported Ruby Versions
 
