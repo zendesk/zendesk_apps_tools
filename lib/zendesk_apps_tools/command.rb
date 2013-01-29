@@ -17,10 +17,7 @@ module ZendeskAppsTools
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
     desc "new", "Generate a new app"
-    method_option :footer, :type => :boolean, :default => true
     def new
-      @footer = options[:footer]
-
       puts "Enter this app author's name:"
       @author_name = get_value_from_stdin(/^\w.*$/, "Invalid name, try again:")
 
@@ -182,3 +179,4 @@ module ZendeskAppsTools
     end
   end
 end
+
