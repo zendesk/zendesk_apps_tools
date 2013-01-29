@@ -48,7 +48,6 @@ Feature: create a template for a new zendesk app
     {{author.name}}
   </a>
 </footer>
-</div>
 """
     And the app file "tmp/aruba/translations/en.json" is created with:
     """
