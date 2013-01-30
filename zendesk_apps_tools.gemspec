@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "zendesk_apps_tools"
-  s.version     = "0.0.1"
+  s.version     = "0.0.2"
   s.executables << 'zat'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["James A. Rosen", "Kenshiro Nakagawa", "Shajith Chacko", "Likun Liu"]
