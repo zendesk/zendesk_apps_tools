@@ -18,7 +18,7 @@
     john@example.com
     Enter a name for this new app:
     Test App
-    Enter a directory name to save the new app (will create the dir if it dose not exist, default to current dir):
+    Enter a directory name to save the new app (will create the dir if it does not exist, default to current dir):
     /tmp/test-app
           create  /tmp/test-app
           create  /tmp/test-app/app.css

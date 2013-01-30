@@ -27,7 +27,7 @@ module ZendeskAppsTools
       puts "Enter a name for this new app:"
       @app_name = get_value_from_stdin(/^\w.*$/, "Invalid app name, try again:")
 
-      puts "Enter a directory name to save the new app (will create the dir if it dose not exist, default to current dir):"
+      puts "Enter a directory name to save the new app (will create the dir if it does not exist, default to current dir):"
       while @app_dir = $stdin.readline.chomp.strip do
         @app_dir = './' and break if @app_dir.empty?
         if !File.exists?(@app_dir)
