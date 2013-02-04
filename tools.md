@@ -2,6 +2,10 @@
 
 [Zendesk Apps Tools](http://rubygems.org/gems/zendesk_apps_tools) is a ruby gem that makes it easy to build Zendesk Apps. The gem allows allows an App developer to create, validate & test apps locally.
 
+### Prerequisites
+
+- Command line tools for XCode.
+
 
 ### How to use
 
