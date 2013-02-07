@@ -4,8 +4,7 @@
 
 ### Prerequisites
 
-- Command line tools for XCode.
-
+- GNU Compiler Collection (Command Line Tools for XCode includes GCC on OSX)
 
 ### How to use
 
