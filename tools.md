@@ -2,6 +2,9 @@
 
 [Zendesk Apps Tools](http://rubygems.org/gems/zendesk_apps_tools) is a ruby gem that makes it easy to build Zendesk Apps. The gem allows allows an App developer to create, validate & test apps locally.
 
+### Prerequisites
+
+- GNU Compiler Collection (Command Line Tools for XCode includes GCC on OSX)
 
 ### How to use
 
@@ -56,7 +59,7 @@ The full url should look something like this: https://subdomain.zendesk.com/agen
 
 4) Reload the apps by clicking the 'Reload Apps' link. The local app will appear in the app panel.
 
-(Note: if you are using Chrome, and you see a 'Shield' icon in the address bar, click that icon, and it says 'This page has insecure content', then click 'Load Anyway'. This is because the page is using https, but we are loading the local app using http.)
+(Note: **If you are using Chrome**, and you see a 'Shield' icon in the address bar, click that icon, and it says 'This page has insecure content', then click 'Load Anyway'. This is because the page is using https, but we are loading the local app using http.)
 
 **STEP 6**: Package the app.
 
