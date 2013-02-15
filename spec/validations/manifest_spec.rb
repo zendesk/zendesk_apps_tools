@@ -25,7 +25,7 @@ describe ZendeskAppsSupport::Validations::Manifest do
     package = mock('Package', :files => [manifest_file])
     errors = ZendeskAppsSupport::Validations::Manifest.call(package)
 
-    locale_error = errors.find { |e| e.to_s =~ /defaultLocale/ }
+    locale_error = errors.find { |e| e.to_s =~ /default locale/ }
     locale_error.should_not be_nil
   end
 
