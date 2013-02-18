@@ -53,9 +53,9 @@ To preview a local app, follow these steps:
 
 2) In your favorite browser, navigate to a ticket in New Zendesk. The URL should be something like https://subdomain.zendesk.com/agent/#/tickets/1
 
-3) Edit the URL in the address bar to include a 'zat' parameter `?zat=http://localhost:4567/app.js`, then reload the page.
+3) Edit the URL in the address bar to include a 'zat' parameter `?zat=true`, then reload the page.
 
-The full url should look something like this: https://subdomain.zendesk.com/agent/?zat=http://localhost:4567/app.js#/tickets/1
+The full url should look something like this: https://subdomain.zendesk.com/agent/?zat=true#/tickets/1
 
 4) Reload the apps by clicking the 'Reload Apps' link. The local app will appear in the app panel.
 
