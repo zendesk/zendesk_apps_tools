@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "zendesk_apps_support"
-  s.version     = "0.3.2"
+  s.version     = "0.3.3"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["James A. Rosen", "Kenshiro Nakagawa", "Shajith Chacko"]
   s.email       = ["dev@zendesk.com"]
@@ -13,11 +13,11 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'i18n'
   s.add_runtime_dependency 'multi_json'
   s.add_runtime_dependency 'sass'
+  s.add_runtime_dependency 'json', '~> 1.7.7'
   s.add_runtime_dependency 'erubis'
   s.add_runtime_dependency 'jshintrb',    '0.1.6'
 
   s.add_development_dependency 'rspec'
-  s.add_runtime_dependency 'json', '~> 1.7.7'
 
   s.files        = Dir.glob("{lib,config}/**/*") + %w(README.md LICENSE)
   s.test_files   = Dir.glob("spec/**/*")
