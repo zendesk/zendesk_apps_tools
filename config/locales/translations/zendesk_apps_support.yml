@@ -2,6 +2,9 @@
 # `i18n:standardize` will generate a version that is compatible with the i18n
 # gem (and thus Rails). Both versions should be checked in.
 title: "Apps Support"
+packages:
+  - default
+  - apps_support
 
 parts:
   - translation:
