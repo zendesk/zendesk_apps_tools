@@ -19,6 +19,9 @@ en:
             style_in_template: <style> tag in %{template}. Use an app.css file instead.
             invalid_default_locale: ! '%{defaultLocale} is not a valid default locale.
               Only two- and three-letter ISO 639 language codes are allowed.'
+            invalid_location:
+              one: ! '%{invalid_locations} in an invalid location.'
+              other: ! '%{invalid_locations} are invalid locations.'
             translation:
               invalid_locale: ! '%{file} is not a valid locale. Only two- and three-letter
                 ISO 639 language codes are allowed.'

@@ -44,6 +44,14 @@ parts:
       title: "App builder job: invalid default locale"
       value: "%{defaultLocale} is not a valid default locale. Only two- and three-letter ISO 639 language codes are allowed."
   - translation:
+      key: "txt.apps.admin.error.app_build.invalid_location.one"
+      title: "App builder job: invalid locations"
+      value: "%{invalid_locations} in an invalid location."
+  - translation:
+      key: "txt.apps.admin.error.app_build.invalid_location.other"
+      title: "App builder job: invalid locations"
+      value: "%{invalid_locations} are invalid locations."
+  - translation:
       key: "txt.apps.admin.error.app_build.translation.invalid_locale"
       title: "App builder job: invalid locale file name"
       value: "%{file} is not a valid locale. Only two- and three-letter ISO 639 language codes are allowed."
