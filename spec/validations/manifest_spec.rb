@@ -29,6 +29,16 @@ describe ZendeskAppsSupport::Validations::Manifest do
     locale_error.should_not be_nil
   end
 
+  it 'should have an error when the location is invalid' do
+    manifest = { 'location' => ['ticket_sidebar', 'a_invalid_location'] }
+    manifest_file = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(manifest))
+    package = mock('Package', :files => [manifest_file])
+    errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+
+    locations_error = errors.find { |e| e.to_s =~ /invalid location/ }
+    locations_error.should_not be_nil
+  end
+
   it 'should have an error when manifest is not a valid json' do
     manifest = mock('AppFile', :relative_path => 'manifest.json', :read => "}")
     package = mock('Package', :files => [manifest])
