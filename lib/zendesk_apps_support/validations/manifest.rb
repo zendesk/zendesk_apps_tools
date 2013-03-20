@@ -5,6 +5,7 @@ module ZendeskAppsSupport
     module Manifest
 
       REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale location frameworkVersion).freeze
+      LOCATIONS_AVAILABLE = %w( nav_bar ticket_sidebar ).freeze
 
       class <<self
         def call(package)
@@ -17,6 +18,7 @@ module ZendeskAppsSupport
           [].tap do |errors|
             errors << missing_keys_error(manifest)
             errors << default_locale_error(manifest)
+            errors << invalid_location_error(manifest)
             errors.compact!
           end
         rescue MultiJson::DecodeError => e
@@ -39,6 +41,13 @@ module ZendeskAppsSupport
           default_locale = manifest['defaultLocale']
           if !default_locale.nil? && default_locale !~ /^[a-z]{2,3}$/
             ValidationError.new(:invalid_default_locale, :defaultLocale => default_locale)
+          end
+        end
+
+        def invalid_location_error(manifest)
+          invalid_locations = [*manifest['location']] - LOCATIONS_AVAILABLE
+          unless invalid_locations.empty?
+            ValidationError.new(:invalid_location, :invalid_locations => invalid_locations.join(', '), :count => invalid_locations.length)
           end
         end
 
