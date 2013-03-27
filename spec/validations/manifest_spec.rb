@@ -39,6 +39,23 @@ describe ZendeskAppsSupport::Validations::Manifest do
     locations_error.should_not be_nil
   end
 
+  it 'should have an error when a hidden parameter is set to required' do
+    manifest = {
+      'parameters' => [
+        'name'     => 'a parameter',
+        'type'     => 'hidden',
+        'required' => true
+      ]
+    }
+
+    manifest_file = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(manifest))
+    package = mock('Package', :files => [manifest_file])
+    errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+
+    hidden_params_error = errors.find { |e| e.to_s =~ /set to hidden and cannot be required/ }
+    hidden_params_error.should_not be_nil
+  end
+
   it 'should have an error when manifest is not a valid json' do
     manifest = mock('AppFile', :relative_path => 'manifest.json', :read => "}")
     package = mock('Package', :files => [manifest])
