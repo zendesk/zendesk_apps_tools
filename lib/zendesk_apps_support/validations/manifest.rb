@@ -19,6 +19,7 @@ module ZendeskAppsSupport
             errors << missing_keys_error(manifest)
             errors << default_locale_error(manifest)
             errors << invalid_location_error(manifest)
+            errors << invalid_hidden_parameter_error(manifest)
             errors.compact!
           end
         rescue MultiJson::DecodeError => e
@@ -48,6 +49,18 @@ module ZendeskAppsSupport
           invalid_locations = [*manifest['location']] - LOCATIONS_AVAILABLE
           unless invalid_locations.empty?
             ValidationError.new(:invalid_location, :invalid_locations => invalid_locations.join(', '), :count => invalid_locations.length)
+          end
+        end
+
+        def invalid_hidden_parameter_error(manifest)
+          invalid_params = []
+
+          if manifest.has_key?('parameters')
+            invalid_params = manifest['parameters'].select { |p| p['type'] == 'hidden' && p['required'] }.map { |p| p['name'] }
+          end
+
+          if invalid_params.any?
+            ValidationError.new(:invalid_hidden_parameter, :invalid_params => invalid_params.join(', '), :count => invalid_params.length)
           end
         end
 

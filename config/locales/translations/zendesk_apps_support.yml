@@ -52,6 +52,14 @@ parts:
       title: "App builder job: invalid locations"
       value: "%{invalid_locations} are invalid locations."
   - translation:
+      key: "txt.apps.admin.error.app_build.invalid_hidden_parameter.one"
+      title: "App builder job: hidden parameters set to required"
+      value: "%{invalid_params} is set to hidden and cannot be required."
+  - translation:
+      key: "txt.apps.admin.error.app_build.invalid_hidden_parameter.other"
+      title: "App builder job: hidden parameters set to required"
+      value: "%{invalid_params} are set to hidden and cannot be required."
+  - translation:
       key: "txt.apps.admin.error.app_build.translation.invalid_locale"
       title: "App builder job: invalid locale file name"
       value: "%{file} is not a valid locale. Only two- and three-letter ISO 639 language codes are allowed."
