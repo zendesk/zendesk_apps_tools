@@ -22,6 +22,9 @@ en:
             invalid_location:
               one: ! '%{invalid_locations} in an invalid location.'
               other: ! '%{invalid_locations} are invalid locations.'
+            invalid_hidden_parameter:
+              one: ! '%{invalid_params} is set to hidden and cannot be required.'
+              other: ! '%{invalid_params} are set to hidden and cannot be required.'
             translation:
               invalid_locale: ! '%{file} is not a valid locale. Only two- and three-letter
                 ISO 639 language codes are allowed.'
