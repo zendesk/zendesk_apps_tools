@@ -5,7 +5,7 @@ module ZendeskAppsSupport
     module Manifest
 
       REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale location frameworkVersion).freeze
-      LOCATIONS_AVAILABLE = %w( nav_bar ticket_sidebar ).freeze
+      LOCATIONS_AVAILABLE = %w( nav_bar ticket_sidebar new_ticket_sidebar ).freeze
 
       class <<self
         def call(package)
