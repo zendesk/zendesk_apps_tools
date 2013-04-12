@@ -44,6 +44,10 @@ parts:
       title: "App builder job: invalid default locale"
       value: "%{defaultLocale} is not a valid default locale. Only two- and three-letter ISO 639 language codes are allowed."
   - translation:
+      key: "txt.apps.admin.error.app_build.missing_translation_file"
+      title: "App builder job: missing translation file"
+      value: "Missing translation file for locale '%{defaultLocale}'. Please read: http://developer.zendesk.com/documentation/apps/i18n.html"
+  - translation:
       key: "txt.apps.admin.error.app_build.invalid_location.one"
       title: "App builder job: invalid locations"
       value: "%{invalid_locations} in an invalid location."

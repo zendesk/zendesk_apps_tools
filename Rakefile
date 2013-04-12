@@ -17,6 +17,7 @@ def array_to_nested_hash(array)
 end
 
 require 'pathname'
+require 'yaml'
 project_root = Pathname.new(File.dirname(__FILE__))
 zendesk_i18n_file = project_root.join('config/locales/translations/zendesk_apps_support.yml')
 standard_i18n_file = project_root.join('config/locales/en.yml')

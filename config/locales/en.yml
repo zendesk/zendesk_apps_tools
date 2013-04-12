@@ -19,6 +19,8 @@ en:
             style_in_template: <style> tag in %{template}. Use an app.css file instead.
             invalid_default_locale: ! '%{defaultLocale} is not a valid default locale.
               Only two- and three-letter ISO 639 language codes are allowed.'
+            missing_translation_file: ! 'Missing translation file for locale ''%{defaultLocale}''.
+              Please read: http://developer.zendesk.com/documentation/apps/i18n.html'
             invalid_location:
               one: ! '%{invalid_locations} in an invalid location.'
               other: ! '%{invalid_locations} are invalid locations.'

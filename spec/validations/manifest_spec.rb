@@ -29,6 +29,17 @@ describe ZendeskAppsSupport::Validations::Manifest do
     locale_error.should_not be_nil
   end
 
+  it 'should have an error when the translation file is missing for the defaultLocale' do
+    manifest = { 'defaultLocale' => 'pt' }
+    manifest_file = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(manifest))
+    translation_files = mock('AppFile', :relative_path => 'translations/en.json')
+    package = mock('Package', :files => [manifest_file], :translation_files => [translation_files])
+    errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+
+    locale_error = errors.find { |e| e.to_s =~ /Missing translation file/ }
+    locale_error.should_not be_nil
+  end
+
   it 'should have an error when the location is invalid' do
     manifest = { 'location' => ['ticket_sidebar', 'a_invalid_location'] }
     manifest_file = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(manifest))
