@@ -5,25 +5,25 @@ module ZendeskAppsSupport
     module Manifest
 
       REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale location frameworkVersion).freeze
-      LOCATIONS_AVAILABLE = %w( nav_bar ticket_sidebar new_ticket_sidebar ).freeze
+      LOCATIONS_AVAILABLE      = %w( nav_bar ticket_sidebar new_ticket_sidebar ).freeze
 
       class <<self
         def call(package)
           manifest = package.files.find { |f| f.relative_path == 'manifest.json' }
 
-          return [ ValidationError.new(:missing_manifest) ] unless manifest
+          return [ValidationError.new(:missing_manifest)] unless manifest
 
           manifest = MultiJson.load(manifest.read)
 
           [].tap do |errors|
             errors << missing_keys_error(manifest)
-            errors << default_locale_error(manifest)
+            errors << default_locale_error(manifest, package)
             errors << invalid_location_error(manifest)
             errors << invalid_hidden_parameter_error(manifest)
             errors.compact!
           end
         rescue MultiJson::DecodeError => e
-          return [ ValidationError.new(:manifest_not_json, :errors => e) ]
+          return [ValidationError.new(:manifest_not_json, :errors => e)]
         end
 
         private
@@ -38,10 +38,14 @@ module ZendeskAppsSupport
           end
         end
 
-        def default_locale_error(manifest)
+        def default_locale_error(manifest, package)
           default_locale = manifest['defaultLocale']
-          if !default_locale.nil? && default_locale !~ /^[a-z]{2,3}$/
-            ValidationError.new(:invalid_default_locale, :defaultLocale => default_locale)
+          if !default_locale.nil?
+            if default_locale !~ /^[a-z]{2,3}$/
+              ValidationError.new(:invalid_default_locale, :defaultLocale => default_locale)
+            elsif package.translation_files.detect { |file| file.relative_path == "translations/#{default_locale}.json" }.nil?
+              ValidationError.new(:missing_translation_file, :defaultLocale => default_locale)
+            end
           end
         end
 
