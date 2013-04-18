@@ -83,4 +83,52 @@ describe ZendeskAppsSupport::Validations::Manifest do
 
     errors.first().to_s.should =~ /^manifest is not proper JSON/
   end
+
+  context 'with invalid parameter type' do
+
+    before do
+      ZendeskAppsSupport::Validations::Manifest.stub(:default_locale_error)
+      ZendeskAppsSupport::Validations::Manifest.stub(:invalid_location_error)
+    end
+
+    it 'has an error when the app parameters are not an array' do
+      parameter_hash = {
+          'parameters' => {
+              'name' => 'a parameter',
+              'type' => 'string'
+          }
+      }
+
+      params = default_required_params(parameter_hash)
+      manifest = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(params))
+      package = mock('Package', :files => [manifest])
+
+      errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+      errors.map(&:to_s).should == ['App Parameters must be an array.']
+    end
+
+    it "doesn't have an error with an array of app parameters" do
+      parameter_hash = {
+          'parameters' => [{
+              'name' => 'a parameter',
+              'type' => 'string'
+          }]
+      }
+
+      params = default_required_params(parameter_hash)
+      manifest = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(params))
+      package = mock('Package', :files => [manifest])
+
+      errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+      errors.should be_empty
+    end
+
+    it 'behaves when the manifest does not have parameters' do
+      manifest = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(default_required_params))
+      package = mock('Package', :files => [manifest])
+
+      errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+      errors.should be_empty
+    end
+  end
 end

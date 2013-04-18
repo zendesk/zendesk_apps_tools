@@ -19,6 +19,7 @@ module ZendeskAppsSupport
             errors << missing_keys_error(manifest)
             errors << default_locale_error(manifest, package)
             errors << invalid_location_error(manifest)
+            errors << parameters_must_be_an_array(manifest)
             errors << invalid_hidden_parameter_error(manifest)
             errors.compact!
           end
@@ -27,6 +28,14 @@ module ZendeskAppsSupport
         end
 
         private
+
+        def parameters_must_be_an_array(manifest)
+          return unless manifest['parameters']
+
+          unless manifest['parameters'].kind_of?(Array)
+            ValidationError.new(:parameters_not_an_array)
+          end
+        end
 
         def missing_keys_error(manifest)
           missing = REQUIRED_MANIFEST_FIELDS.select do |key|
