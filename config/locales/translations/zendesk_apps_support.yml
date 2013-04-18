@@ -64,6 +64,10 @@ parts:
       title: "App builder job: hidden parameters set to required"
       value: "%{invalid_params} are set to hidden and cannot be required."
   - translation:
+      key: "txt.apps.admin.error.app_build.parameters_not_an_array"
+      title: "App builder job: app parameters must be an array"
+      value: "App Parameters must be an array."
+  - translation:
       key: "txt.apps.admin.error.app_build.translation.invalid_locale"
       title: "App builder job: invalid locale file name"
       value: "%{file} is not a valid locale. Only two- and three-letter ISO 639 language codes are allowed."
