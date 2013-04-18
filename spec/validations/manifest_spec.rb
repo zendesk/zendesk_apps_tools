@@ -3,6 +3,15 @@ require 'json'
 
 describe ZendeskAppsSupport::Validations::Manifest do
 
+  def default_required_params(overrides = {})
+    valid_fields = ZendeskAppsSupport::Validations::Manifest::REQUIRED_MANIFEST_FIELDS.inject({}) do |fields, name|
+      fields[name] = name
+      fields
+    end
+
+    valid_fields.merge(overrides)
+  end
+
   it 'should have an error when manifest.json is missing' do
     files = [mock('AppFile', :relative_path => 'abc.json')]
     package = mock('Package', :files => files)
