@@ -16,5 +16,6 @@ module ZendeskAppsSupport
     autoload :Templates,             'zendesk_apps_support/validations/templates'
     autoload :Translations,          'zendesk_apps_support/validations/translations'
     autoload :JSHintValidationError, 'zendesk_apps_support/validations/validation_error'
+    autoload :Stylesheets,           'zendesk_apps_support/validations/stylesheets'
   end
 end

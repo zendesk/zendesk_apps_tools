@@ -18,7 +18,8 @@ module ZendeskAppsSupport
       Validations::Manifest.call(self) +
         Validations::Source.call(self) +
         Validations::Templates.call(self) +
-        Validations::Translations.call(self)
+        Validations::Translations.call(self) +
+        Validations::Stylesheets.call(self)
     end
 
     def files
@@ -65,11 +66,14 @@ module ZendeskAppsSupport
       )
     end
 
+    def customer_css
+      css_file = File.join(root, 'app.css')
+      customer_css = File.exist?(css_file) ? File.read(css_file) : ""
+    end
+
     private
 
     def compiled_templates(app_id, asset_url_prefix)
-      css_file = File.join(root, "app.css")
-      customer_css = File.exist?(css_file) ? File.read(css_file) : ""
       compiled_css = ZendeskAppsSupport::StylesheetCompiler.new(DEFAULT_SCSS + customer_css, app_id, asset_url_prefix).compile
 
       templates = begin
