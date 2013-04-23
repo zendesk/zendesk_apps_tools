@@ -79,3 +79,7 @@ parts:
       key: "txt.apps.admin.error.app_build.translation.not_json_object"
       title: "App builder job: translation file is not a JSON object"
       value: "%{file} is not a JSON object."
+  - translation:
+      key: "txt.apps.admin.error.app_build.stylesheet_error"
+      title: "App builder job: invalid stylesheet syntax"
+      value: "Sass error: %{sass_error}"
