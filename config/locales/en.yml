@@ -33,3 +33,4 @@ en:
                 ISO 639 language codes are allowed.'
               not_json: ! '%{file} is not valid JSON. %{errors}'
               not_json_object: ! '%{file} is not a JSON object.'
+            stylesheet_error: ! 'Sass error: %{sass_error}'
