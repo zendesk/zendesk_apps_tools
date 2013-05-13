@@ -12,6 +12,12 @@ describe ZendeskAppsSupport::Validations::Manifest do
     valid_fields.merge(overrides)
   end
 
+  def create_package(parameter_hash)
+    params = default_required_params(parameter_hash)
+    manifest = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(params))
+    mock('Package', :files => [manifest])
+  end
+
   it 'should have an error when manifest.json is missing' do
     files = [mock('AppFile', :relative_path => 'abc.json')]
     package = mock('Package', :files => files)
@@ -84,7 +90,7 @@ describe ZendeskAppsSupport::Validations::Manifest do
     errors.first().to_s.should =~ /^manifest is not proper JSON/
   end
 
-  context 'with invalid parameter type' do
+  context 'with invalid parameters' do
 
     before do
       ZendeskAppsSupport::Validations::Manifest.stub(:default_locale_error)
@@ -99,12 +105,8 @@ describe ZendeskAppsSupport::Validations::Manifest do
           }
       }
 
-      params = default_required_params(parameter_hash)
-      manifest = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(params))
-      package = mock('Package', :files => [manifest])
-
-      errors = ZendeskAppsSupport::Validations::Manifest.call(package)
-      errors.map(&:to_s).should == ['App Parameters must be an array.']
+      errors = ZendeskAppsSupport::Validations::Manifest.call(create_package(parameter_hash))
+      errors.map(&:to_s).should == ['App parameters must be an array.']
     end
 
     it "doesn't have an error with an array of app parameters" do
@@ -115,20 +117,31 @@ describe ZendeskAppsSupport::Validations::Manifest do
           }]
       }
 
-      params = default_required_params(parameter_hash)
-      manifest = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(params))
-      package = mock('Package', :files => [manifest])
-
-      errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+      errors = ZendeskAppsSupport::Validations::Manifest.call(create_package(parameter_hash))
       errors.should be_empty
     end
 
     it 'behaves when the manifest does not have parameters' do
-      manifest = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(default_required_params))
-      package = mock('Package', :files => [manifest])
-
-      errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+      errors = ZendeskAppsSupport::Validations::Manifest.call(create_package(default_required_params))
       errors.should be_empty
+    end
+
+    it 'shows error when duplicate parameters are defined' do
+      parameter_hash = {
+        'parameters' => [
+          {
+            'name' => 'url',
+            'type' => 'string'
+          },
+          {
+            'name' => 'url',
+            'type' => 'string'
+          }
+        ]
+      }
+
+      errors = ZendeskAppsSupport::Validations::Manifest.call(create_package(parameter_hash))
+      errors.map(&:to_s).should == ['Duplicate app parameters defined: ["url"]']
     end
   end
 end

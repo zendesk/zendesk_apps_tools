@@ -19,7 +19,7 @@ module ZendeskAppsSupport
             errors << missing_keys_error(manifest)
             errors << default_locale_error(manifest, package)
             errors << invalid_location_error(manifest)
-            errors << parameters_must_be_an_array(manifest)
+            errors << parameters_error(manifest)
             errors << invalid_hidden_parameter_error(manifest)
             errors.compact!
           end
@@ -29,11 +29,17 @@ module ZendeskAppsSupport
 
         private
 
-        def parameters_must_be_an_array(manifest)
+        def parameters_error(manifest)
           return unless manifest['parameters']
 
           unless manifest['parameters'].kind_of?(Array)
-            ValidationError.new(:parameters_not_an_array)
+            return ValidationError.new(:parameters_not_an_array)
+          end
+
+          para_names = manifest['parameters'].collect{|para| para['name']}
+          duplicate_parameters = para_names.select {|name| para_names.count(name) > 1}.uniq
+          unless duplicate_parameters.empty?
+            return ValidationError.new(:duplicate_parameters, :duplicate_parameters => duplicate_parameters)
           end
         end
 
