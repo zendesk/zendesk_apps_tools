@@ -68,6 +68,10 @@ parts:
       title: "App builder job: app parameters must be an array"
       value: "App parameters must be an array."
   - translation:
+      key: "txt.apps.admin.error.app_build.duplicate_parameters"
+      title: "App builder job: duplicate parameters error"
+      value: "Duplicate app parameters defined: %{duplicate_parameters}"
+  - translation:
       key: "txt.apps.admin.error.app_build.translation.invalid_locale"
       title: "App builder job: invalid locale file name"
       value: "%{file} is not a valid locale. Only two- and three-letter ISO 639 language codes are allowed."
