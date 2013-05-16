@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "zendesk_apps_tools"
-  s.version     = "1.1.0"
+  s.version     = "1.1.1"
   s.executables << 'zat'
   s.platform    = Gem::Platform::RUBY
   s.license     = "Apache License Version 2.0"
@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'thor',        '~> 0.15.2'
   s.add_runtime_dependency 'rubyzip',     '~> 0.9.1'
   s.add_runtime_dependency 'sinatra',     '~> 1.3.4'
-  s.add_runtime_dependency 'zendesk_apps_support', '~> 1.1.2'
+  s.add_runtime_dependency 'zendesk_apps_support', '~> 1.1.4'
 
   s.add_development_dependency 'cucumber'
   s.add_development_dependency 'aruba'
