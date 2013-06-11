@@ -3,6 +3,7 @@ require 'thor'
 module ZendeskAppsTools
   class Translate < Thor
     include Thor::Shell
+    include Thor::Actions
 
     desc 'create', 'Create Zendesk translation file from en.json'
     def create
@@ -15,7 +16,11 @@ module ZendeskAppsTools
 
       package = get_value_from_stdin('What is the package name for this app?', /^[a-z_]+$/, "Invalid package name, try again:")
 
-      create_yaml(app_name, package)
+      write_yaml(app_name, package)
+    end
+
+    def self.source_root
+      File.expand_path(File.join(File.dirname(__FILE__), "../.."))
     end
 
     no_commands do
@@ -32,8 +37,15 @@ module ZendeskAppsTools
         return input
       end
 
-      def create_yaml(app_name, package)
-        translations = JSON.parse(File.open('translations/en.json').read)
+      def write_yaml(app_name, package)
+        user_translations = JSON.parse(File.open('translations/en.json').read)
+        @translations = user_translations.keys.inject({}) do |translations, key|
+          translations.merge( get_translations_for(user_translations, key) )
+        end
+
+        @app_name = app_name
+        @package_name = package
+        template(File.join(Translate.source_root, 'template/translation.erb.tt'), "translations/en.yml")
       end
 
       def get_translations_for(scope, scope_key, keys = [], translations = {})
