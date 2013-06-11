@@ -1,0 +1,64 @@
+require 'thor'
+
+module ZendeskAppsTools
+  class Translate < Thor
+    include Thor::Shell
+
+    desc 'create', 'Create Zendesk translation file from en.json'
+    def create
+      manifest = JSON.parse(File.open('manifest.json').read)
+      app_name = manifest['name']
+
+      unless app_name
+        app_name = get_value_from_stdin('What is the name of this app?', /^\w.*$/, "Invalid name, try again:")
+      end
+
+      package = get_value_from_stdin('What is the package name for this app?', /^[a-z_]+$/, "Invalid package name, try again:")
+
+      create_yaml(app_name, package)
+    end
+
+    no_commands do
+
+      def get_value_from_stdin(prompt, valid_regex, error_msg)
+        while input = ask(prompt)
+          unless input =~ valid_regex
+            say(error_msg, :red)
+          else
+            break
+          end
+        end
+
+        return input
+      end
+
+      def create_yaml(app_name, package)
+        translations = JSON.parse(File.open('translations/en.json').read)
+      end
+
+      def get_translations_for(scope, scope_key, keys = [], translations = {})
+        hash_or_value = scope[scope_key]
+
+        if hash_or_value.is_a?(Hash)
+          keys << scope_key
+          hash_or_value.each_key do |key|
+
+            if hash_or_value[key].is_a?(Hash)
+              get_translations_for(hash_or_value, key, keys, translations)
+              keys = keys[0...-1]
+            else
+              translation_key = (keys + [key]).join('.')
+              translations[translation_key] = hash_or_value[key]
+            end
+
+          end
+        else
+          translations[scope_key] = hash_or_value
+        end
+
+        translations
+      end
+
+    end
+  end
+end
