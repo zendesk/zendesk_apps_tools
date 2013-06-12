@@ -42,7 +42,7 @@ module ZendeskAppsTools
         end
       end
 
-      directory('template', @app_dir)
+      directory('app_template', @app_dir)
     end
 
     desc "validate", "Validate your app"
