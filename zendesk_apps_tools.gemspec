@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'aruba'
   s.add_development_dependency 'rspec'
 
-  s.files        = Dir.glob("{bin,lib,template}/**/*") + %w(README.md LICENSE)
+  s.files        = Dir.glob("{bin,lib,app_template,templates}/**/*") + %w(README.md LICENSE)
   s.test_files   = Dir.glob("features/**/*")
   s.require_path = 'lib'
 end

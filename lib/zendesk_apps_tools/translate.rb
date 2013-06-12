@@ -45,7 +45,7 @@ module ZendeskAppsTools
 
         @app_name = app_name
         @package_name = package
-        template(File.join(Translate.source_root, 'template/translation.erb.tt'), "translations/en.yml")
+        template(File.join(Translate.source_root, 'templates/translation.erb.tt'), "translations/en.yml")
       end
 
       def get_translations_for(scope, scope_key, keys = [], translations = {})
