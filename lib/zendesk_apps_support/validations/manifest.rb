@@ -87,6 +87,7 @@ module ZendeskAppsSupport
 
         def invalid_type_error(manifest)
           return unless manifest['parameters'].kind_of?(Array)
+
           invalid_types = []
 
           manifest["parameters"].each do |parameter|
