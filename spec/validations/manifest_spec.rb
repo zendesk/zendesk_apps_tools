@@ -155,7 +155,9 @@ describe ZendeskAppsSupport::Validations::Manifest do
         ]
       }
       errors = ZendeskAppsSupport::Validations::Manifest.call(create_package(default_required_params.merge(parameter_hash)))
+
       expect(errors.count).to eq 1
+      expect(errors.first.to_s).to eq "integer is an invalid parameter type."
     end
 
     it 'has an no error when the parameter type is valid' do

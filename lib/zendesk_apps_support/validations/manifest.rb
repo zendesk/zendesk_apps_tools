@@ -97,7 +97,7 @@ module ZendeskAppsSupport
           end
 
           if invalid_types.any?
-            ValidationError.new(:invalid_type_parameter, :invalid_parameter_type => invalid_types.join(', '), :count => invalid_types.length)
+            ValidationError.new(:invalid_type_parameter, :invalid_types => invalid_types.join(', '), :count => invalid_types.length)
           end
         end
 
