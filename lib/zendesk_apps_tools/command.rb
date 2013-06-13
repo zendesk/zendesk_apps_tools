@@ -16,6 +16,9 @@ module ZendeskAppsTools
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
+    desc 'translate SUBCOMMAND', 'Manage translation files', :hide => true
+    subcommand 'translate', Translate
+
     desc "new", "Generate a new app"
     def new
       puts "Enter this app author's name:"
@@ -39,7 +42,7 @@ module ZendeskAppsTools
         end
       end
 
-      directory('template', @app_dir)
+      directory('app_template', @app_dir)
     end
 
     desc "validate", "Validate your app"

@@ -11,16 +11,16 @@ Given /^an app is created in directory "(.*?)"$/ do |app_dir|
       | author name  | John Citizen      |
       | author email | john@example.com  |
       | app name     | John Test App     |
+      | app dir      | #{app_dir}        |
   }
 end
 
 When /^I run "(.*?)" command with the following details:$/ do |cmd, table|
   IO.popen(cmd, "w+") do |pipe|
-    key = table.rows_hash
-    pipe.puts key["author name"]
-    pipe.puts key["author email"]
-    pipe.puts key["app name"]
-    pipe.puts @app_dir
+    # [ ['parameter name', 'value'] ]
+    table.raw.each do |row|
+      pipe.puts row.last
+    end
     pipe.close_write
     @output = pipe.readlines
     @output.each {|line| puts line}

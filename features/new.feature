@@ -6,6 +6,7 @@ Feature: create a template for a new zendesk app
       | author name  | John Citizen      |
       | author email | john@example.com  |
       | app name     | John Test App     |
+      | app dir      | tmp/aruba         |
 
     Then the app file "tmp/aruba/manifest.json" is created with:
     """
