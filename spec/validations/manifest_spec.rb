@@ -160,7 +160,7 @@ describe ZendeskAppsSupport::Validations::Manifest do
       expect(errors.first.to_s).to eq "integer is an invalid parameter type."
     end
 
-    it 'has an no error when the parameter type is valid' do
+    it "doesn't have an error with a correct parameter type" do
       parameter_hash = {
         'parameters' =>
         [
