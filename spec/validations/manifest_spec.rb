@@ -101,7 +101,7 @@ describe ZendeskAppsSupport::Validations::Manifest do
       parameter_hash = {
           'parameters' => {
               'name' => 'a parameter',
-              'type' => 'string'
+              'type' => 'text'
           }
       }
 
@@ -113,7 +113,7 @@ describe ZendeskAppsSupport::Validations::Manifest do
       parameter_hash = {
           'parameters' => [{
               'name' => 'a parameter',
-              'type' => 'string'
+              'type' => 'text'
           }]
       }
 
@@ -131,17 +131,47 @@ describe ZendeskAppsSupport::Validations::Manifest do
         'parameters' => [
           {
             'name' => 'url',
-            'type' => 'string'
+            'type' => 'text'
           },
           {
             'name' => 'url',
-            'type' => 'string'
+            'type' => 'text'
           }
         ]
       }
 
       errors = ZendeskAppsSupport::Validations::Manifest.call(create_package(parameter_hash))
       errors.map(&:to_s).should == ['Duplicate app parameters defined: ["url"]']
+    end
+
+    it 'has an error when the parameter type is not valid' do
+      parameter_hash = {
+        'parameters' =>
+        [
+         {
+           'name' => 'should be number',
+           'type' => 'integer'
+         }
+        ]
+      }
+      errors = ZendeskAppsSupport::Validations::Manifest.call(create_package(default_required_params.merge(parameter_hash)))
+
+      expect(errors.count).to eq 1
+      expect(errors.first.to_s).to eq "integer is an invalid parameter type."
+    end
+
+    it 'has an no error when the parameter type is valid' do
+      parameter_hash = {
+        'parameters' =>
+        [
+         {
+           'name' => 'valid type',
+           'type' => 'number'
+         }
+        ]
+      }
+      errors = ZendeskAppsSupport::Validations::Manifest.call(create_package(default_required_params.merge(parameter_hash)))
+      expect(errors).to be_empty
     end
   end
 end

@@ -6,6 +6,7 @@ module ZendeskAppsSupport
 
       REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale location frameworkVersion).freeze
       LOCATIONS_AVAILABLE      = %w( nav_bar ticket_sidebar new_ticket_sidebar ).freeze
+      TYPES_AVAILABLE          = %W(text password checkbox url number multiline hidden).freeze
 
       class <<self
         def call(package)
@@ -21,6 +22,7 @@ module ZendeskAppsSupport
             errors << invalid_location_error(manifest)
             errors << parameters_error(manifest)
             errors << invalid_hidden_parameter_error(manifest)
+            errors << invalid_type_error(manifest)
             errors.compact!
           end
         rescue MultiJson::DecodeError => e
@@ -80,6 +82,22 @@ module ZendeskAppsSupport
 
           if invalid_params.any?
             ValidationError.new(:invalid_hidden_parameter, :invalid_params => invalid_params.join(', '), :count => invalid_params.length)
+          end
+        end
+
+        def invalid_type_error(manifest)
+          return unless manifest['parameters'].kind_of?(Array)
+
+          invalid_types = []
+
+          manifest["parameters"].each do |parameter|
+            parameter_type = parameter.fetch("type", '')
+
+            invalid_types << parameter_type unless TYPES_AVAILABLE.include?(parameter_type)
+          end
+
+          if invalid_types.any?
+            ValidationError.new(:invalid_type_parameter, :invalid_types => invalid_types.join(', '), :count => invalid_types.length)
           end
         end
 

@@ -29,6 +29,9 @@ en:
               other: ! '%{invalid_params} are set to hidden and cannot be required.'
             parameters_not_an_array: App parameters must be an array.
             duplicate_parameters: ! 'Duplicate app parameters defined: %{duplicate_parameters}'
+            invalid_type_parameter:
+              one: '%{invalid_types} is an invalid parameter type.'
+              two: '%{invalid_types} are invalid parameter types.'
             translation:
               invalid_locale: ! '%{file} is not a valid locale. Only two- and three-letter
                 ISO 639 language codes are allowed.'
