@@ -1,9 +1,11 @@
 require 'thor'
+require 'zendesk_apps_tools/common'
 
 module ZendeskAppsTools
   class Translate < Thor
     include Thor::Shell
     include Thor::Actions
+    include ZendeskAppsTools::Common
 
     LOCALE_ENDPOINT = "https://support.zendesk.com/api/v2/locales.json"
 
@@ -74,24 +76,6 @@ module ZendeskAppsTools
         end
 
         result
-      end
-
-      def api_call(url, user, password)
-        request = Faraday.new(url)
-        request.basic_auth(user, password)
-        request.get.body
-      end
-
-      def get_value_from_stdin(prompt, valid_regex, error_msg)
-        while input = ask(prompt)
-          unless input =~ valid_regex
-            say(error_msg, :red)
-          else
-            break
-          end
-        end
-
-        return input
       end
 
       def write_yaml(app_name, package)
