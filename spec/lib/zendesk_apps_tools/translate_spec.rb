@@ -73,4 +73,35 @@ describe ZendeskAppsTools::Translate do
     end
 
   end
+
+  describe '#nest_translations_hash' do
+    it 'removes package key prefix' do
+      translations = { "txt.apps.my_app.app.description" => "Description" }
+
+      result = { "app" => { "description" => "Description" }}
+
+      context = translate = ZendeskAppsTools::Translate.new
+      context.nest_translations_hash(translations, 'txt.apps.my_app.').should == result
+    end
+
+    context 'with a mix of nested and unnested keys' do
+      it 'returns a mixed depth hash' do
+        translations = { 'global.error.title'   => 'An error occurred',
+                         'global.error.message' => 'Please try the previous action again.',
+                         'global.loading'       => 'Waiting for ticket data to load...',
+                         'global.requesting'    => 'Requesting data from Magento...' }
+
+        result = { 'global'=> {
+          'error'=> {
+            'title'   => 'An error occurred',
+            'message' => 'Please try the previous action again.',
+          },
+          'loading'    => 'Waiting for ticket data to load...',
+          'requesting' => 'Requesting data from Magento...'}}
+
+        context = translate = ZendeskAppsTools::Translate.new
+        context.nest_translations_hash(translations, '').should == result
+      end
+    end
+  end
 end
