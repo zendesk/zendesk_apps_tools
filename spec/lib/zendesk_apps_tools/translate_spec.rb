@@ -104,4 +104,34 @@ describe ZendeskAppsTools::Translate do
       end
     end
   end
+
+  # This would be better as an integration test but it requires significant
+  # refactoring of the cucumber setup and addition of vcr or something similar
+  # This is happy day only
+  describe '#update' do
+    it 'fetches locales, translations and generates json files for each' do
+      translate = ZendeskAppsTools::Translate.new
+      translate.stub(:say)
+      translate.stub(:ask)
+      translate.stub(:ask).with("What the package name for this app?").and_return('my_app')
+      translate.stub(:create_file)
+
+      translate.should_receive(:nest_translations_hash).once.and_return({})
+
+      test = Faraday.new do |builder|
+        builder.adapter :test do |stub|
+          stub.get('/api/v2/locales.json') do
+            [ 200, {}, JSON.dump( {"locales" => [ {'url' => 'https://support.zendesk.com/api/v2/locales/1.json',
+                                                     'locale' => 'en' } ]})]
+          end
+          stub.get('/api/v2/locales/1.json?include=translations&packages=app_my_app') do
+            [ 200, {}, JSON.dump( { 'locale' => { 'translations' =>
+                                                    { 'app.description' => 'my awesome app' }}})]
+          end
+        end
+      end
+
+      translate.update(test)
+    end
+  end
 end

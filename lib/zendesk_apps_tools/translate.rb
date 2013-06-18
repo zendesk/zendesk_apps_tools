@@ -1,4 +1,5 @@
 require 'thor'
+require 'json'
 require 'zendesk_apps_tools/common'
 
 module ZendeskAppsTools
@@ -24,7 +25,7 @@ module ZendeskAppsTools
     end
 
     desc 'update', 'Update translation files from Zendesk'
-    def update
+    def update(request_builder = Faraday.new)
       app_package = get_value_from_stdin("What the package name for this app?", /^[a-z_]+$/, "Invalid package name, try again:")
       user = get_value_from_stdin("What is your support.zendesk.com username?", /^.+@.+\..+$/, "Invalid email, try again:")
       token = get_value_from_stdin("What is your support.zendesk.com API token?", /^[a-zA-Z0-9]{32}$/, "Invalid API token, try again:")
@@ -33,17 +34,17 @@ module ZendeskAppsTools
       key_prefix = "txt.apps.#{app_package}."
 
       say("Fetching translations...")
-      locale_response = api_call(LOCALE_ENDPOINT, user, token)
+      locale_response = api_call(LOCALE_ENDPOINT, user, token, request_builder)
       locales = JSON.parse(locale_response)["locales"]
 
       locales.each do |locale|
         locale_url = "#{locale["url"]}?include=translations&packages=app_#{app_package}"
-        translations = JSON.parse(api_call(locale_url, user, token))['locale']['translations']
+        translations = JSON.parse(api_call(locale_url, user, token, request_builder))['locale']['translations']
 
         write_json(locale['locale'][0..1], nest_translations_hash(translations, key_prefix))
       end
 
-      say("Translations updated")
+      say("Translations updated", :green)
     end
 
     def self.source_root
