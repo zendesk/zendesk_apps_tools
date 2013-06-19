@@ -2,9 +2,9 @@ require 'faraday'
 
 module ZendeskAppsTools
   module Common
-    def api_call(url, user, password, request = Faraday.new)
+    def api_request(url, user, password, request = Faraday.new)
       request.basic_auth(user, password)
-      request.get(url).body
+      request.get(url)
     end
 
     def get_value_from_stdin(prompt, valid_regex, error_msg)

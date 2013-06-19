@@ -34,17 +34,23 @@ module ZendeskAppsTools
       key_prefix = "txt.apps.#{app_package}."
 
       say("Fetching translations...")
-      locale_response = api_call(LOCALE_ENDPOINT, user, token, request_builder)
-      locales = JSON.parse(locale_response)["locales"]
+      locale_response = api_request(LOCALE_ENDPOINT, user, token, request_builder)
 
-      locales.each do |locale|
-        locale_url = "#{locale["url"]}?include=translations&packages=app_#{app_package}"
-        translations = JSON.parse(api_call(locale_url, user, token, request_builder))['locale']['translations']
+      if locale_response.status == 200
+        locales = JSON.parse(locale_response.body)["locales"]
 
-        write_json(locale['locale'][0..1], nest_translations_hash(translations, key_prefix))
+        locales.each do |locale|
+          locale_url = "#{locale["url"]}?include=translations&packages=app_#{app_package}"
+          locale_response = api_request(locale_url, user, token, request_builder).body
+          translations = JSON.parse(locale_response)['locale']['translations']
+
+          write_json(locale['locale'][0..1], nest_translations_hash(translations, key_prefix))
+        end
+        say("Translations updated", :green)
+
+      elsif locale_response.status == 401
+        say("Authentication failed", :red)
       end
-
-      say("Translations updated", :green)
     end
 
     def self.source_root
