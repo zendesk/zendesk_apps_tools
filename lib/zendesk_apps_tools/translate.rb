@@ -1,9 +1,15 @@
 require 'thor'
+require 'json'
+require 'zendesk_apps_tools/common'
+require 'zendesk_apps_tools/locale_identifier'
 
 module ZendeskAppsTools
   class Translate < Thor
     include Thor::Shell
     include Thor::Actions
+    include ZendeskAppsTools::Common
+
+    LOCALE_ENDPOINT = "https://support.zendesk.com/api/v2/locales.json"
 
     desc 'create', 'Create Zendesk translation file from en.json'
     def create
@@ -19,22 +25,66 @@ module ZendeskAppsTools
       write_yaml(app_name, package)
     end
 
+    desc 'update', 'Update translation files from Zendesk'
+    def update(request_builder = Faraday.new)
+      app_package = get_value_from_stdin("What is the package name for this app? (without app_)", /^[a-z_]+$/, "Invalid package name, try again:")
+      user = get_value_from_stdin("What is your support.zendesk.com username?", /^.+@.+\..+$/, "Invalid email, try again:")
+      token = get_value_from_stdin("What is your support.zendesk.com API token?", /^\w*$/, "Invalid API token, try again:")
+
+      user = "#{user}/token"
+      key_prefix = "txt.apps.#{app_package}."
+
+      say("Fetching translations...")
+      locale_response = api_request(LOCALE_ENDPOINT, user, token, request_builder)
+
+      if locale_response.status == 200
+        locales = JSON.parse(locale_response.body)["locales"]
+
+        locales.each do |locale|
+          locale_url = "#{locale["url"]}?include=translations&packages=app_#{app_package}"
+          locale_response = api_request(locale_url, user, token, request_builder).body
+          translations = JSON.parse(locale_response)['locale']['translations']
+
+          locale_name = ZendeskAppsTools::LocaleIdentifier.new(locale['locale']).language_id
+          write_json(locale_name, nest_translations_hash(translations, key_prefix))
+        end
+        say("Translations updated", :green)
+
+      elsif locale_response.status == 401
+        say("Authentication failed", :red)
+      end
+    end
+
     def self.source_root
       File.expand_path(File.join(File.dirname(__FILE__), "../.."))
     end
 
     no_commands do
 
-      def get_value_from_stdin(prompt, valid_regex, error_msg)
-        while input = ask(prompt)
-          unless input =~ valid_regex
-            say(error_msg, :red)
-          else
-            break
+      def write_json(locale_name, translations_hash)
+        create_file("translations/#{locale_name}.json", JSON.pretty_generate(translations_hash))
+      end
+
+      def nest_translations_hash(translations_hash, key_prefix)
+        result = {}
+
+        translations_hash.each do |full_key, value|
+          parts = full_key.gsub(key_prefix, '').split('.')
+          parts_count = parts.size - 1
+          context = result
+
+          parts.each_with_index do |part, i|
+
+            if parts_count == i
+              context[part] = value
+            else
+              context = context[part] ||= {}
+            end
+
           end
         end
 
-        return input
+        result
       end
 
       def write_yaml(app_name, package)
