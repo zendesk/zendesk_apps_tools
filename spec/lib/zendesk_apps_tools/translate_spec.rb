@@ -86,18 +86,29 @@ describe ZendeskAppsTools::Translate do
 
     context 'with a mix of nested and unnested keys' do
       it 'returns a mixed depth hash' do
-        translations = { 'global.error.title'   => 'An error occurred',
-                         'global.error.message' => 'Please try the previous action again.',
-                         'global.loading'       => 'Waiting for ticket data to load...',
-                         'global.requesting'    => 'Requesting data from Magento...' }
+        translations = {
+          'app.description' => 'This app is awesome',
+          'app.parameters.awesomeness.label' => 'Awesomeness level',
+          'global.error.title'   => 'An error occurred',
+          'global.error.message' => 'Please try the previous action again.',
+          'global.loading'       => 'Waiting for ticket data to load...',
+          'global.requesting'    => 'Requesting data from Magento...',
+          'errormessage'         => 'General error' }
 
-        result = { 'global'=> {
-          'error'=> {
-            'title'   => 'An error occurred',
-            'message' => 'Please try the previous action again.',
+        result = {
+          'app' => {
+            'description' => 'This app is awesome',
+            'parameters' => {
+              'awesomeness' => {'label' => 'Awesomeness level'}}
+          },
+          'global'=> {
+            'error'=> {
+              'title'   => 'An error occurred',
+              'message' => 'Please try the previous action again.',
           },
           'loading'    => 'Waiting for ticket data to load...',
-          'requesting' => 'Requesting data from Magento...'}}
+          'requesting' => 'Requesting data from Magento...'},
+          'errormessage' => 'General error'}
 
         context = translate = ZendeskAppsTools::Translate.new
         context.nest_translations_hash(translations, '').should == result
