@@ -113,7 +113,7 @@ describe ZendeskAppsTools::Translate do
       translate = ZendeskAppsTools::Translate.new
       translate.stub(:say)
       translate.stub(:ask)
-      translate.stub(:ask).with("What the package name for this app?").and_return('my_app')
+      translate.stub(:ask).with("What is the package name for this app? (without app_)").and_return('my_app')
       translate.stub(:create_file)
 
       translate.should_receive(:nest_translations_hash).once.and_return({})

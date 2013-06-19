@@ -26,7 +26,7 @@ module ZendeskAppsTools
 
     desc 'update', 'Update translation files from Zendesk'
     def update(request_builder = Faraday.new)
-      app_package = get_value_from_stdin("What the package name for this app?", /^[a-z_]+$/, "Invalid package name, try again:")
+      app_package = get_value_from_stdin("What is the package name for this app? (without app_)", /^[a-z_]+$/, "Invalid package name, try again:")
       user = get_value_from_stdin("What is your support.zendesk.com username?", /^.+@.+\..+$/, "Invalid email, try again:")
       token = get_value_from_stdin("What is your support.zendesk.com API token?", /^[a-zA-Z0-9]{32}$/, "Invalid API token, try again:")
 
