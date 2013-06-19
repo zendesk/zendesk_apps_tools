@@ -133,5 +133,22 @@ describe ZendeskAppsTools::Translate do
 
       translate.update(test)
     end
+
+    it 'exits gracefully when authentication fails' do
+      translate = ZendeskAppsTools::Translate.new
+      translate.stub(:say)
+      translate.stub(:ask)
+      translate.should_receive(:say).with('Authentication failed', :red)
+
+      test = Faraday.new do |builder|
+        builder.adapter :test do |stub|
+          stub.get('/api/v2/locales.json') do
+            [ 401, {}, "Authentication failed" ]
+          end
+        end
+      end
+
+      translate.update(test)
+    end
   end
 end
