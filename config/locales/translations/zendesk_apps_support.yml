@@ -87,3 +87,11 @@ parts:
       key: "txt.apps.admin.error.app_build.stylesheet_error"
       title: "App builder job: invalid stylesheet syntax"
       value: "Sass error: %{sass_error}"
+  - translation:
+      key: "txt.apps.admin.error.app_build.invalid_type_parameter.one"
+      title: "App builder job: single invalid parameter type error"
+      value: "%{invalid_types} is an invalid parameter type."
+  - translation:
+      key: "txt.apps.admin.error.app_build.invalid_type_parameter.other"
+      title: "App builder job: multiple invalid parameter types error"
+      value: "%{invalid_types} are invalid parameter types."
