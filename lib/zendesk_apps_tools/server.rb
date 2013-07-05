@@ -7,7 +7,7 @@ module ZendeskAppsTools
 
     get '/app.js' do
       content_type 'text/javascript'
-      ZendeskAppsSupport::Package.new(settings.root).readified_js(nil, 0, "http://localhost:#{settings.port}", settings.parameters)
+      ZendeskAppsSupport::Package.new(settings.root).readified_js(nil, 0, "http://localhost:#{settings.port}/", settings.parameters)
     end
 
   end
