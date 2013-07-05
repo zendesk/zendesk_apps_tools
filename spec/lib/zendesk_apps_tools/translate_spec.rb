@@ -74,6 +74,26 @@ describe ZendeskAppsTools::Translate do
 
   end
 
+  describe 'yaml structure' do
+
+    it 'builds a hash representing a translation set' do
+      app_name = 'some app'
+      package_name = 'package'
+      translations = {'error' => 'something bad'}
+      result = {
+         'title' => app_name,
+         'packages' => ['default', package_name],
+         'parts' =>
+           [ 'translation' => { 'key'   => 'txt.apps.package.error',
+                                'value' => 'something bad',
+                                'title' => '' }]
+      }
+
+      translate = ZendeskAppsTools::Translate.new
+      translate.yaml_structure(app_name, package_name, translations).should == result
+    end
+  end
+
   describe '#nest_translations_hash' do
     it 'removes package key prefix' do
       translations = { "txt.apps.my_app.app.description" => "Description" }
