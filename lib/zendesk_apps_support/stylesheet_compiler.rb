@@ -12,7 +12,7 @@ module ZendeskAppsSupport
     end
 
     def app_asset_url(name)
-      "#{@url_prefix}/#{name}"
+      "#{@url_prefix}#{name}"
     end
 
     private

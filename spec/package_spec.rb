@@ -39,7 +39,7 @@ describe ZendeskAppsSupport::Package do
 
   describe 'readified_js' do
     it 'should generate js ready for installation' do
-      js = @package.readified_js(nil, 0, 'http://localhost:4567')
+      js = @package.readified_js(nil, 0, 'http://localhost:4567/')
       expected =<<HERE
 (function() {
     with( require('apps/framework/app_scope') ) {
@@ -61,7 +61,7 @@ describe ZendeskAppsSupport::Package do
         ZendeskApps["ABC"] = ZendeskApps.defineApp(source)
                 .reopenClass({ location: "ticket_sidebar" })
                 .reopen({
-                    assetUrlPrefix: "http://localhost:4567",
+                    assetUrlPrefix: "http://localhost:4567/",
                     appClassName: "app-0",
                     author: {
                         name: "John Smith",
