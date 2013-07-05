@@ -1,5 +1,6 @@
 require 'thor'
 require 'json'
+require 'yaml'
 require 'zendesk_apps_tools/common'
 require 'zendesk_apps_tools/locale_identifier'
 
@@ -89,13 +90,26 @@ module ZendeskAppsTools
 
       def write_yaml(app_name, package)
         user_translations = JSON.parse(File.open('translations/en.json').read)
-        @translations = user_translations.keys.inject({}) do |translations, key|
+        translations = user_translations.keys.inject({}) do |translations, key|
           translations.merge( get_translations_for(user_translations, key) )
         end
 
-        @app_name = app_name
-        @package_name = package
-        template(File.join(Translate.source_root, 'templates/translation.erb.tt'), "translations/en.yml")
+        create_file("translations/en.yml", YAML.dump(yaml_structure(app_name, package, translations)))
+      end
+
+      def yaml_structure(app_name, package_name, translations)
+        result = {}
+        result['title'] = app_name
+        result['packages'] = ['default', package_name]
+        result['parts'] = translations.map do |key, value|
+          translation_item = { 'translation' => {} }
+          translation_item['translation']['key'] = "txt.apps.#{package_name}.#{key}"
+          translation_item['translation']['title'] = ''
+          translation_item['translation']['value'] = value
+          translation_item
+        end
+
+        result
       end
 
       def get_translations_for(scope, scope_key, keys = [], translations = {})
