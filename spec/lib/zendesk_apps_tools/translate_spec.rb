@@ -82,7 +82,7 @@ describe ZendeskAppsTools::Translate do
       translations = {'error' => 'something bad'}
       result = {
          'title' => app_name,
-         'packages' => ['default', package_name],
+         'packages' => ['default', "app_#{package_name}"],
          'parts' =>
            [ 'translation' => { 'key'   => 'txt.apps.package.error',
                                 'value' => 'something bad',
