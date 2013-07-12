@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:zendesk/zendesk_apps_support.git
+  remote: https://github.com/zendesk/zendesk_apps_support.git
   revision: 6d12e7c5071be8fe674106676b007c97bb51e828
   ref: v1.2.0
   specs:
