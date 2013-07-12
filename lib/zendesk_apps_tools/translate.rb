@@ -100,7 +100,7 @@ module ZendeskAppsTools
       def yaml_structure(app_name, package_name, translations)
         result = {}
         result['title'] = app_name
-        result['packages'] = ['default', package_name]
+        result['packages'] = ['default', "app_#{package_name}"]
         result['parts'] = translations.map do |key, value|
           translation_item = { 'translation' => {} }
           translation_item['translation']['key'] = "txt.apps.#{package_name}.#{key}"

@@ -15,20 +15,19 @@ Feature: Translate app strings
       | package name | test_package |
     Then the app file "tmp/aruba/translations/en.yml" is created with:
     """
-    title: "John Test App"
+    ---
+    title: John Test App
     packages:
       - default
       - app_test_package
-
     parts:
       - translation:
-        key: "txt.apps.test_package.app.description"
-        title: ""
-        value: "Play the famous zen tunes in your help desk."
+        key: txt.apps.test_package.app.description
+        title: ''
+        value: Play the famous zen tunes in your help desk.
       - translation:
-        key: "txt.apps.test_package.app.name"
-        title: ""
-        value: "Buddha Machine"
-
+        key: txt.apps.test_package.app.name
+        title: ''
+        value: Buddha Machine
     """
 
