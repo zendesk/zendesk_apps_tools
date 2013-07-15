@@ -1,10 +1,11 @@
+---
 title: "<%= @app_name %>"
 packages:
   - default
   - app_<%= @package_name %>
 
 parts:
-<% @translations.each do |key, value| -%>
+<% @escaped_translations.each do |key, value| -%>
   - translation:
       key: "txt.apps.<%= @package_name %>.<%= key %>"
       title: ""

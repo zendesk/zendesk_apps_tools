@@ -11,23 +11,26 @@ Feature: Translate app strings
 
   Scenario: Generate template yaml from en.json
     Given an app is created in directory "tmp/aruba"
+    And the fixture "quote_character_translation.json" is used for "translations/en.json"
     When I run "cd tmp/aruba && zat translate create" command with the following details:
       | package name | test_package |
     Then the app file "tmp/aruba/translations/en.yml" is created with:
     """
     ---
-    title: John Test App
+    title: "John Test App"
     packages:
       - default
       - app_test_package
+
     parts:
       - translation:
-        key: txt.apps.test_package.app.description
-        title: ''
-        value: Play the famous zen tunes in your help desk.
+        key: "txt.apps.test_package.app.description"
+        title: ""
+        value: "Play the famous zen tunes in your help desk."
       - translation:
-        key: txt.apps.test_package.app.name
-        title: ''
-        value: Buddha Machine
+        key: "txt.apps.test_package.app.name"
+        title: ""
+        value: "Buddha \"Machine\""
+
     """
 

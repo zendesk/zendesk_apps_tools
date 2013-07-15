@@ -9,6 +9,7 @@ module ZendeskAppsTools
     include Thor::Actions
     include ZendeskAppsTools::Common
 
+    CHARACTERS_TO_ESCAPE = %w[ " ]
     LOCALE_ENDPOINT = "https://support.zendesk.com/api/v2/locales.json"
 
     desc 'create', 'Create Zendesk translation file from en.json'
@@ -89,13 +90,25 @@ module ZendeskAppsTools
 
       def write_yaml(app_name, package)
         user_translations = JSON.parse(File.open('translations/en.json').read)
-        @translations = user_translations.keys.inject({}) do |translations, key|
+        translations = user_translations.keys.inject({}) do |translations, key|
           translations.merge( get_translations_for(user_translations, key) )
         end
+        @escaped_translations = escape_values(translations)
 
         @app_name = app_name
         @package_name = package
         template(File.join(Translate.source_root, 'templates/translation.erb.tt'), "translations/en.yml")
+      end
+
+      def escape_values(translations)
+        result = {}
+        translations.each do |key, value|
+          CHARACTERS_TO_ESCAPE.each do |char|
+            result[key] = value.gsub(char, "\\#{char}")
+          end
+        end
+
+        result
       end
 
       def get_translations_for(scope, scope_key, keys = [], translations = {})
