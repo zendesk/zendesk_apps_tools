@@ -1,6 +1,5 @@
 require 'thor'
 require 'json'
-require 'yaml'
 require 'zendesk_apps_tools/common'
 require 'zendesk_apps_tools/locale_identifier'
 
@@ -10,6 +9,7 @@ module ZendeskAppsTools
     include Thor::Actions
     include ZendeskAppsTools::Common
 
+    CHARACTERS_TO_ESCAPE = %w[ " ]
     LOCALE_ENDPOINT = "https://support.zendesk.com/api/v2/locales.json"
 
     desc 'create', 'Create Zendesk translation file from en.json'
@@ -93,20 +93,19 @@ module ZendeskAppsTools
         translations = user_translations.keys.inject({}) do |translations, key|
           translations.merge( get_translations_for(user_translations, key) )
         end
+        @escaped_translations = escape_values(translations)
 
-        create_file("translations/en.yml", YAML.dump(yaml_structure(app_name, package, translations)))
+        @app_name = app_name
+        @package_name = package
+        template(File.join(Translate.source_root, 'templates/translation.erb.tt'), "translations/en.yml")
       end
 
-      def yaml_structure(app_name, package_name, translations)
+      def escape_values(translations)
         result = {}
-        result['title'] = app_name
-        result['packages'] = ['default', "app_#{package_name}"]
-        result['parts'] = translations.map do |key, value|
-          translation_item = { 'translation' => {} }
-          translation_item['translation']['key'] = "txt.apps.#{package_name}.#{key}"
-          translation_item['translation']['title'] = ''
-          translation_item['translation']['value'] = value
-          translation_item
+        translations.each do |key, value|
+          CHARACTERS_TO_ESCAPE.each do |char|
+            result[key] = value.gsub(char, "\\#{char}")
+          end
         end
 
         result
