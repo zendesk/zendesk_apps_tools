@@ -1,3 +1,5 @@
+require 'fileutils'
+
 Given /^an app directory "(.*?)" exists$/ do |app_dir|
   @app_dir = app_dir
   FileUtils.rm_rf(@app_dir)
@@ -38,6 +40,13 @@ end
 
 Then /^the app file "(.*?)" is created with:$/ do |file, content|
   File.read(file).chomp.gsub(' ', '').should == content.gsub(' ', '')
+end
+
+Then /^the fixture "(.*?)" is used for "(.*?)"$/ do |fixture, app_file|
+  fixture_file = File.join('features', 'fixtures', fixture)
+  app_file_path = File.join(@app_dir, app_file)
+
+  FileUtils.cp(fixture_file, app_file_path)
 end
 
 
