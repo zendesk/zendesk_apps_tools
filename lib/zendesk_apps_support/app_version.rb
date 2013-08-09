@@ -14,7 +14,7 @@ module ZendeskAppsSupport
 
     DEPRECATED = '0.4'.freeze
     CURRENT    = '0.5'.freeze
-    FUTURE     = nil
+    FUTURE     = '1.0'.freeze
 
     TO_BE_SERVED     = [ DEPRECATED, CURRENT, FUTURE ].compact.freeze
     VALID_FOR_UPDATE = [ CURRENT, FUTURE ].compact.freeze
