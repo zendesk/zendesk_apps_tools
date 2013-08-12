@@ -42,8 +42,6 @@ module ZendeskAppsTools
         end
       end
 
-      @framework_version = AppVersion::CURRENT
-
       directory('app_template', @app_dir)
     end
 
