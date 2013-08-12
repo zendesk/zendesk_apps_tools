@@ -20,6 +20,7 @@ module ZendeskAppsSupport
             errors << missing_keys_error(manifest)
             errors << default_locale_error(manifest, package)
             errors << invalid_location_error(manifest)
+            errors << invalid_version_error(manifest, package)
             errors << parameters_error(manifest)
             errors << invalid_hidden_parameter_error(manifest)
             errors << invalid_type_error(manifest)
@@ -71,6 +72,14 @@ module ZendeskAppsSupport
           unless invalid_locations.empty?
             ValidationError.new(:invalid_location, :invalid_locations => invalid_locations.join(', '), :count => invalid_locations.length)
           end
+        end
+
+        def invalid_version_error(manifest, package)
+          valid_to_serve = AppVersion::TO_BE_SERVED
+          target_version = manifest['frameworkVersion']
+          return ValidationError.new(:invalid_version, :target_version => target_version, :available_versions => valid_to_serve.join(', ')) unless valid_to_serve.include?(target_version)
+
+          puts I18n.t('txt.apps.admin.warning.app_build.deprecated_version') if package.deprecated_version?
         end
 
         def invalid_hidden_parameter_error(manifest)

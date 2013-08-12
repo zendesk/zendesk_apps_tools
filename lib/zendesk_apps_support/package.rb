@@ -71,6 +71,10 @@ module ZendeskAppsSupport
       customer_css = File.exist?(css_file) ? File.read(css_file) : ""
     end
 
+    def deprecated_version?
+      @deprecated_version ||= manifest_json[:frameworkVersion] == AppVersion::DEPRECATED
+    end
+
     private
 
     def compiled_templates(app_id, asset_url_prefix)
