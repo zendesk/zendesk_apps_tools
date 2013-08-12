@@ -7,5 +7,5 @@
   "defaultLocale": "en",
   "private": true,
   "location": "ticket_sidebar",
-  "frameworkVersion": "<%= @framework_version %>"
+  "frameworkVersion": "0.5"
 }
