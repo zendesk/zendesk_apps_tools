@@ -32,6 +32,14 @@ parts:
       title: "App builder job: missing manifest fields error"
       value: "Missing required fields in manifest: %{missing_keys}"
   - translation:
+      key: "txt.apps.admin.error.app_build.oauth_keys.missing.one"
+      title: "App builder job: missing oauth fields error"
+      value: "Missing required oauth field in manifest: %{missing_keys}"
+  - translation:
+      key: "txt.apps.admin.error.app_build.oauth_keys.missing.other"
+      title: "App builder job: missing oauth fields error"
+      value: "Missing required oauth fields in manifest: %{missing_keys}"
+  - translation:
       key: "txt.apps.admin.error.app_build.missing_source"
       title: "App builder job: missing app.js error"
       value: "Could not find app.js"

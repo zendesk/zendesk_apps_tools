@@ -90,6 +90,15 @@ describe ZendeskAppsSupport::Validations::Manifest do
     errors.first().to_s.should =~ /^manifest is not proper JSON/
   end
 
+  it "should have an error when required oauth fields are missing" do
+    oauth_hash = {
+      "oauth" => {}
+    }
+    errors = ZendeskAppsSupport::Validations::Manifest.call(create_package(default_required_params.merge(oauth_hash)))
+    oauth_error = errors.find { |e| e.to_s =~ /oauth field/ }
+    oauth_error.to_s.should == "Missing required oauth fields in manifest: client_id, client_secret, authorize_uri, access_token_uri"
+  end
+
   context 'with invalid parameters' do
 
     before do

@@ -5,6 +5,7 @@ module ZendeskAppsSupport
     module Manifest
 
       REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale location frameworkVersion).freeze
+      OAUTH_REQUIRED_FIELDS = %w( client_id client_secret authorize_uri access_token_uri ).freeze
       LOCATIONS_AVAILABLE      = %w( nav_bar ticket_sidebar new_ticket_sidebar user_sidebar ).freeze
       TYPES_AVAILABLE          = %W(text password checkbox url number multiline hidden).freeze
 
@@ -20,6 +21,7 @@ module ZendeskAppsSupport
             errors << missing_keys_error(manifest)
             errors << default_locale_error(manifest, package)
             errors << invalid_location_error(manifest)
+            errors << oauth_error(manifest)
             errors << parameters_error(manifest)
             errors << invalid_hidden_parameter_error(manifest)
             errors << invalid_type_error(manifest)
@@ -30,6 +32,19 @@ module ZendeskAppsSupport
         end
 
         private
+
+        def oauth_error(manifest)
+          return unless manifest['oauth']
+
+          missing = OAUTH_REQUIRED_FIELDS.select do |key|
+            manifest['oauth'][key].nil? || manifest['oauth'][key].empty?
+          end
+
+          if missing.any?
+            ValidationError.new('oauth_keys.missing', :missing_keys => missing.join(', '), :count => missing.length)
+          end
+
+        end
 
         def parameters_error(manifest)
           return unless manifest['parameters']
