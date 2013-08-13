@@ -63,9 +63,8 @@ module ZendeskAppsTools
       errors = app_package.validate
       valid = errors.none?
 
-      puts 'You are targeting a deprecated version of the framework, your App will still work but might break as soon as the new framework version is deployed.' if app_package.deprecated_version?
-
       if valid
+        app_package.warnings.each { |w| say w.to_s, :yellow }
         say_status 'validate', 'OK'
       else
         errors.each do |e|
