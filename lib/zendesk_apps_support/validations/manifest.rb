@@ -77,9 +77,14 @@ module ZendeskAppsSupport
         def invalid_version_error(manifest, package)
           valid_to_serve = AppVersion::TO_BE_SERVED
           target_version = manifest['frameworkVersion']
-          return ValidationError.new(:invalid_version, :target_version => target_version, :available_versions => valid_to_serve.join(', ')) unless valid_to_serve.include?(target_version)
 
-          puts I18n.t('txt.apps.admin.warning.app_build.deprecated_version') if package.deprecated_version?
+          if target_version == AppVersion::DEPRECATED
+            package.warnings << I18n.t('txt.apps.admin.warning.app_build.deprecated_version')
+          end
+
+          unless valid_to_serve.include?(target_version)
+            return ValidationError.new(:invalid_version, :target_version => target_version, :available_versions => valid_to_serve.join(', '))
+          end
         end
 
         def invalid_hidden_parameter_error(manifest)

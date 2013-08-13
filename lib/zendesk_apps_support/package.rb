@@ -8,13 +8,14 @@ module ZendeskAppsSupport
     DEFAULT_SCSS   = File.read(File.expand_path('../default_styles.scss', __FILE__))
     SRC_TEMPLATE = Erubis::Eruby.new( File.read(File.expand_path('../src.js.erb', __FILE__)) )
 
-    attr_reader :root
+    attr_reader :root, :warnings
 
     def initialize(dir)
       @root = Pathname.new(File.expand_path(dir))
     end
 
     def validate
+      @warnings = []
       Validations::Manifest.call(self) +
         Validations::Source.call(self) +
         Validations::Templates.call(self) +
@@ -69,10 +70,6 @@ module ZendeskAppsSupport
     def customer_css
       css_file = File.join(root, 'app.css')
       customer_css = File.exist?(css_file) ? File.read(css_file) : ""
-    end
-
-    def deprecated_version?
-      @deprecated_version ||= manifest_json[:frameworkVersion] == AppVersion::DEPRECATED
     end
 
     private
