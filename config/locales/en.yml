@@ -15,6 +15,10 @@ en:
               missing:
                 one: ! 'Missing required field in manifest: %{missing_keys}'
                 other: ! 'Missing required fields in manifest: %{missing_keys}'
+            oauth_keys:
+              missing:
+                one: ! 'Missing required oauth field in manifest: %{missing_keys}'
+                other: ! 'Missing required oauth fields in manifest: %{missing_keys}'
             missing_source: Could not find app.js
             style_in_template: <style> tag in %{template}. Use an app.css file instead.
             invalid_default_locale: ! '%{defaultLocale} is not a valid default locale.
