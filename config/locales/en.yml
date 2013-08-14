@@ -31,6 +31,8 @@ en:
             invalid_hidden_parameter:
               one: ! '%{invalid_params} is set to hidden and cannot be required.'
               other: ! '%{invalid_params} are set to hidden and cannot be required.'
+            invalid_version: ! '%{target_version} is not a valid framework version.
+              Available versions are: %{available_versions}.'
             parameters_not_an_array: App parameters must be an array.
             duplicate_parameters: ! 'Duplicate app parameters defined: %{duplicate_parameters}'
             translation:
@@ -42,3 +44,8 @@ en:
             invalid_type_parameter:
               one: ! '%{invalid_types} is an invalid parameter type.'
               other: ! '%{invalid_types} are invalid parameter types.'
+        warning:
+          app_build:
+            deprecated_version: You are targeting a deprecated version of the framework,
+              your App will still work but might break as soon as the new framework
+              version is deployed.

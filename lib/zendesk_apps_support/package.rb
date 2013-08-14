@@ -8,10 +8,11 @@ module ZendeskAppsSupport
     DEFAULT_SCSS   = File.read(File.expand_path('../default_styles.scss', __FILE__))
     SRC_TEMPLATE = Erubis::Eruby.new( File.read(File.expand_path('../src.js.erb', __FILE__)) )
 
-    attr_reader :root
+    attr_reader :root, :warnings
 
     def initialize(dir)
       @root = Pathname.new(File.expand_path(dir))
+      @warnings = []
     end
 
     def validate

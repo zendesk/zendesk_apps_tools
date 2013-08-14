@@ -72,6 +72,14 @@ parts:
       title: "App builder job: hidden parameters set to required"
       value: "%{invalid_params} are set to hidden and cannot be required."
   - translation:
+      key: "txt.apps.admin.warning.app_build.deprecated_version"
+      title: "App builder job: deprecated version specified"
+      value: 'You are targeting a deprecated version of the framework, your App will still work but might break as soon as the new framework version is deployed.'
+  - translation:
+      key: "txt.apps.admin.error.app_build.invalid_version"
+      title: "App builder job: invalid framework version"
+      value: "%{target_version} is not a valid framework version. Available versions are: %{available_versions}."
+  - translation:
       key: "txt.apps.admin.error.app_build.parameters_not_an_array"
       title: "App builder job: app parameters must be an array"
       value: "App parameters must be an array."

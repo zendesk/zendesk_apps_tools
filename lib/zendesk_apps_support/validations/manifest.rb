@@ -5,7 +5,7 @@ module ZendeskAppsSupport
     module Manifest
 
       REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale location frameworkVersion).freeze
-      OAUTH_REQUIRED_FIELDS = %w( client_id client_secret authorize_uri access_token_uri ).freeze
+      OAUTH_REQUIRED_FIELDS    = %w( client_id client_secret authorize_uri access_token_uri ).freeze
       LOCATIONS_AVAILABLE      = %w( nav_bar ticket_sidebar new_ticket_sidebar user_sidebar ).freeze
       TYPES_AVAILABLE          = %W(text password checkbox url number multiline hidden).freeze
 
@@ -21,6 +21,7 @@ module ZendeskAppsSupport
             errors << missing_keys_error(manifest)
             errors << default_locale_error(manifest, package)
             errors << invalid_location_error(manifest)
+            errors << invalid_version_error(manifest, package)
             errors << oauth_error(manifest)
             errors << parameters_error(manifest)
             errors << invalid_hidden_parameter_error(manifest)
@@ -85,6 +86,19 @@ module ZendeskAppsSupport
           invalid_locations = [*manifest['location']] - LOCATIONS_AVAILABLE
           unless invalid_locations.empty?
             ValidationError.new(:invalid_location, :invalid_locations => invalid_locations.join(', '), :count => invalid_locations.length)
+          end
+        end
+
+        def invalid_version_error(manifest, package)
+          valid_to_serve = AppVersion::TO_BE_SERVED
+          target_version = manifest['frameworkVersion']
+
+          if target_version == AppVersion::DEPRECATED
+            package.warnings << I18n.t('txt.apps.admin.warning.app_build.deprecated_version')
+          end
+
+          unless valid_to_serve.include?(target_version)
+            return ValidationError.new(:invalid_version, :target_version => target_version, :available_versions => valid_to_serve.join(', '))
           end
         end
 

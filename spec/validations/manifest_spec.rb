@@ -65,6 +65,16 @@ describe ZendeskAppsSupport::Validations::Manifest do
     locations_error.should_not be_nil
   end
 
+  it 'should have an error when the version is not supported' do
+    manifest = { 'frameworkVersion' => '0.7' }
+    manifest_file = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(manifest))
+    package = mock('Package', :files => [manifest_file])
+    errors = ZendeskAppsSupport::Validations::Manifest.call(package)
+
+    version_error = errors.find { |e| e.to_s =~ /not a valid framework version/ }
+    version_error.should_not be_nil
+  end
+
   it 'should have an error when a hidden parameter is set to required' do
     manifest = {
       'parameters' => [
@@ -104,6 +114,7 @@ describe ZendeskAppsSupport::Validations::Manifest do
     before do
       ZendeskAppsSupport::Validations::Manifest.stub(:default_locale_error)
       ZendeskAppsSupport::Validations::Manifest.stub(:invalid_location_error)
+      ZendeskAppsSupport::Validations::Manifest.stub(:invalid_version_error)
     end
 
     it 'has an error when the app parameters are not an array' do
