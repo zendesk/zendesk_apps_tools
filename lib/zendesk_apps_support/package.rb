@@ -12,10 +12,10 @@ module ZendeskAppsSupport
 
     def initialize(dir)
       @root = Pathname.new(File.expand_path(dir))
+      @warnings = []
     end
 
     def validate
-      @warnings = []
       Validations::Manifest.call(self) +
         Validations::Source.call(self) +
         Validations::Templates.call(self) +
