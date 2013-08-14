@@ -65,7 +65,7 @@ describe ZendeskAppsSupport::Validations::Manifest do
     locations_error.should_not be_nil
   end
 
-  it('should have an error when the version is not supported') do
+  it 'should have an error when the version is not supported' do
     manifest = { 'frameworkVersion' => '0.7' }
     manifest_file = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(manifest))
     package = mock('Package', :files => [manifest_file])
