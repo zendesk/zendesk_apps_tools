@@ -42,8 +42,6 @@ module ZendeskAppsTools
         end
       end
 
-      @framework_version = AppVersion::CURRENT
-
       directory('app_template', @app_dir)
     end
 
@@ -66,6 +64,7 @@ module ZendeskAppsTools
       valid = errors.none?
 
       if valid
+        app_package.warnings.each { |w| say w.to_s, :yellow }
         say_status 'validate', 'OK'
       else
         errors.each do |e|
