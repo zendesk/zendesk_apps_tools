@@ -48,7 +48,7 @@ module ZendeskAppsSupport
       author = manifest[:author]
       translations = JSON.parse(File.read(File.join(root, "translations/en.json")))
       framework_version = manifest[:frameworkVersion]
-      templates = compiled_templates(app_id, asset_url_prefix)
+      templates = manifest[:noTemplate] ? {} : compiled_templates(app_id, asset_url_prefix)
 
       settings["title"] = name
 
