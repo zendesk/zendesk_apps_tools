@@ -5,6 +5,7 @@ require 'json'
 module ZendeskAppsSupport
   class Package
 
+    DEFAULT_LAYOUT = Erubis::Eruby.new( File.read(File.expand_path('../default_template.html.erb', __FILE__)) )
     DEFAULT_SCSS   = File.read(File.expand_path('../default_styles.scss', __FILE__))
     SRC_TEMPLATE = Erubis::Eruby.new( File.read(File.expand_path('../src.js.erb', __FILE__)) )
 
@@ -85,8 +86,10 @@ module ZendeskAppsSupport
         end
       end
 
+      layout = templates['layout'] || DEFAULT_LAYOUT.result
+
       templates.tap do |templates|
-        templates['layout'] = "<style>\n#{compiled_css}</style>\n#{templates['layout']}"
+        templates['layout'] = "<style>\n#{compiled_css}</style>\n#{layout}"
       end
     end
 
