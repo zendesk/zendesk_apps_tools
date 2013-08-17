@@ -74,7 +74,7 @@ parts:
   - translation:
       key: "txt.apps.admin.warning.app_build.deprecated_version"
       title: "App builder job: deprecated version specified"
-      value: 'You are targeting a deprecated version of the framework, your App will still work but might break as soon as the new framework version is deployed.'
+      value: 'You are targeting a deprecated version of the framework. Your app will work, but it might break when the new framework version is deployed.'
   - translation:
       key: "txt.apps.admin.error.app_build.invalid_version"
       title: "App builder job: invalid framework version"
