@@ -5,8 +5,9 @@ require 'json'
 module ZendeskAppsSupport
   class Package
 
-    DEFAULT_SCSS   = File.read(File.expand_path('../default_styles.scss', __FILE__))
-    SRC_TEMPLATE = Erubis::Eruby.new( File.read(File.expand_path('../src.js.erb', __FILE__)) )
+    DEFAULT_LAYOUT = Erubis::Eruby.new( File.read(File.expand_path('../assets/default_template.html.erb', __FILE__)) )
+    DEFAULT_SCSS   = File.read(File.expand_path('../assets/default_styles.scss', __FILE__))
+    SRC_TEMPLATE = Erubis::Eruby.new( File.read(File.expand_path('../assets/src.js.erb', __FILE__)) )
 
     attr_reader :root, :warnings
 
@@ -48,7 +49,7 @@ module ZendeskAppsSupport
       author = manifest[:author]
       translations = JSON.parse(File.read(File.join(root, "translations/en.json")))
       framework_version = manifest[:frameworkVersion]
-      templates = compiled_templates(app_id, asset_url_prefix)
+      templates = manifest[:noTemplate] ? {} : compiled_templates(app_id, asset_url_prefix)
 
       settings["title"] = name
 
@@ -86,8 +87,10 @@ module ZendeskAppsSupport
         end
       end
 
+      layout = templates['layout'] || DEFAULT_LAYOUT.result
+
       templates.tap do |templates|
-        templates['layout'] = "<style>\n#{compiled_css}</style>\n#{templates['layout']}"
+        templates['layout'] = "<style>\n#{compiled_css}</style>\n#{layout}"
       end
     end
 
