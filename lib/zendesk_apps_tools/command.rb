@@ -165,11 +165,15 @@ module ZendeskAppsTools
       return {} if parameters.nil?
 
       parameters.inject({}) do |settings, param|
-        if param[:required]
+        if param[:default]
+          puts "Enter a value for parameter '#{param[:name]}' or press 'Return' to use the default value"
+          stdin = $stdin.readline.chomp.strip
+          input = param[:default] if stdin.empty?
+        elsif param[:required]
           puts "Enter a value for required parameter '#{param[:name]}':"
           input = get_value_from_stdin(/\S+/, 'Invalid, try again:')
         else
-          puts "Enter a value for optional parameter '#{param[:name]}': (press 'Return' to skip)"
+          puts "Enter a value for optional parameter '#{param[:name]}' or press 'Return' to skip"
           input = $stdin.readline.chomp.strip
         end
 
