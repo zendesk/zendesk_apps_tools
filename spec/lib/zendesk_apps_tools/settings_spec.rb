@@ -13,37 +13,37 @@ describe ZendeskAppsTools::Settings do
     it 'prompts the user for settings' do
       parameters = [
         {
-          :name => "setting1",
+          :name     => "required",
+          :required => true
+        },
+        {
+          :name     => "required_with_default",
           :required => true,
-          :default => "123"
+          :default  => "123"
         },
         {
-          :name => "setting2",
-          :required => "xyz"
+          :name     => "not_required",
         },
         {
-          :name => "setting3",
-          :default => "456"
+          :name     => "not_required_with_default",
+          :default  => "789"
         },
         {
-          :name => "setting4",
-        },
-        {
-          :name => "setting5",
+          :name     => "skipped",
         }
       ]
 
       settings = {
-        "setting1" => "123",
-        "setting2" => "xyz",
-        "setting3" => "456",
-        "setting5" => "789"
+        "required"                  => "xyz",
+        "required_with_default"     => "123",
+        "not_required"              => "456",
+        "not_required_with_default" => "789"
       }
 
       context = ZendeskAppsTools::Settings.new(@interface)
-      @interface.stub(:ask).and_return('')
-      @interface.stub(:ask).with("Enter a value for required parameter 'setting2':\n").and_return('xyz')
-      @interface.stub(:ask).with("Enter a value for optional parameter 'setting5' or press 'Return' to skip:\n").and_return('789')
+      @interface.stub(:ask).and_return('') # this represents the default user input
+      @interface.stub(:ask).with("Enter a value for required parameter 'required':\n").and_return('xyz')
+      @interface.stub(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n").and_return('456')
 
       result = context.settings_for_parameters(parameters).should == settings
     end
