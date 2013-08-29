@@ -1,11 +1,12 @@
 require 'spec_helper'
+require 'common'
 require 'settings'
 
 describe ZendeskAppsTools::Settings do
 
   before(:each) do
-    @context = Object.new
-    @context.extend(ZendeskAppsTools::Settings)
+    @interface = Object.new
+    @interface.extend(ZendeskAppsTools::Common)
   end
 
   describe '#settings_for_parameters' do
@@ -18,23 +19,33 @@ describe ZendeskAppsTools::Settings do
         },
         {
           :name => "setting2",
-          :default => "456"
+          :required => "xyz"
         },
         {
           :name => "setting3",
+          :default => "456"
+        },
+        {
+          :name => "setting4",
+        },
+        {
+          :name => "setting5",
         }
       ]
 
       settings = {
         "setting1" => "123",
-        "setting2" => "456"
+        "setting2" => "xyz",
+        "setting3" => "456",
+        "setting5" => "789"
       }
 
+      context = ZendeskAppsTools::Settings.new(@interface)
+      @interface.stub(:ask).and_return('')
+      @interface.stub(:ask).with("Enter a value for required parameter 'setting2':\n").and_return('xyz')
+      @interface.stub(:ask).with("Enter a value for optional parameter 'setting5' or press 'Return' to skip:\n").and_return('789')
 
-      @context.stub(:ask).and_return('')
-      result = @context.settings_for_parameters(parameters)
-
-      result.should == settings
+      result = context.settings_for_parameters(parameters).should == settings
     end
   end
 
