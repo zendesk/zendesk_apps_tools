@@ -9,7 +9,7 @@ module ZendeskAppsTools
 
     def get_value_from_stdin(prompt, opts = {})
       options = {
-        :valid_regex => /^\w*$/,
+        :valid_regex => opts[:allow_empty] ? /^\w*$/ : /\S+/,
         :error_msg => 'Invalid, try again:',
         :allow_empty => false
       }.merge(opts)
