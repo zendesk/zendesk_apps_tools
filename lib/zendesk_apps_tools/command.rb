@@ -3,6 +3,8 @@ require 'zip/zip'
 require 'pathname'
 require 'net/http'
 require 'json'
+require 'zendesk_apps_tools/translate'
+require 'zendesk_apps_tools/settings'
 
 module ZendeskAppsTools
   require 'zendesk_apps_support'
@@ -13,6 +15,7 @@ module ZendeskAppsTools
 
     include Thor::Actions
     include ZendeskAppsSupport
+    include ZendeskAppsTools::Settings
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
@@ -161,30 +164,6 @@ module ZendeskAppsTools
       @app_package ||= Package.new(self.app_dir.to_s)
     end
 
-    def settings_for_parameters(parameters)
-      return {} if parameters.nil?
-
-      parameters.inject({}) do |settings, param|
-        if param[:default]
-          puts "Enter a value for parameter '#{param[:name]}' or press 'Return' to use the default value"
-          stdin = $stdin.readline.chomp.strip
-          input = param[:default] if stdin.empty?
-        elsif param[:required]
-          puts "Enter a value for required parameter '#{param[:name]}':"
-          input = get_value_from_stdin(/\S+/, 'Invalid, try again:')
-        else
-          puts "Enter a value for optional parameter '#{param[:name]}' or press 'Return' to skip"
-          input = $stdin.readline.chomp.strip
-        end
-
-        unless input.empty?
-          input = (input =~ /^(true|t|yes|y|1)$/i) ? true : false if param[:type] == 'checkbox'
-          settings[param[:name]] = input
-        end
-
-        settings
-      end
-    end
   end
 end
 
