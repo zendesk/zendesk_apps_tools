@@ -3,6 +3,9 @@ require 'zip/zip'
 require 'pathname'
 require 'net/http'
 require 'json'
+require 'zendesk_apps_tools/translate'
+require 'zendesk_apps_tools/common'
+require 'zendesk_apps_tools/settings'
 
 module ZendeskAppsTools
   require 'zendesk_apps_support'
@@ -13,6 +16,7 @@ module ZendeskAppsTools
 
     include Thor::Actions
     include ZendeskAppsSupport
+    include ZendeskAppsTools::Common
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
@@ -21,17 +25,12 @@ module ZendeskAppsTools
 
     desc "new", "Generate a new app"
     def new
-      puts "Enter this app author's name:"
-      @author_name = get_value_from_stdin(/^\w.*$/, "Invalid name, try again:")
+      @author_name = get_value_from_stdin("Enter this app author's name:\n", :error_msg => "Invalid name, try again:")
+      @author_email = get_value_from_stdin("Enter this app author's email:\n", :valid_regex => /^.+@.+\..+$/, :error_msg => "Invalid email, try again:")
+      @app_name = get_value_from_stdin("Enter a name for this new app:\n", :error_msg => "Invalid app name, try again:")
 
-      puts "Enter this app author's email:"
-      @author_email = get_value_from_stdin(/^.+@.+\..+$/, "Invalid email, try again:")
-
-      puts "Enter a name for this new app:"
-      @app_name = get_value_from_stdin(/^\w.*$/, "Invalid app name, try again:")
-
-      puts "Enter a directory name to save the new app (will create the dir if it does not exist, default to current dir):"
-      while @app_dir = $stdin.readline.chomp.strip do
+      prompt = "Enter a directory name to save the new app (will create the dir if it does not exist, default to current dir):\n"
+      while @app_dir = get_value_from_stdin(prompt) do
         @app_dir = './' and break if @app_dir.empty?
         if !File.exists?(@app_dir)
           break
@@ -48,8 +47,8 @@ module ZendeskAppsTools
     desc "validate", "Validate your app"
     method_option :path, :default => './', :required => false
     def validate
-      puts "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):"
-      zendesk = get_value_from_stdin(/^http:\/\/\w+\.\w+|^$/, 'Invalid url, try again:')
+      prompt = "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):\n"
+      zendesk = get_value_from_stdin(prompt, :valid_regex => /^http:\/\/\w+\.\w+|^$/, :error_msg => 'Invalid url, try again:')
       zendesk = DEFAULT_ZENDESK_URL if zendesk.empty?
       url = URI.parse(zendesk)
       response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
@@ -118,7 +117,8 @@ module ZendeskAppsTools
       setup_path(options[:path])
       manifest = app_package.manifest_json
 
-      settings = settings_for_parameters(manifest[:parameters])
+      settings_helper = ZendeskAppsTools::Settings.new
+      settings = settings_helper.get_settings_from(self, manifest[:parameters])
 
       require 'zendesk_apps_tools/server'
       ZendeskAppsTools::Server.tap do |server|
@@ -130,18 +130,6 @@ module ZendeskAppsTools
     end
 
     protected
-
-    def get_value_from_stdin(valid_regex, error_msg)
-      while input = $stdin.readline.chomp.strip do
-        unless input =~ valid_regex
-          puts error_msg
-        else
-          break
-        end
-      end
-
-      return input
-    end
 
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
@@ -161,26 +149,6 @@ module ZendeskAppsTools
       @app_package ||= Package.new(self.app_dir.to_s)
     end
 
-    def settings_for_parameters(parameters)
-      return {} if parameters.nil?
-
-      parameters.inject({}) do |settings, param|
-        if param[:required]
-          puts "Enter a value for required parameter '#{param[:name]}':"
-          input = get_value_from_stdin(/\S+/, 'Invalid, try again:')
-        else
-          puts "Enter a value for optional parameter '#{param[:name]}': (press 'Return' to skip)"
-          input = $stdin.readline.chomp.strip
-        end
-
-        unless input.empty?
-          input = (input =~ /^(true|t|yes|y|1)$/i) ? true : false if param[:type] == 'checkbox'
-          settings[param[:name]] = input
-        end
-
-        settings
-      end
-    end
   end
 end
 

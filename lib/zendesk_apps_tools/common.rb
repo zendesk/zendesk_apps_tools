@@ -7,10 +7,17 @@ module ZendeskAppsTools
       request.get(url)
     end
 
-    def get_value_from_stdin(prompt, valid_regex, error_msg)
+    def get_value_from_stdin(prompt, opts = {})
+      options = {
+        :valid_regex => opts[:allow_empty] ? /^\w*$/ : /\S+/,
+        :error_msg => 'Invalid, try again:',
+        :allow_empty => false
+      }.merge(opts)
+
       while input = ask(prompt)
-        unless input =~ valid_regex
-          say(error_msg, :red)
+        return "" if input.empty? && options[:allow_empty]
+        unless input =~ options[:valid_regex]
+          say(options[:error_msg], :red)
         else
           break
         end
