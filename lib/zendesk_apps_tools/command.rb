@@ -117,8 +117,8 @@ module ZendeskAppsTools
       setup_path(options[:path])
       manifest = app_package.manifest_json
 
-      settings_helper = ZendeskAppsTools::Settings.new self
-      settings = settings_helper.settings_for_parameters(manifest[:parameters])
+      settings_helper = ZendeskAppsTools::Settings.new
+      settings = settings_helper.get_settings_from(self, manifest[:parameters])
 
       require 'zendesk_apps_tools/server'
       ZendeskAppsTools::Server.tap do |server|
