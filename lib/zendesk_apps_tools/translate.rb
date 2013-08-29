@@ -18,19 +18,19 @@ module ZendeskAppsTools
       app_name = manifest['name']
 
       unless app_name
-        app_name = get_value_from_stdin('What is the name of this app?', /^\w.*$/, "Invalid name, try again:")
+        app_name = get_value_from_stdin('What is the name of this app?', :error_msg => "Invalid name, try again:")
       end
 
-      package = get_value_from_stdin('What is the package name for this app?', /^[a-z_]+$/, "Invalid package name, try again:")
+      package = get_value_from_stdin('What is the package name for this app?', :valid_regex => /^[a-z_]+$/, :error_msg => "Invalid package name, try again:")
 
       write_yaml(app_name, package)
     end
 
     desc 'update', 'Update translation files from Zendesk'
     def update(request_builder = Faraday.new)
-      app_package = get_value_from_stdin("What is the package name for this app? (without app_)", /^[a-z_]+$/, "Invalid package name, try again:")
-      user = get_value_from_stdin("What is your support.zendesk.com username?", /^.+@.+\..+$/, "Invalid email, try again:")
-      token = get_value_from_stdin("What is your support.zendesk.com API token?", /^\w*$/, "Invalid API token, try again:")
+      app_package = get_value_from_stdin("What is the package name for this app? (without app_)", :valid_regex => /^[a-z_]+$/, :error_msg => "Invalid package name, try again:")
+      user = get_value_from_stdin("What is your support.zendesk.com username?", :valid_regex => /^.+@.+\..+$/, :error_msg => "Invalid email, try again:")
+      token = get_value_from_stdin("What is your support.zendesk.com API token?", :error_msg => "Invalid API token, try again:")
 
       user = "#{user}/token"
       key_prefix = "txt.apps.#{app_package}."
