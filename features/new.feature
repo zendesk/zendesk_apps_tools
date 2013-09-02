@@ -19,6 +19,7 @@ Feature: create a template for a new zendesk app
   "defaultLocale": "en",
   "private": true,
   "location": "ticket_sidebar",
+  "version": "1.0",
   "frameworkVersion": "0.5"
 }
 """
