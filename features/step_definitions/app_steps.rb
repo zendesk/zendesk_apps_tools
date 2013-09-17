@@ -1,5 +1,14 @@
 require 'fileutils'
 
+When /^I move to the app directory$/ do
+  @previous_dir = Dir.pwd
+  Dir.chdir(@app_dir)
+end
+
+When /^I reset the working directory$/ do
+  Dir.chdir(@previous_dir)
+end
+
 Given /^an app directory "(.*?)" exists$/ do |app_dir|
   @app_dir = app_dir
   FileUtils.rm_rf(@app_dir)
@@ -40,6 +49,10 @@ end
 
 Then /^the app file "(.*?)" is created with:$/ do |file, content|
   File.read(file).chomp.gsub(' ', '').should == content.gsub(' ', '')
+end
+
+Then /^the app file "(.*?)" is created$/ do |filename|
+  File.exists?(filename).should be_true
 end
 
 Then /^the fixture "(.*?)" is used for "(.*?)"$/ do |fixture, app_file|
