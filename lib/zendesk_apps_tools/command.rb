@@ -30,7 +30,8 @@ module ZendeskAppsTools
       @app_name = get_value_from_stdin("Enter a name for this new app:\n", :error_msg => "Invalid app name, try again:")
 
       prompt = "Enter a directory name to save the new app (will create the dir if it does not exist, default to current dir):\n"
-      while @app_dir = get_value_from_stdin(prompt) do
+      opts = { :valid_regex => /^(\w|\/|\\)*$/, :allow_empty => true }
+      while @app_dir = get_value_from_stdin(prompt, opts) do
         @app_dir = './' and break if @app_dir.empty?
         if !File.exists?(@app_dir)
           break
