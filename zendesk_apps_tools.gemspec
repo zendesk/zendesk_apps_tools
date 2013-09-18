@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "zendesk_apps_tools"
-  s.version     = "1.2.2"
+  s.version     = "1.3.0"
   s.executables << 'zat'
   s.platform    = Gem::Platform::RUBY
   s.license     = "Apache License Version 2.0"
