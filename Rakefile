@@ -1,6 +1,7 @@
 require 'rake/clean'
 require 'cucumber/rake/task'
 require 'rspec/core/rake_task'
+require 'bump/tasks'
 
 RSpec::Core::RakeTask.new(:spec)
 
