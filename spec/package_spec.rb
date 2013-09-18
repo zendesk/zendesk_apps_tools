@@ -8,7 +8,7 @@ describe ZendeskAppsSupport::Package do
 
   describe 'files' do
     it 'should return all the files within the app folder excluding files in tmp folder' do
-      @package.files.map(&:relative_path).should == %w(app.css app.js assets/logo-small.png assets/logo.png manifest.json templates/layout.hdbs translations/en.json)
+      @package.files.map(&:relative_path).should =~ %w(app.css app.js assets/logo-small.png assets/logo.png manifest.json templates/layout.hdbs translations/en.json)
     end
   end
 
