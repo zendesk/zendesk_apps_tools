@@ -1,5 +1,17 @@
 Feature: create a template for a new zendesk app
 
+  Scenario: Create a new app in an existing directory
+    Given an app directory "tmp/aruba" exists
+    And I move to the app directory
+    When I run "zat new" command with the following details:
+      | author name  | John Citizen      |
+      | author email | john@example.com  |
+      | app name     | John Test App     |
+      | app dir      |                   |
+
+   Then the app file "manifest.json" is created
+   And I reset the working directory
+
   Scenario: create a template for a new zendesk app by running 'zat new' command
     Given an app directory "tmp/aruba" exists
     When I run "zat new" command with the following details:
