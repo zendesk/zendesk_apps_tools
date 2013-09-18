@@ -46,6 +46,6 @@ en:
               other: ! '%{invalid_types} are invalid parameter types.'
         warning:
           app_build:
-            deprecated_version: You are targeting a deprecated version of the framework,
-              your App will still work but might break as soon as the new framework
-              version is deployed.
+            deprecated_version: You are targeting a deprecated version of the framework.
+              Your app will work, but it might break when the new framework version
+              is deployed.
