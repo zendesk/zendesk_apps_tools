@@ -1,9 +1,9 @@
 Gem::Specification.new do |s|
   s.name        = "zendesk_apps_support"
-  s.version     = "1.4.1"
+  s.version     = "1.5.0"
   s.platform    = Gem::Platform::RUBY
   s.license     = "Apache License Version 2.0"
-  s.authors     = ["James A. Rosen", "Kenshiro Nakagawa", "Shajith Chacko"]
+  s.authors     = ["James A. Rosen", "Likun Liu", "Sean Caffery", "Daniel Ribeiro"]
   s.email       = ["dev@zendesk.com"]
   s.homepage    = "http://github.com/zendesk/zendesk_apps_support"
   s.summary     = "Support to help you develop Zendesk Apps."
