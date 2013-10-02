@@ -58,7 +58,7 @@ parts:
   - translation:
       key: "txt.apps.admin.error.app_build.invalid_location.one"
       title: "App builder job: invalid locations"
-      value: "%{invalid_locations} in an invalid location."
+      value: "%{invalid_locations} is an invalid location."
   - translation:
       key: "txt.apps.admin.error.app_build.invalid_location.other"
       title: "App builder job: invalid locations"

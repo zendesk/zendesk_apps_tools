@@ -26,7 +26,7 @@ en:
             missing_translation_file: ! 'Missing translation file for locale ''%{defaultLocale}''.
               Please read: http://developer.zendesk.com/documentation/apps/i18n.html'
             invalid_location:
-              one: ! '%{invalid_locations} in an invalid location.'
+              one: ! '%{invalid_locations} is an invalid location.'
               other: ! '%{invalid_locations} are invalid locations.'
             invalid_hidden_parameter:
               one: ! '%{invalid_params} is set to hidden and cannot be required.'
