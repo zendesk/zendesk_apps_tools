@@ -4,10 +4,10 @@ module ZendeskAppsSupport
   module Validations
     module Manifest
 
-      REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale location frameworkVersion).freeze
+      REQUIRED_MANIFEST_FIELDS = %w( author defaultLocale location frameworkVersion ).freeze
       OAUTH_REQUIRED_FIELDS    = %w( client_id client_secret authorize_uri access_token_uri ).freeze
-      LOCATIONS_AVAILABLE      = %w( nav_bar ticket_sidebar new_ticket_sidebar user_sidebar ).freeze
-      TYPES_AVAILABLE          = %W(text password checkbox url number multiline hidden).freeze
+      LOCATIONS_AVAILABLE      = %w( top_bar nav_bar ticket_sidebar new_ticket_sidebar user_sidebar ).freeze
+      TYPES_AVAILABLE          = %W( text password checkbox url number multiline hidden ).freeze
 
       class <<self
         def call(package)
