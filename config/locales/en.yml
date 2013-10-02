@@ -26,7 +26,7 @@ en:
             missing_translation_file: ! 'Missing translation file for locale ''%{defaultLocale}''.
               Please read: http://developer.zendesk.com/documentation/apps/i18n.html'
             invalid_location:
-              one: ! '%{invalid_locations} in an invalid location.'
+              one: ! '%{invalid_locations} is an invalid location.'
               other: ! '%{invalid_locations} are invalid locations.'
             invalid_hidden_parameter:
               one: ! '%{invalid_params} is set to hidden and cannot be required.'
@@ -46,6 +46,6 @@ en:
               other: ! '%{invalid_types} are invalid parameter types.'
         warning:
           app_build:
-            deprecated_version: You are targeting a deprecated version of the framework,
-              your App will still work but might break as soon as the new framework
-              version is deployed.
+            deprecated_version: You are targeting a deprecated version of the framework.
+              Your app will work, but it might break when the new framework version
+              is deployed.
