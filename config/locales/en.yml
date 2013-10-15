@@ -21,8 +21,7 @@ en:
                 other: ! 'Missing required oauth fields in manifest: %{missing_keys}'
             missing_source: Could not find app.js
             style_in_template: <style> tag in %{template}. Use an app.css file instead.
-            invalid_default_locale: ! '%{defaultLocale} is not a valid default locale.
-              Only two- and three-letter ISO 639 language codes are allowed.'
+            invalid_default_locale: ! '%{defaultLocale} is not a valid default locale.'
             missing_translation_file: ! 'Missing translation file for locale ''%{defaultLocale}''.
               Please read: http://developer.zendesk.com/documentation/apps/i18n.html'
             invalid_location:
@@ -36,8 +35,7 @@ en:
             parameters_not_an_array: App parameters must be an array.
             duplicate_parameters: ! 'Duplicate app parameters defined: %{duplicate_parameters}'
             translation:
-              invalid_locale: ! '%{file} is not a valid locale. Only two- and three-letter
-                ISO 639 language codes are allowed.'
+              invalid_locale: ! '%{file} is not a valid locale.'
               not_json: ! '%{file} is not valid JSON. %{errors}'
               not_json_object: ! '%{file} is not a JSON object.'
             stylesheet_error: ! 'Sass error: %{sass_error}'

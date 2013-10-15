@@ -3,11 +3,10 @@ require 'jshintrb'
 module ZendeskAppsSupport
   module Validations
     module Translations
+      TRANSLATIONS_PATH = %r{^translations/(.*)\.json$}
+      VALID_LOCALE = /^[a-z]{2}(-\w{2,3})?$/
+
       class << self
-
-        TRANSLATIONS_PATH = %r{^translations/(.*)\.json$}
-        VALID_LOCALE = /^[a-z]{2,3}$/
-
         def call(package)
           package.files.inject([]) do |errors, file|
             if path_match = TRANSLATIONS_PATH.match(file.relative_path)
