@@ -10,7 +10,7 @@ module ZendeskAppsTools
     include ZendeskAppsTools::Common
 
     CHARACTERS_TO_ESCAPE = %w[ " ]
-    LOCALE_ENDPOINT = "https://support.zendesk.com/api/v2/locales.json"
+    LOCALE_ENDPOINT = "https://support.zendesk.com/api/v2/locales/agent.json"
 
     desc 'create', 'Create Zendesk translation file from en.json'
     def create
