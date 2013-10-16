@@ -29,21 +29,19 @@ module ZendeskAppsTools
     desc 'update', 'Update translation files from Zendesk'
     def update(request_builder = Faraday.new)
       app_package = get_value_from_stdin("What is the package name for this app? (without app_)", :valid_regex => /^[a-z_]+$/, :error_msg => "Invalid package name, try again:")
-      user = get_value_from_stdin("What is your support.zendesk.com username?", :valid_regex => /^.+@.+\..+$/, :error_msg => "Invalid email, try again:")
-      token = get_value_from_stdin("What is your support.zendesk.com API token?", :error_msg => "Invalid API token, try again:")
 
       user = "#{user}/token"
       key_prefix = "txt.apps.#{app_package}."
 
       say("Fetching translations...")
-      locale_response = api_request(LOCALE_ENDPOINT, user, token, request_builder)
+      locale_response = api_request(LOCALE_ENDPOINT, request_builder)
 
       if locale_response.status == 200
         locales = JSON.parse(locale_response.body)["locales"]
 
         locales.each do |locale|
           locale_url = "#{locale["url"]}?include=translations&packages=app_#{app_package}"
-          locale_response = api_request(locale_url, user, token, request_builder).body
+          locale_response = api_request(locale_url, request_builder).body
           translations = JSON.parse(locale_response)['locale']['translations']
 
           locale_name = ZendeskAppsTools::LocaleIdentifier.new(locale['locale']).language_id
