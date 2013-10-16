@@ -4,7 +4,7 @@ module ZendeskAppsTools
 
     # Convert :"en-US-x-12" to 'en'
     def initialize(code)
-      @language_id = code.sub(/-.*/, '')
+      @language_id = code.sub(/-x-.*/, '')
     end
   end
 end
