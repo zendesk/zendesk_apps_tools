@@ -123,7 +123,6 @@ describe ZendeskAppsTools::Translate do
     it 'fetches locales, translations and generates json files for each' do
       translate = ZendeskAppsTools::Translate.new
       translate.stub(:say)
-      translate.stub(:ask)
       translate.stub(:ask).with("What is the package name for this app? (without app_)").and_return('my_app')
       translate.stub(:create_file)
 
@@ -131,11 +130,11 @@ describe ZendeskAppsTools::Translate do
 
       test = Faraday.new do |builder|
         builder.adapter :test do |stub|
-          stub.get('/api/v2/locales.json') do
-            [ 200, {}, JSON.dump( {"locales" => [ {'url' => 'https://support.zendesk.com/api/v2/locales/1.json',
+          stub.get('/api/v2/locales/agent.json') do
+            [ 200, {}, JSON.dump( {"locales" => [ {'url' => 'https://support.zendesk.com/api/v2/rosetta/locales/1.json',
                                                      'locale' => 'en' } ]})]
           end
-          stub.get('/api/v2/locales/1.json?include=translations&packages=app_my_app') do
+          stub.get('/api/v2/rosetta/locales/1.json?include=translations&packages=app_my_app') do
             [ 200, {}, JSON.dump( { 'locale' => { 'translations' =>
                                                     { 'app.description' => 'my awesome app' }}})]
           end
@@ -145,21 +144,5 @@ describe ZendeskAppsTools::Translate do
       translate.update(test)
     end
 
-    it 'exits gracefully when authentication fails' do
-      translate = ZendeskAppsTools::Translate.new
-      translate.stub(:say)
-      translate.stub(:ask)
-      translate.should_receive(:say).with('Authentication failed', :red)
-
-      test = Faraday.new do |builder|
-        builder.adapter :test do |stub|
-          stub.get('/api/v2/locales.json') do
-            [ 401, {}, "Authentication failed" ]
-          end
-        end
-      end
-
-      translate.update(test)
-    end
   end
 end
