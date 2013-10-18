@@ -35,7 +35,7 @@ describe ZendeskAppsSupport::Validations::Manifest do
   end
 
   it 'should have an error when the defaultLocale is invalid' do
-    manifest = { 'defaultLocale' => 'pt-BR' }
+    manifest = { 'defaultLocale' => 'pt-BR-1' }
     manifest_file = mock('AppFile', :relative_path => 'manifest.json', :read => JSON.dump(manifest))
     package = mock('Package', :files => [manifest_file])
     errors = ZendeskAppsSupport::Validations::Manifest.call(package)

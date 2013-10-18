@@ -50,7 +50,7 @@ parts:
   - translation:
       key: "txt.apps.admin.error.app_build.invalid_default_locale"
       title: "App builder job: invalid default locale"
-      value: "%{defaultLocale} is not a valid default locale. Only two- and three-letter ISO 639 language codes are allowed."
+      value: "%{defaultLocale} is not a valid default locale."
   - translation:
       key: "txt.apps.admin.error.app_build.missing_translation_file"
       title: "App builder job: missing translation file"
@@ -90,7 +90,7 @@ parts:
   - translation:
       key: "txt.apps.admin.error.app_build.translation.invalid_locale"
       title: "App builder job: invalid locale file name"
-      value: "%{file} is not a valid locale. Only two- and three-letter ISO 639 language codes are allowed."
+      value: "%{file} is not a valid locale."
   - translation:
       key: "txt.apps.admin.error.app_build.translation.not_json"
       title: "App builder job: translation file is invalid json"

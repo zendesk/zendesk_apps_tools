@@ -37,7 +37,7 @@ describe ZendeskAppsSupport::Validations::Translations do
 
   context 'when there is a file with an invalid locale for a name' do
     let(:translation_files) do
-      [ mock('AppFile', :relative_path => 'translations/en-US.json', :read => '{}') ]
+      [ mock('AppFile', :relative_path => 'translations/en-US-1.json', :read => '{}') ]
     end
 
     it 'should report the error' do
@@ -48,7 +48,7 @@ describe ZendeskAppsSupport::Validations::Translations do
 
   context 'when there is a file with a valid locale containing valid JSON' do
     let(:translation_files) do
-      [ mock('AppFile', :relative_path => 'translations/en.json', :read => '{}') ]
+      [ mock('AppFile', :relative_path => 'translations/en-US.json', :read => '{}') ]
     end
 
     it 'should be valid' do
