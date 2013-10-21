@@ -4,6 +4,7 @@ require 'json'
 
 module ZendeskAppsSupport
   class Package
+    include ZendeskAppsSupport::BuildTranslation
 
     DEFAULT_LAYOUT = Erubis::Eruby.new( File.read(File.expand_path('../assets/default_template.html.erb', __FILE__)) )
     DEFAULT_SCSS   = File.read(File.expand_path('../assets/default_styles.scss', __FILE__))
@@ -60,7 +61,7 @@ module ZendeskAppsSupport
           :asset_url_prefix => asset_url_prefix,
           :app_class_name => app_class_name,
           :author => author,
-          :translations => translations,
+          :translations => remove_zendesk_keys(translations),
           :framework_version => framework_version,
           :templates => templates,
           :settings => settings,
