@@ -41,6 +41,14 @@ module ZendeskAppsSupport
       JSON.parse(File.read(File.join(root, "manifest.json")), :symbolize_names => true)
     end
 
+    def translations
+      JSON.parse(File.read(File.join(root, "translations/en.json")))
+    end
+
+    def app_translations
+      remove_zendesk_keys(translations)
+    end
+
     def readified_js(app_name, app_id, asset_url_prefix, settings={})
       manifest = manifest_json
       source = File.read(File.join(root, "app.js"))
@@ -48,7 +56,6 @@ module ZendeskAppsSupport
       location = manifest[:location]
       app_class_name = "app-#{app_id}"
       author = manifest[:author]
-      translations = JSON.parse(File.read(File.join(root, "translations/en.json")))
       framework_version = manifest[:frameworkVersion]
       templates = manifest[:noTemplate] ? {} : compiled_templates(app_id, asset_url_prefix)
 
@@ -61,7 +68,7 @@ module ZendeskAppsSupport
           :asset_url_prefix => asset_url_prefix,
           :app_class_name => app_class_name,
           :author => author,
-          :translations => remove_zendesk_keys(translations),
+          :translations => app_translations,
           :framework_version => framework_version,
           :templates => templates,
           :settings => settings,
