@@ -12,7 +12,7 @@ module ZendeskAppsSupport
 
         if value.kind_of?(Hash)
 
-          if i18n_keys?(value)
+          if is_translation_hash?(value)
             result[key] = value[I18N_VALUE_KEY]
           else
             result.update( to_flattened_namespaced_hash(value, key) )
@@ -33,7 +33,7 @@ module ZendeskAppsSupport
 
         if context.is_a?(Hash)
 
-          if i18n_keys?(context)
+          if is_translation_hash?(context)
             translations[key] = context[I18N_VALUE_KEY]
           else
             translations[key] ||= {}
@@ -50,7 +50,7 @@ module ZendeskAppsSupport
 
     private
 
-    def i18n_keys?(hash)
+    def is_translation_hash?(hash)
       hash.keys.sort == I18N_KEYS
     end
 
