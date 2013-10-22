@@ -6,19 +6,24 @@ module ZendeskAppsSupport
     I18N_KEYS       = [ I18N_TITLE_KEY, I18N_VALUE_KEY ]
 
     def to_flattened_namespaced_hash(hash, prefix = nil)
+
       hash.inject({}) do |result, (key, value)|
         key = [ prefix, key ].compact.join('.')
+
         if value.kind_of?(Hash)
-          if value.keys.sort == I18N_KEYS
+
+          if i18n_keys?(value)
             result[key] = value[I18N_VALUE_KEY]
           else
             result.update( to_flattened_namespaced_hash(value, key) )
           end
+
         else
           result[key] = value
         end
         result
       end
+
     end
 
     def remove_zendesk_keys(scope, translations = {})
@@ -28,7 +33,7 @@ module ZendeskAppsSupport
 
         if context.is_a?(Hash)
 
-          if context.keys.sort == I18N_KEYS
+          if i18n_keys?(context)
             translations[key] = context[I18N_VALUE_KEY]
           else
             translations[key] ||= {}
@@ -41,6 +46,12 @@ module ZendeskAppsSupport
       end
 
       translations
+    end
+
+    private
+
+    def i18n_keys?(hash)
+      hash.keys.sort == I18N_KEYS
     end
 
   end
