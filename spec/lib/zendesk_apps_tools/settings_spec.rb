@@ -15,16 +15,17 @@ describe ZendeskAppsTools::Settings do
     it 'accepts user input with colon & slashes' do
       parameters = [
         {
-          :name     => "required",
-          :required => true
+          :name     => "backend",
+          :required => true,
+          :default  => "https://example.com:3000"
         }
       ]
 
       settings = {
-        "required" => "https://example.com:3000"
+        "backend" => "https://example.com:3000"
       }
 
-      @user_input.stub(:ask).with("Enter a value for required parameter 'required':\n").and_return("https://example.com:3000")
+      @user_input.stub(:ask).with("Enter a value for required parameter 'backend':\n").and_return("https://example.com:3000")
 
       result = @context.get_settings_from(@user_input, parameters).should == settings
     end
