@@ -4,6 +4,7 @@ module ZendeskAppsSupport
   require 'zendesk_apps_support/engine'
 
   autoload :AppFile,    'zendesk_apps_support/app_file'
+  autoload :BuildTranslation, 'zendesk_apps_support/build_translation'
   autoload :I18n,       'zendesk_apps_support/i18n'
   autoload :Package,    'zendesk_apps_support/package'
   autoload :AppVersion,    'zendesk_apps_support/app_version'
