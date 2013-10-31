@@ -3,75 +3,32 @@ require 'translate'
 
 describe ZendeskAppsTools::Translate do
 
-  describe 'retrieving keys from a hash' do
+  describe '#to_yml' do
+    it 'should convert i18n formatted json to translation yml' do
+      root = 'spec/fixture/i18n_app_to_yml'
+      target_yml = "#{root}/translations/en.yml"
+      File.delete(target_yml) if File.exists?(target_yml)
+      translate = ZendeskAppsTools::Translate.new
+      translate.setup_path(root)
+      translate.to_yml
 
-    context 'top level' do
-      it 'returns the full key and translation' do
-        translation_hash = { 'profile' => 'Profile' }
-
-        translate = ZendeskAppsTools::Translate.new
-        result = translate.get_translations_for translation_hash, 'profile'
-
-        result.should == { 'profile' => 'Profile' }
-      end
+      File.read(target_yml).should == File.read("#{root}/translations/expected.yml")
+      File.delete(target_yml) if File.exists?(target_yml)
     end
+  end
 
-    context 'without nesting' do
-      it 'returns the full key and translation' do
+  describe '#to_json' do
+    it 'should convert translation yml to i18n formatted json' do
+      root = 'spec/fixture/i18n_app_to_json'
+      target_json = "#{root}/translations/en.json"
+      File.delete(target_json) if File.exists?(target_json)
+      translate = ZendeskAppsTools::Translate.new
+      translate.setup_path(root)
+      translate.to_json
 
-        translation_hash = {'profile' => {
-                              'customer_since' => 'Customer Since',
-                              'addresses'      => 'Addresses'}}
-
-        translate = ZendeskAppsTools::Translate.new
-        result = translate.get_translations_for translation_hash, 'profile'
-
-        result.should == { 'profile.customer_since' => 'Customer Since',
-                           'profile.addresses'      => 'Addresses' }
-      end
+      File.read(target_json).should == File.read("#{root}/translations/expected.json")
+      File.delete(target_json) if File.exists?(target_json)
     end
-
-    context 'one nested set' do
-      context 'a mix of nested and unnested keys' do
-        it 'returns the full key and translation' do
-          translation_hash = { 'global'=> {
-            'error'=> {
-              'title'   => 'An error occurred',
-              'message' => 'Please try the previous action again.',
-            },
-            'loading'    => 'Waiting for ticket data to load...',
-            'requesting' => 'Requesting data from Magento...'}}
-
-          translate = ZendeskAppsTools::Translate.new
-          result = translate.get_translations_for translation_hash, 'global'
-
-          result.should == { 'global.error.title'   => 'An error occurred',
-                             'global.error.message' => 'Please try the previous action again.',
-                             'global.loading'       => 'Waiting for ticket data to load...',
-                             'global.requesting'    => 'Requesting data from Magento...' }
-        end
-      end
-    end
-
-    context 'multi level nesting' do
-      it 'returns the full key and translation' do
-        translation_hash = { 'global'=> {
-          'error'=> {
-            'title'   => 'An error occurred',
-            'message' => {
-              'start' => 'Please try',
-              'end'   => 'the previous action again.'
-            }}}}
-
-          translate = ZendeskAppsTools::Translate.new
-          result = translate.get_translations_for translation_hash, 'global'
-
-          result.should == {'global.error.title'         => 'An error occurred',
-                            'global.error.message.start' => 'Please try',
-                            'global.error.message.end'   => 'the previous action again.'}
-      end
-    end
-
   end
 
   describe '#nest_translations_hash' do

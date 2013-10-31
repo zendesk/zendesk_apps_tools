@@ -1,0 +1,12 @@
+{
+  "name": "Sample App for I18n",
+  "author": {
+    "name": "zam",
+    "email": "zam@zendesk.com"
+  },
+  "defaultLocale": "en",
+  "private": true,
+  "single_install": true,
+  "location": ["ticket_sidebar", "new_ticket_sidebar"],
+  "frameworkVersion": "1.0"
+}
