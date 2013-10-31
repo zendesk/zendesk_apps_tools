@@ -92,6 +92,10 @@ parts:
       title: "App builder job: invalid locale file name"
       value: "%{file} is not a valid locale."
   - translation:
+      key: "txt.apps.admin.error.app_build.translation.invalid_format"
+      title: "App builder job: file format is invalid for translation"
+      value: "%{field} is invalid for translation."
+  - translation:
       key: "txt.apps.admin.error.app_build.translation.not_json"
       title: "App builder job: translation file is invalid json"
       value: "%{file} is not valid JSON. %{errors}"

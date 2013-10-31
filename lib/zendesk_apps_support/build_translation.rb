@@ -5,7 +5,7 @@ module ZendeskAppsSupport
     I18N_VALUE_KEY  = 'value'
     I18N_KEYS       = [ I18N_TITLE_KEY, I18N_VALUE_KEY ]
 
-    def to_flattened_namespaced_hash(hash, prefix = nil)
+    def to_flattened_namespaced_hash(hash, prefix = nil, target_key = I18N_VALUE_KEY)
 
       hash.inject({}) do |result, (key, value)|
         key = [ prefix, key ].compact.join('.')
@@ -13,9 +13,9 @@ module ZendeskAppsSupport
         if value.kind_of?(Hash)
 
           if is_translation_hash?(value)
-            result[key] = value[I18N_VALUE_KEY]
+            result[key] = value[target_key]
           else
-            result.update( to_flattened_namespaced_hash(value, key) )
+            result.update( to_flattened_namespaced_hash(value, key, target_key) )
           end
 
         else
