@@ -1,29 +1,27 @@
 module ZendeskAppsSupport
   module BuildTranslation
 
-    I18N_TITLE_KEY  = 'title'
-    I18N_VALUE_KEY  = 'value'
-    I18N_KEYS       = [ I18N_TITLE_KEY, I18N_VALUE_KEY ]
+    I18N_TITLE_KEY = 'title'
+    I18N_VALUE_KEY = 'value'
+    I18N_KEYS      = [I18N_TITLE_KEY, I18N_VALUE_KEY]
 
-    def to_flattened_namespaced_hash(hash, prefix = nil, target_key = I18N_VALUE_KEY)
-
+    def to_flattened_namespaced_hash(hash, options = {:prefix => nil, :target_key => I18N_VALUE_KEY, :is_i18n_format => false})
       hash.inject({}) do |result, (key, value)|
-        key = [ prefix, key ].compact.join('.')
-
+        key = [options[:prefix], key].compact.join('.')
         if value.kind_of?(Hash)
-
-          if is_translation_hash?(value)
-            result[key] = value[target_key]
+          if options[:is_i18n_format] && is_translation_hash?(value)
+            result[key] = value[options[:target_key]]
           else
-            result.update( to_flattened_namespaced_hash(value, key, target_key) )
+            result.update(to_flattened_namespaced_hash(value,
+                                                       {:prefix            => key,
+                                                        :target_key        => options[:target_key],
+                                                        :is_i18n_format => options[:is_i18n_format]}))
           end
-
         else
           result[key] = value
         end
         result
       end
-
     end
 
     def remove_zendesk_keys(scope, translations = {})

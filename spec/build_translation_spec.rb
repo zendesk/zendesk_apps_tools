@@ -6,99 +6,95 @@ describe ZendeskAppsSupport::BuildTranslation do
   let(:en_json) {
     {
       "app" => {
-        "description" => "Shows related tickets",
-        "title" => "Related tickets",
-        "parameters" => {
-          "disable_tooltip" => {
-            "label" => "Disable tooltip"
+        "abc" => {
+          "title" => "description for abc field",
+          "value" => "value of abc"
+        }
+      },
+      "a"   => {
+        "a1" => {
+          "title" => "description for a1 field",
+          "value" => "value of a1"
+        },
+        "b"  => {
+          "b1" => {
+            "title" => "description for b1 field",
+            "value" => "value of b1"
           }
-        }
-      },
-      "parent_without_child" => "Foo",
-      "parent_with_child" => {
-        "child" => "Foo"
-      },
-      "parent_with_child_title" => {
-        "title" => "Foo"
-      },
-      "parent_with_zendesk_tranlation" => {
-        "title" => "Bar",
-        "value" => "Foo"
-      },
-      "parent_with_child_title_nested" => {
-        "title" => {
-          "value" => "Foo"
-        }
-      },
-      "parent_with_nested_invalid_zendesk_translation" => {
-        "title" => {
-          "title" => "Bar",
-          "desc" => "Foo"
-        }
-      },
-      "parent_with_nested_zendesk_translation" => {
-        "title" => {
-          "title" => "Bar",
-          "value" => "Foo"
         }
       }
     }
   }
 
-  describe '#market_translations' do
+  describe '#to_flattened_namespaced_hash' do
 
-    context "flatten translations" do
+    context "not zendesk i18n format" do
+      it "should flatten hash without removing zendesk keys" do
+        expected = {
+          "app.abc.title" => "description for abc field",
+          "app.abc.value" => "value of abc",
+          "a.a1.title"    => "description for a1 field",
+          "a.a1.value"    => "value of a1",
+          "a.b.b1.title"  => "description for b1 field",
+          "a.b.b1.value"  => "value of b1"
+        }
 
-      before do
-        @market_translations = to_flattened_namespaced_hash(en_json)
+        to_flattened_namespaced_hash(en_json).should == expected
+      end
+    end
+
+    context 'zendesk i18n format' do
+      context 'flatten value keys' do
+        it "should flatten hash by removing zendesk title keys" do
+          expected = {
+            "app.abc" => "value of abc",
+            "a.a1"    => "value of a1",
+            "a.b.b1"  => "value of b1"
+          }
+
+          to_flattened_namespaced_hash(en_json,
+                                       {
+                                         :prefix         => nil,
+                                         :target_key     => I18N_VALUE_KEY,
+                                         :is_i18n_format => true
+                                       }).should == expected
+        end
       end
 
-      it "value is correct parent with a child that has an valid nested zendesk translation" do
-        @market_translations['parent_with_nested_zendesk_translation.title'].should eq 'Foo'
-      end
+      context 'flatten title keys' do
+        it "should flatten hash by removing zendesk value keys" do
+          expected = {
+            "app.abc" => "description for abc field",
+            "a.a1"    => "description for a1 field",
+            "a.b.b1"  => "description for b1 field"
+          }
 
-      it "value is correct parent with a child that has an invalid nested zendesk translation" do
-        @market_translations['parent_with_nested_invalid_zendesk_translation.title.title'].should eq 'Bar'
+          to_flattened_namespaced_hash(en_json,
+                                       {
+                                         :prefix         => nil,
+                                         :target_key     => I18N_TITLE_KEY,
+                                         :is_i18n_format => true
+                                       }).should == expected
+        end
       end
-
     end
 
   end
 
-  describe '#app_translations' do
-
-    context "reformat translations" do
-
-      before do
-        @app_translations = remove_zendesk_keys(en_json)
-      end
-
-      it "value is correct parent without a child" do
-        @app_translations['parent_without_child'].should eq 'Foo'
-      end
-
-      it "value is correct parent with a child" do
-        @app_translations['parent_with_child']['child'].should eq 'Foo'
-      end
-
-      it "value is correct parent with a child with a title" do
-        @app_translations['parent_with_child_title']['title'].should eq 'Foo'
-      end
-
-      it "value is correct parent with a zendesk translation" do
-        @app_translations['parent_with_child_title_nested']['title']['value'].should eq 'Foo'
-      end
-
-      it "value is correct parent with a child that has a nested zendesk translation" do
-        @app_translations['parent_with_nested_zendesk_translation']['title'].should eq 'Foo'
-      end
-
-      it "value is correct parent with a child that has an invalid nested zendesk translation" do
-        @app_translations['parent_with_nested_invalid_zendesk_translation']['title'].should eq({ "title" => "Bar", "desc" => "Foo" })
-      end
-
+  describe '#remove_zendesk_keys' do
+    it "should remove zendesk translation keys" do
+      expected = {
+        "app" => {
+          "abc" => "value of abc"
+        },
+        "a"   => {
+          "a1" => "value of a1",
+          "b"  => {
+            "b1" => "value of b1"
+          }
+        }
+      }
+      remove_zendesk_keys(en_json).should == expected
     end
-
   end
-
 end
