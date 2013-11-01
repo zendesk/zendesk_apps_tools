@@ -13,8 +13,8 @@ module ZendeskAppsSupport
             result[key] = value[options[:target_key]]
           else
             result.update(to_flattened_namespaced_hash(value,
-                                                       {:prefix            => key,
-                                                        :target_key        => options[:target_key],
+                                                       {:prefix         => key,
+                                                        :target_key     => options[:target_key],
                                                         :is_i18n_format => options[:is_i18n_format]}))
           end
         else
