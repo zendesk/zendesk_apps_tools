@@ -5,18 +5,14 @@ module ZendeskAppsSupport
     I18N_VALUE_KEY = 'value'
     I18N_KEYS      = [I18N_TITLE_KEY, I18N_VALUE_KEY]
 
-    def to_flattened_namespaced_hash(hash, options = {:prefix => nil, :target_key => nil, :is_i18n_format => false})
-      target_key = options[:target_key] || I18N_VALUE_KEY
+    def to_flattened_namespaced_hash(hash, target_key = nil, prefix = nil)
       hash.inject({}) do |result, (key, value)|
-        key = [options[:prefix], key].compact.join('.')
+        key = [prefix, key].compact.join('.')
         if value.kind_of?(Hash)
-          if options[:is_i18n_format] && is_translation_hash?(value)
+          if target_key && is_translation_hash?(value)
             result[key] = value[target_key]
           else
-            result.update(to_flattened_namespaced_hash(value,
-                                                       {:prefix         => key,
-                                                        :target_key     => target_key,
-                                                        :is_i18n_format => options[:is_i18n_format]}))
+            result.update(to_flattened_namespaced_hash(value, target_key, key))
           end
         else
           result[key] = value
