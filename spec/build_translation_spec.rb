@@ -52,12 +52,7 @@ describe ZendeskAppsSupport::BuildTranslation do
             "a.b.b1"  => "value of b1"
           }
 
-          to_flattened_namespaced_hash(en_json,
-                                       {
-                                         :prefix         => nil,
-                                         :target_key     => I18N_VALUE_KEY,
-                                         :is_i18n_format => true
-                                       }).should == expected
+          to_flattened_namespaced_hash(en_json, {:is_i18n_format => true}).should == expected
         end
       end
 
@@ -71,7 +66,6 @@ describe ZendeskAppsSupport::BuildTranslation do
 
           to_flattened_namespaced_hash(en_json,
                                        {
-                                         :prefix         => nil,
                                          :target_key     => I18N_TITLE_KEY,
                                          :is_i18n_format => true
                                        }).should == expected
