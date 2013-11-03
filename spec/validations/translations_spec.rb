@@ -60,8 +60,8 @@ describe ZendeskAppsSupport::Validations::Translations do
     end
   end
 
-  context 'validate translation format' do
-    context "valid" do
+  context 'validate translation format when "package" is defined inside "app"' do
+    context 'all the leaf nodes have defined "title" and "value"' do
       let(:translation_files) do
         [mock('AppFile', :relative_path => 'translations/en-US.json', :read => read_fixture_file("valid_en.json"))]
       end
@@ -71,12 +71,12 @@ describe ZendeskAppsSupport::Validations::Translations do
       end
     end
 
-    context "invalid" do
+    context 'when the "title" field is not defined on one leaf node' do
       let(:translation_files) do
         [mock('AppFile', :relative_path => 'translations/en-US.json', :read => read_fixture_file("invalid_en.json"))]
       end
 
-      it 'should be invalid when the title field is not defined' do
+      it 'should be invalid' do
         subject.length.should == 1
         subject[0].to_s.should =~ /is invalid for translation/
       end
