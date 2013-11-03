@@ -16,7 +16,7 @@ describe 'translations' do
     project_root = Pathname.new(File.expand_path('../../', __FILE__))
     zendesk_version  = project_root.join('config/locales/translations/zendesk_apps_support.yml')
     standard_version = project_root.join('config/locales/en.yml')
-    File.mtime(zendesk_version).should be <= File.mtime(standard_version)
+    File.mtime(zendesk_version).to_i.should be <= File.mtime(standard_version).to_i
   end
 
 end
