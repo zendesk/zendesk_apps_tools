@@ -47,17 +47,14 @@ module ZendeskAppsSupport
 
         def validate_translation_format(json)
           json.keys.each do |key|
-            if json[key].kind_of?(Hash) &&
-              json[key].keys.sort == BuildTranslation::I18N_KEYS &&
+            raise TranslationFormatError.new("'#{key}': '#{json[key]}'") unless json[key].kind_of? Hash
+
+            if json[key].keys.sort == BuildTranslation::I18N_KEYS &&
               json[key][BuildTranslation::I18N_TITLE_KEY].class == String &&
               json[key][BuildTranslation::I18N_VALUE_KEY].class == String
               next
             else
-              if json[key].kind_of? Hash
-                validate_translation_format(json[key])
-              else
-                raise TranslationFormatError.new("'#{key}': '#{json[key]}'")
-              end
+              validate_translation_format(json[key])
             end
           end
         end
