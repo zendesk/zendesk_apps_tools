@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "zendesk_apps_support"
-  s.version     = "1.7.0"
+  s.version     = "1.7.1"
   s.platform    = Gem::Platform::RUBY
   s.license     = "Apache License Version 2.0"
   s.authors     = ["James A. Rosen", "Likun Liu", "Sean Caffery", "Daniel Ribeiro"]
