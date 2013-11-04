@@ -36,6 +36,7 @@ en:
             duplicate_parameters: ! 'Duplicate app parameters defined: %{duplicate_parameters}'
             translation:
               invalid_locale: ! '%{file} is not a valid locale.'
+              invalid_format: ! '%{field} is invalid for translation.'
               not_json: ! '%{file} is not valid JSON. %{errors}'
               not_json_object: ! '%{file} is not a JSON object.'
             stylesheet_error: ! 'Sass error: %{sass_error}'
