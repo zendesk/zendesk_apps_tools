@@ -116,7 +116,7 @@ module ZendeskAppsTools
       def write_yml(en_json, app_name, package_name)
         titles        = to_flattened_namespaced_hash(en_json, I18N_TITLE_KEY)
         values        = to_flattened_namespaced_hash(en_json, I18N_VALUE_KEY)
-        @title_values = titles.each { |k, v| titles[k] = {"title" => v, "value" => values[k].gsub('"', '\"')} }
+        @translations = titles.each { |k, v| titles[k] = {"title" => v, "value" => values[k].gsub('"', '\"')} }
         @app_name     = app_name
         @package_name = package_name
         template(File.join(Translate.source_root, 'templates/translation.erb.tt'), "translations/en.yml")
