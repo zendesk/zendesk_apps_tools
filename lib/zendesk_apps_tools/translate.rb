@@ -46,7 +46,7 @@ module ZendeskAppsTools
       en_json['app']['package'] = package
 
       write_json("translations/en.json", en_json)
-  end
+    end
 
     desc 'update', 'Update translation files from Zendesk'
     method_option :path, :default => './', :required => false
@@ -116,10 +116,14 @@ module ZendeskAppsTools
       def write_yml(en_json, app_name, package_name)
         titles        = to_flattened_namespaced_hash(en_json, I18N_TITLE_KEY)
         values        = to_flattened_namespaced_hash(en_json, I18N_VALUE_KEY)
-        @translations = titles.each { |k, v| titles[k] = {"title" => v, "value" => values[k].gsub('"', '\"')} }
+        @translations = titles.each { |k, v| titles[k] = {"title" => v, "value" => escape_special_characters(values[k]) }}
         @app_name     = app_name
         @package_name = package_name
         template(File.join(Translate.source_root, 'templates/translation.erb.tt'), "translations/en.yml")
+      end
+
+      def escape_special_characters(v)
+        v.gsub('"', '\"')
       end
 
       def array_to_nested_hash(array)
