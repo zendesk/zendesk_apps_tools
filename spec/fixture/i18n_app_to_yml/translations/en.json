@@ -3,7 +3,7 @@
     "package" : "my_app",
     "abc" : {
       "title" : "description for abc field",
-      "value" : "value of abc"
+      "value" : "value of \"abc\""
     }
   },
   "a": {
