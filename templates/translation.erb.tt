@@ -5,7 +5,7 @@ packages:
   - app_<%= @package_name %>
 
 parts:
-<% @title_values.each do |key, title_value| -%>
+<% @translations.each do |key, title_value| -%>
   - translation:
       key: "txt.apps.<%= @package_name %>.<%= key %>"
       title: "<%= title_value["title"] %>"
