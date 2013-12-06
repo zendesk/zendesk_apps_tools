@@ -16,11 +16,11 @@ module ZendeskAppsTools
           input = user_input.get_value_from_stdin("Enter a value for optional parameter '#{param[:name]}' or press 'Return' to skip:\n", :allow_empty => true)
         end
 
-        unless input.empty?
-          input = (input =~ /^(true|t|yes|y|1)$/i) ? true : false if param[:type] == 'checkbox'
-          settings[param[:name]] = input
+        if param[:type] == 'checkbox' && ![TrueClass, FalseClass].include?(input.class)
+          input = (input =~ /^(true|t|yes|y|1)$/i) ? true : false
         end
 
+        settings[param[:name]] = input if input != ''
         settings
       end
     end
