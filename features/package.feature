@@ -13,3 +13,10 @@ Feature: package a zendesk app into a zip file
     And the command output should contain "adding translations/en.json"
     And the command output should contain "created"
     And the zip file should exist in directory "tmp/aruba/tmp"
+
+
+  Scenario: package a zendesk app by running 'zat package' command
+    When I create a symlink from "./templates/translation.erb.tt" to "tmp/aruba/assets/translation.erb.tt"
+    Then "tmp/aruba/assets/translation.erb.tt" should be a symlink
+    When I run the command "zat package --path tmp/aruba" to package the app
+    Then the zip file in "tmp/aruba/tmp" should not contain any symlinks
