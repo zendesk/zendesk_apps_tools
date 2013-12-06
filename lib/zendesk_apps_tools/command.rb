@@ -89,8 +89,14 @@ module ZendeskAppsTools
 
       Zip::ZipFile.open(archive_path, 'w') do |zipfile|
         app_package.files.each do |file|
-          say_status "package", "adding #{file.relative_path}"
-          zipfile.add(file.relative_path, app_dir.join(file.relative_path).to_s)
+          path = file.relative_path
+          say_status "package", "adding #{path}"
+
+          # resolve symlink to source path
+          if File.symlink? file.absolute_path
+            path = File.readlink(file.absolute_path)
+          end
+          zipfile.add(file.relative_path, app_dir.join(path).to_s)
         end
       end
 
