@@ -1,6 +1,4 @@
-:warning: *Use of this software is subject to important terms and conditions as set forth in the License file* :warning:
-
-# Basic User Information Sample App
+# App name
 
 [brief description of the app]
 
@@ -10,7 +8,7 @@
 * info2
 * info3
 
-Please submit bug reports to [Zendesk](https://support.zendesk.com/requests/new). Pull requests are welcome.
+Please submit bug reports to [Insert Link](). Pull requests are welcome.
 
 ### Screenshot(s):
 [put your screenshots down here.]
