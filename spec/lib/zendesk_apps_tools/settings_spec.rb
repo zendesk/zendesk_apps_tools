@@ -27,7 +27,26 @@ describe ZendeskAppsTools::Settings do
 
       @user_input.stub(:ask).with("Enter a value for required parameter 'backend':\n").and_return("https://example.com:3000")
 
-      result = @context.get_settings_from(@user_input, parameters).should == settings
+      @context.get_settings_from(@user_input, parameters).should == settings
+    end
+
+    it 'should use default boolean parameter' do
+      parameters = [
+        {
+          :name     => "isUrgent",
+          :type     => "checkbox",
+          :required => true,
+          :default  => true
+        }
+      ]
+
+      settings = {
+        "isUrgent" => true
+      }
+
+      @user_input.stub(:ask).with("Enter a value for required parameter 'isUrgent':\n").and_return('')
+
+      @context.get_settings_from(@user_input, parameters).should == settings
     end
 
     it 'prompts the user for settings' do
@@ -63,7 +82,7 @@ describe ZendeskAppsTools::Settings do
       @user_input.stub(:ask).with("Enter a value for required parameter 'required':\n").and_return('xyz')
       @user_input.stub(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n").and_return('456')
 
-      result = @context.get_settings_from(@user_input, parameters).should == settings
+      @context.get_settings_from(@user_input, parameters).should == settings
     end
   end
 
