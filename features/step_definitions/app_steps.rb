@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'zip/zip'
 
 When /^I move to the app directory$/ do
   @previous_dir = Dir.pwd
@@ -36,6 +37,12 @@ When /^I run "(.*?)" command with the following details:$/ do |cmd, table|
     @output = pipe.readlines
     @output.each {|line| puts line}
   end
+end
+
+When  /^I create a symlink from "(.*?)" to "(.*?)"$/ do |src, dest|
+  @link_destname = File.basename(dest)
+  # create a symlink
+  FileUtils.ln_s(src, dest)
 end
 
 When /^I run the command "(.*?)" to (validate|package|clean) the app$/ do |cmd, action|
@@ -82,4 +89,14 @@ end
 
 Then /^the command output should contain "(.*?)"$/ do |output|
   @output.join.should =~ /#{output}/
+end
+
+Then /^"(.*?)" should be a symlink$/ do |path|
+  File.symlink?(path).should be_true
+end
+
+Then /^the zip file in "(.*?)" should not contain any symlinks$/ do |path|
+  Zip::ZipFile.foreach Dir[path+'/app-*.zip'][0] do |p|
+   p.symlink?.should be_false
+  end
 end
