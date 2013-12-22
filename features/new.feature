@@ -67,8 +67,56 @@ Feature: create a template for a new zendesk app
     """
 {
   "app": {
-    "description":  "Play the famous zen tunes in your help desk.",
-    "name":         "Buddha Machine"
+    "package": "app_name",
+    "description": {
+      "value": "Play the famous zen tunes in your help desk.",
+      "title": "app description"
+    },
+    "name": {
+      "value": "Buddha Machine",
+      "title": "app name"
+    }
+  },
+
+  "loading": {
+    "value": "Welcome to this Sample App",
+    "title": "loading placeholder"
+  },
+
+  "fetch": {
+    "done": {
+      "value": "Good",
+      "title": "fetch success"
+    },
+    "fail": {
+      "value": "failed to fecth information from the server",
+      "title": "fetch failure"
+    }
+  },
+
+  "id": {
+    "value": "ID",
+    "title": "user id"
+  },
+
+  "email": {
+    "value": "Email",
+    "title": "user email"
+  },
+
+  "name": {
+    "value": "Name",
+    "title": "user name"
+  },
+
+  "role": {
+    "value": "Role",
+    "title": "user role"
+  },
+
+  "groups": {
+    "value": "Groups",
+    "title": "user groups"
   }
 }
 """
