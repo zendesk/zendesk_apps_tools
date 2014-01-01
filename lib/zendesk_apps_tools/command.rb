@@ -176,7 +176,7 @@ module ZendeskAppsTools
       auth
       upload_id = upload options[:path]
 
-      app_id = get_cache 'app_id'
+      app_id = get_cache('app_id') || find_app_id
 
       connection = get_connection
       connection.basic_auth @username, @password
@@ -227,6 +227,21 @@ module ZendeskAppsTools
       @cache_path ||= File.join options[:path], CACHE_FILE_NAME
       @cache = File.exists?(@cache_path) ? JSON.parse(File.read(@cache_path)) : {}
       @cache[key]
+    end
+
+    def find_app_id
+      say_status 'Update', 'app ID is missing, searching...'
+      name = get_value_from_stdin('Enter the name of the app:')
+
+      connection = get_connection
+
+      connection.basic_auth @username, @password
+      all_apps = connection.get('/api/v2/apps.json').env[:body]
+
+      app = JSON.parse(all_apps)['apps'].find { |app| app['name'] == name }
+
+      set_cache 'app_id' => app['id']
+      app['id']
     end
 
     def auth
