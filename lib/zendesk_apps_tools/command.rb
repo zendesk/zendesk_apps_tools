@@ -170,6 +170,33 @@ module ZendeskAppsTools
       say GENERAL_ERROR_MSG, :red
     end
 
+    desc "update", "Update app on the server"
+    method_option :path, :default => './', :required => false
+    def update
+      auth
+      upload_id = upload options[:path]
+
+      app_id = get_cache 'app_id'
+
+      connection = get_connection
+      connection.basic_auth @username, @password
+
+      response = connection.put do |req|
+        req.url "/api/v2/apps/#{app_id}.json"
+        req.headers['Content-Type'] = 'application/json'
+        req.body = JSON.generate upload_id: "#{upload_id}"
+      end
+
+      status, _ = check_job response
+      if status == 'completed'
+        say_status 'Update', 'OK'
+      else
+        say_status 'Update', 'Failed'
+      end
+    rescue
+      say GENERAL_ERROR_MSG, :red
+    end
+
     protected
 
     def setup_path(path)
