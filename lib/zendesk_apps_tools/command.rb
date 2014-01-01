@@ -142,6 +142,34 @@ module ZendeskAppsTools
       end
     end
 
+    desc "create", "Create app on your account"
+    method_option :path, :default => './', :required => false
+    def create
+      auth
+      upload_id = upload options[:path]
+
+      connection = get_connection
+      connection.basic_auth @username, @password
+
+      response = connection.post do |req|
+        req.url '/api/v2/apps.json'
+        req.headers['Content-Type'] = 'application/json'
+        app_name = get_value_from_stdin('Enter app name:')
+        description = get_value_from_stdin("Enter short description:\n")
+        req.body = JSON.generate name: app_name, short_description: description, upload_id: "#{upload_id}"
+      end
+
+      status, app_id = check_job response
+      if status == 'completed'
+        set_cache 'app_id' => app_id
+        say_status 'Create', 'OK'
+      else
+        say_status 'Create', 'Failed'
+      end
+    rescue
+      say GENERAL_ERROR_MSG, :red
+    end
+
     protected
 
     def setup_path(path)
