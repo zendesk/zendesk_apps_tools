@@ -3,6 +3,9 @@ require 'zip/zip'
 require 'pathname'
 require 'net/http'
 require 'json'
+require 'faraday'
+require 'io/console'
+
 require 'zendesk_apps_tools/translate'
 require 'zendesk_apps_tools/common'
 require 'zendesk_apps_tools/settings'
@@ -12,7 +15,10 @@ module ZendeskAppsTools
 
   class Command < Thor
 
-    DEFAULT_ZENDESK_URL = "http://support.zendesk.com"
+    DEFAULT_ZENDESK_URL = 'http://support.zendesk.com'
+    URL_TEMPLATE        = 'https://%s.zendesk.com/'
+    CACHE_FILE_NAME     = '.zatcache'
+    GENERAL_ERROR_MSG   = 'Something went wrong, please try again!'
 
     include Thor::Actions
     include ZendeskAppsSupport
@@ -154,6 +160,77 @@ module ZendeskAppsTools
 
     def app_package
       @app_package ||= Package.new(self.app_dir.to_s)
+    end
+
+    def set_cache hash
+      @cache_path ||= File.join options[:path], CACHE_FILE_NAME
+      @cache = File.exists?(@cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
+      File.open(@cache_path, 'w') { |f| f.write JSON.pretty_generate(@cache) }
+    end
+
+    def get_cache key
+      @cache_path ||= File.join options[:path], CACHE_FILE_NAME
+      @cache = File.exists?(@cache_path) ? JSON.parse(File.read(@cache_path)) : {}
+      @cache[key]
+    end
+
+    def auth
+      @subdomain = get_cache('subdomain') || get_value_from_stdin('Enter your subdomain:')
+      @username  = get_cache('username') || get_value_from_stdin('Enter your username:')
+      print 'Enter your password: '
+      @password  = STDIN.noecho(&:gets).chomp
+      puts
+
+      set_cache 'subdomain' => @subdomain, 'username' => @username
+    end
+
+    def get_connection multipart=nil
+      Faraday.new (URL_TEMPLATE % @subdomain) do |f|
+        f.request :multipart if multipart == :multipart
+        f.request :url_encoded
+        f.adapter :net_http
+      end
+    end
+
+    def upload path
+      connection = get_connection :multipart
+
+      package
+
+      zipfile = Dir[File.join path, '/tmp/*.zip'].sort.last
+      payload = { :uploaded_data => Faraday::UploadIO.new(zipfile, 'application/zip') }
+      connection.basic_auth @username, @password
+
+      response = connection.post('/api/v2/apps/uploads.json', payload)
+      upload = response.env[:body]
+      JSON.parse(upload)['id']
+    end
+
+    def check_job response
+      job = response.env[:body]
+      job_id = JSON.parse(job)['job_id']
+
+      check_status job_id
+    end
+
+    def check_status job_id
+      connection = Faraday.new (URL_TEMPLATE % @subdomain) do |f|
+        f.request :url_encoded
+        f.adapter :net_http
+      end
+
+      connection.basic_auth @username, @password
+
+      response = connection.get("/api/v2/apps/job_statuses/#{job_id}").env[:body]
+      info = JSON.parse(response)
+      status = info['status']
+      app_id = info['app_id']
+
+      return status, app_id if ['completed', 'failed'].include? status
+      say_status 'Status', status
+
+      sleep 3
+      check_status job_id
     end
 
   end
