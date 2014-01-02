@@ -23,7 +23,7 @@ describe ZendeskAppsTools::Command do
       @command.stub(:package)
 
       payload = { :uploaded_data => data }
-      response = double('response', :env => { :body => '{ "id": 123 }' })
+      response = double('response', :body => '{ "id": 123 }')
       conn.should_receive(:post).with('/api/v2/apps/uploads.json', payload).and_return(response)
 
       @command.send(:upload, 'hell').should == 123
