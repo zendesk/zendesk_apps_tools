@@ -18,7 +18,7 @@ module ZendeskAppsTools
     DEFAULT_ZENDESK_URL = 'http://support.zendesk.com'
     URL_TEMPLATE        = 'https://%s.zendesk.com/'
     CACHE_FILE_NAME     = '.zat'
-    GENERAL_ERROR_MSG   = 'Something went wrong, please try again!'
+    NETWORK_ERROR_MSG   = 'Something went wrong, please try again!'
     SHARED_OPTIONS      = {
       :path =>  './',
       :clean => false
@@ -160,10 +160,7 @@ module ZendeskAppsTools
         req.headers[:content_type] = 'application/json'
 
         app_name = get_value_from_stdin('Enter app name:')
-        req.body = JSON.generate({
-          :name => app_name,
-          :upload_id => "#{upload_id}"
-        })
+        req.body = JSON.generate :name => app_name, :upload_id => "#{upload_id}"
       end
 
       status, message, app_id = check_status response
@@ -173,8 +170,8 @@ module ZendeskAppsTools
       else
         say_status 'Create', message
       end
-    rescue
-      say GENERAL_ERROR_MSG, :red
+    rescue Faraday::Error::ClientError
+      say_error  NETWORK_ERROR_MSG
     end
 
     desc "update", "Update app on the server"
@@ -201,8 +198,8 @@ module ZendeskAppsTools
       else
         say_status 'Update', message
       end
-    rescue
-      say GENERAL_ERROR_MSG, :red
+    rescue Faraday::Error::ClientError
+      say_error NETWORK_ERROR_MSG
     end
 
     protected
@@ -291,9 +288,13 @@ module ZendeskAppsTools
 
       response = connection.post('/api/v2/apps/uploads.json', payload)
       JSON.parse(response.body)['id']
-    rescue
-      say 'Something went wrong while uploading', :red
+    rescue Faraday::Error::ClientError
+      say_error 'Something went wrong while uploading'
       exit 1
+    end
+
+    def say_error(msg)
+      say msg, :red
     end
 
     def check_status(response)
