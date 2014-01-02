@@ -19,6 +19,10 @@ module ZendeskAppsTools
     URL_TEMPLATE        = 'https://%s.zendesk.com/'
     CACHE_FILE_NAME     = '.zatcache'
     GENERAL_ERROR_MSG   = 'Something went wrong, please try again!'
+    SHARED_OPTIONS      = {
+      :path =>  './',
+      :clean => false
+    }
 
     include Thor::Actions
     include ZendeskAppsSupport
@@ -52,7 +56,7 @@ module ZendeskAppsTools
     end
 
     desc "validate", "Validate your app"
-    method_option :path, :default => './', :required => false
+    method_options SHARED_OPTIONS
     def validate
       prompt = "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):\n"
       zendesk = get_value_from_stdin(prompt, :valid_regex => /^http:\/\/\w+\.\w+|^$/, :error_msg => 'Invalid url, try again:')
@@ -84,7 +88,7 @@ module ZendeskAppsTools
     end
 
     desc "package", "Package your app"
-    method_option :path, :default => './', :required => false
+    method_options SHARED_OPTIONS
     def package
       setup_path(options[:path])
       archive_path = File.join(tmp_dir, "app-#{Time.now.strftime('%Y%m%d%H%M%S')}.zip")
@@ -143,7 +147,7 @@ module ZendeskAppsTools
     end
 
     desc "create", "Create app on your account"
-    method_option :path, :default => './', :required => false
+    method_options SHARED_OPTIONS
     def create
       auth
       upload_id = upload options[:path]
@@ -171,7 +175,7 @@ module ZendeskAppsTools
     end
 
     desc "update", "Update app on the server"
-    method_option :path, :default => './', :required => false
+    method_options SHARED_OPTIONS
     def update
       auth
       upload_id = upload options[:path]
@@ -218,15 +222,21 @@ module ZendeskAppsTools
     end
 
     def set_cache hash
-      @cache_path ||= File.join options[:path], CACHE_FILE_NAME
-      @cache = File.exists?(@cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
+      @cache = File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
       File.open(@cache_path, 'w') { |f| f.write JSON.pretty_generate(@cache) }
     end
 
     def get_cache key
+      @cache = File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)) : {}
+      @cache[key] if @cache
+    end
+
+    def clear_cache
+      File.delete cache_path if File.exists? cache_path
+    end
+
+    def cache_path
       @cache_path ||= File.join options[:path], CACHE_FILE_NAME
-      @cache = File.exists?(@cache_path) ? JSON.parse(File.read(@cache_path)) : {}
-      @cache[key]
     end
 
     def find_app_id
@@ -245,6 +255,8 @@ module ZendeskAppsTools
     end
 
     def auth
+      clear_cache if options[:clean]
+
       @subdomain = get_cache('subdomain') || get_value_from_stdin('Enter your subdomain:')
       @username  = get_cache('username') || get_value_from_stdin('Enter your username:')
       print 'Enter your password: '
