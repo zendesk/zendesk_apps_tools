@@ -159,11 +159,9 @@ module ZendeskAppsTools
         req.url '/api/v2/apps.json'
         req.headers['Content-Type'] = 'application/json'
 
-        app_name    = get_value_from_stdin('Enter app name:')
-        description = get_value_from_stdin("Enter short description:\n")
-        req.body    = JSON.generate({
+        app_name = get_value_from_stdin('Enter app name:')
+        req.body = JSON.generate({
           :name => app_name,
-          :short_description => description,
           :upload_id => "#{upload_id}"
         })
       end
