@@ -157,7 +157,7 @@ module ZendeskAppsTools
 
       response = connection.post do |req|
         req.url '/api/v2/apps.json'
-        req.headers['Content-Type'] = 'application/json'
+        req.headers[:content_type] = 'application/json'
 
         app_name = get_value_from_stdin('Enter app name:')
         req.body = JSON.generate({
@@ -190,7 +190,7 @@ module ZendeskAppsTools
 
       response = connection.put do |req|
         req.url "/api/v2/apps/#{app_id}.json"
-        req.headers['Content-Type'] = 'application/json'
+        req.headers[:content_type] = 'application/json'
 
         req.body = JSON.generate upload_id: "#{upload_id}"
       end
@@ -269,10 +269,9 @@ module ZendeskAppsTools
       set_cache 'subdomain' => @subdomain, 'username' => @username
     end
 
-    def get_connection(multipart = nil)
+    def get_connection(middleware = :url_encoded)
       Faraday.new (URL_TEMPLATE % @subdomain) do |f|
-        f.request :multipart if multipart == :multipart
-        f.request :url_encoded
+        f.request middleware
         f.adapter :net_http
         f.basic_auth @username, @password
       end
@@ -281,11 +280,11 @@ module ZendeskAppsTools
     def upload(path)
       connection = get_connection :multipart
 
-      unless options[:zipfile]
+      if options[:zipfile]
+        package_path = options[:zipfile]
+      else
         package
         package_path = Dir[File.join path, '/tmp/*.zip'].sort.last
-      else
-        package_path = options[:zipfile]
       end
 
       payload = { :uploaded_data => Faraday::UploadIO.new(package_path, 'application/zip') }
