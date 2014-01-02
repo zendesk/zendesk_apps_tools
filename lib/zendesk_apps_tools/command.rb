@@ -228,7 +228,7 @@ module ZendeskAppsTools
     end
 
     def set_cache(hash)
-      @cache ||= File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
+      @cache = File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
       File.open(@cache_path, 'w') { |f| f.write JSON.pretty_generate(@cache) }
     end
 
@@ -251,7 +251,7 @@ module ZendeskAppsTools
 
       connection = get_connection
 
-      all_apps = connection.get('/api/v2/apps.json').env[:body]
+      all_apps = connection.get('/api/v2/apps.json').body
 
       app = JSON.parse(all_apps)['apps'].find { |app| app['name'] == name }
 
@@ -293,13 +293,14 @@ module ZendeskAppsTools
       payload = { :uploaded_data => Faraday::UploadIO.new(package_path, 'application/zip') }
 
       response = connection.post('/api/v2/apps/uploads.json', payload)
-      JSON.parse(response.env[:body])['id']
+      JSON.parse(response.body)['id']
     rescue
       say 'Something went wrong while uploading', :red
+      exit 1
     end
 
     def check_status(response)
-      job = response.env[:body]
+      job = response.body
       job_id = JSON.parse(job)['job_id']
 
       check_job job_id
@@ -310,7 +311,7 @@ module ZendeskAppsTools
 
       loop do
         response = connection.get("/api/v2/apps/job_statuses/#{job_id}")
-        info     = JSON.parse(response.env[:body])
+        info     = JSON.parse(response.body)
         status   = info['status']
         message  = info['message']
         app_id   = info['app_id']
