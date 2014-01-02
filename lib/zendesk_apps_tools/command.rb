@@ -17,7 +17,7 @@ module ZendeskAppsTools
 
     DEFAULT_ZENDESK_URL = 'http://support.zendesk.com'
     URL_TEMPLATE        = 'https://%s.zendesk.com/'
-    CACHE_FILE_NAME     = '.zatcache'
+    CACHE_FILE_NAME     = '.zat'
     GENERAL_ERROR_MSG   = 'Something went wrong, please try again!'
     SHARED_OPTIONS      = {
       :path =>  './',
@@ -148,27 +148,32 @@ module ZendeskAppsTools
 
     desc "create", "Create app on your account"
     method_options SHARED_OPTIONS
+    method_option :zipfile, :default => nil, :required => false, :type => :string
     def create
-      auth
+      prepare_api_auth
       upload_id = upload options[:path]
 
       connection = get_connection
-      connection.basic_auth @username, @password
 
       response = connection.post do |req|
         req.url '/api/v2/apps.json'
         req.headers['Content-Type'] = 'application/json'
-        app_name = get_value_from_stdin('Enter app name:')
+
+        app_name    = get_value_from_stdin('Enter app name:')
         description = get_value_from_stdin("Enter short description:\n")
-        req.body = JSON.generate name: app_name, short_description: description, upload_id: "#{upload_id}"
+        req.body    = JSON.generate({
+          :name => app_name,
+          :short_description => description,
+          :upload_id => "#{upload_id}"
+        })
       end
 
-      status, app_id = check_job response
+      status, message, app_id = check_status response
       if status == 'completed'
         set_cache 'app_id' => app_id
         say_status 'Create', 'OK'
       else
-        say_status 'Create', 'Failed'
+        say_status 'Create', message
       end
     rescue
       say GENERAL_ERROR_MSG, :red
@@ -176,26 +181,27 @@ module ZendeskAppsTools
 
     desc "update", "Update app on the server"
     method_options SHARED_OPTIONS
+    method_option :zipfile, :default => nil, :required => false, :type => :string
     def update
-      auth
+      prepare_api_auth
       upload_id = upload options[:path]
 
       app_id = get_cache('app_id') || find_app_id
 
       connection = get_connection
-      connection.basic_auth @username, @password
 
       response = connection.put do |req|
         req.url "/api/v2/apps/#{app_id}.json"
         req.headers['Content-Type'] = 'application/json'
+
         req.body = JSON.generate upload_id: "#{upload_id}"
       end
 
-      status, _ = check_job response
+      status, message, _ = check_status response
       if status == 'completed'
         say_status 'Update', 'OK'
       else
-        say_status 'Update', 'Failed'
+        say_status 'Update', message
       end
     rescue
       say GENERAL_ERROR_MSG, :red
@@ -221,13 +227,13 @@ module ZendeskAppsTools
       @app_package ||= Package.new(self.app_dir.to_s)
     end
 
-    def set_cache hash
-      @cache = File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
+    def set_cache(hash)
+      @cache ||= File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
       File.open(@cache_path, 'w') { |f| f.write JSON.pretty_generate(@cache) }
     end
 
-    def get_cache key
-      @cache = File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)) : {}
+    def get_cache(key)
+      @cache ||= File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)) : {}
       @cache[key] if @cache
     end
 
@@ -245,7 +251,6 @@ module ZendeskAppsTools
 
       connection = get_connection
 
-      connection.basic_auth @username, @password
       all_apps = connection.get('/api/v2/apps.json').env[:body]
 
       app = JSON.parse(all_apps)['apps'].find { |app| app['name'] == name }
@@ -254,7 +259,7 @@ module ZendeskAppsTools
       app['id']
     end
 
-    def auth
+    def prepare_api_auth
       clear_cache if options[:clean]
 
       @subdomain = get_cache('subdomain') || get_value_from_stdin('Enter your subdomain:')
@@ -266,53 +271,55 @@ module ZendeskAppsTools
       set_cache 'subdomain' => @subdomain, 'username' => @username
     end
 
-    def get_connection multipart=nil
+    def get_connection(multipart = nil)
       Faraday.new (URL_TEMPLATE % @subdomain) do |f|
         f.request :multipart if multipart == :multipart
         f.request :url_encoded
         f.adapter :net_http
+        f.basic_auth @username, @password
       end
     end
 
-    def upload path
+    def upload(path)
       connection = get_connection :multipart
 
-      package
+      unless options[:zipfile]
+        package
+        package_path = Dir[File.join path, '/tmp/*.zip'].sort.last
+      else
+        package_path = options[:zipfile]
+      end
 
-      zipfile = Dir[File.join path, '/tmp/*.zip'].sort.last
-      payload = { :uploaded_data => Faraday::UploadIO.new(zipfile, 'application/zip') }
-      connection.basic_auth @username, @password
+      payload = { :uploaded_data => Faraday::UploadIO.new(package_path, 'application/zip') }
 
       response = connection.post('/api/v2/apps/uploads.json', payload)
-      upload = response.env[:body]
-      JSON.parse(upload)['id']
+      JSON.parse(response.env[:body])['id']
+    rescue
+      say 'Something went wrong while uploading', :red
     end
 
-    def check_job response
+    def check_status(response)
       job = response.env[:body]
       job_id = JSON.parse(job)['job_id']
 
-      check_status job_id
+      check_job job_id
     end
 
-    def check_status job_id
-      connection = Faraday.new (URL_TEMPLATE % @subdomain) do |f|
-        f.request :url_encoded
-        f.adapter :net_http
+    def check_job(job_id)
+      connection = get_connection
+
+      loop do
+        response = connection.get("/api/v2/apps/job_statuses/#{job_id}")
+        info     = JSON.parse(response.env[:body])
+        status   = info['status']
+        message  = info['message']
+        app_id   = info['app_id']
+
+        return status, message, app_id if ['completed', 'failed'].include? status
+
+        say_status 'Status', status
+        sleep 3
       end
-
-      connection.basic_auth @username, @password
-
-      response = connection.get("/api/v2/apps/job_statuses/#{job_id}").env[:body]
-      info = JSON.parse(response)
-      status = info['status']
-      app_id = info['app_id']
-
-      return status, app_id if ['completed', 'failed'].include? status
-      say_status 'Status', status
-
-      sleep 3
-      check_status job_id
     end
 
   end
