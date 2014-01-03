@@ -23,6 +23,7 @@ module ZendeskAppsTools
       :path =>  './',
       :clean => false
     }
+    FULL_URL            = /https?:\/\//
 
     include Thor::Actions
     include ZendeskAppsSupport
@@ -252,11 +253,17 @@ module ZendeskAppsTools
       @password  = STDIN.noecho(&:gets).chomp
       puts
 
+      if FULL_URL =~ @subdomain
+        @url = @subdomain
+      else
+        @url = URL_TEMPLATE % @subdomain
+      end
+
       set_cache 'subdomain' => @subdomain, 'username' => @username
     end
 
     def get_connection(middleware = :url_encoded)
-      Faraday.new (URL_TEMPLATE % @subdomain) do |f|
+      Faraday.new @url do |f|
         f.request middleware
         f.adapter :net_http
         f.basic_auth @username, @password
