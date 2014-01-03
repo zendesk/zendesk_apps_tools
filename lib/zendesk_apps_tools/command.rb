@@ -151,20 +151,26 @@ module ZendeskAppsTools
     method_option :zipfile, :default => nil, :required => false, :type => :string
     def create
       app_name = get_value_from_stdin('Enter app name:')
-      deploy_app(:post, '/api/v2/apps.json', {:name => app_name }, "Create")
+      deploy_app(:post, {:name => app_name }, "Create")
     end
 
     desc "update", "Update app on the server"
     method_options SHARED_OPTIONS
     method_option :zipfile, :default => nil, :required => false, :type => :string
     def update
-      app_id = get_cache('app_id') || find_app_id
-      deploy_app(:put, "/api/v2/apps/#{app_id}.json", {}, "Update")
+      deploy_app(:put, {}, "Update")
     end
 
     protected
 
-    def deploy_app(connection_method, url, body, command)
+    def deploy_app(connection_method, body, command)
+      if command == "Create"
+        url = '/api/v2/apps.json'
+      elsif command == "Update"
+        app_id = get_cache('app_id') || find_app_id
+        url = "/api/v2/apps/#{app_id}.json"
+      end
+
       prepare_api_auth
       body[:upload_id] = upload(options[:path]).to_s
 
