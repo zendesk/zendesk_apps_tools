@@ -151,7 +151,11 @@ module ZendeskAppsTools
     method_options SHARED_OPTIONS
     method_option :zipfile, :default => nil, :required => false, :type => :string
     def create
-      app_name = get_value_from_stdin('Enter app name:')
+      if options[:zipfile]
+        app_name = get_value_from_stdin('Enter app name:')
+      else
+        app_name = JSON.parse(File.read(File.join options[:path], 'manifest.json'))['name']
+      end
       deploy_app(:post, '/api/v2/apps.json', {:name => app_name }, "Create")
     end
 
