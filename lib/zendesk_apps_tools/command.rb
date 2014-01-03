@@ -159,6 +159,9 @@ module ZendeskAppsTools
     method_option :zipfile, :default => nil, :required => false, :type => :string
     def update
       app_id = get_cache('app_id') || find_app_id
+      unless /\d+/ =~ app_id.to_s
+        say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
+      end
       deploy_app(:put, "/api/v2/apps/#{app_id}.json", {}, "Update")
     end
 
@@ -185,7 +188,7 @@ module ZendeskAppsTools
         say_status command, message
       end
     rescue Faraday::Error::ClientError
-      say_error  NETWORK_ERROR_MSG
+      say_error_and_exit  NETWORK_ERROR_MSG
     end
 
     def setup_path(path)
@@ -236,6 +239,8 @@ module ZendeskAppsTools
 
       set_cache 'app_id' => app['id']
       app['id']
+    rescue Faraday::Error::ClientError
+      say_error_and_exit 'Network error occurred when finding the app id'
     end
 
     def prepare_api_auth
@@ -273,12 +278,12 @@ module ZendeskAppsTools
       response = connection.post('/api/v2/apps/uploads.json', payload)
       JSON.parse(response.body)['id']
     rescue Faraday::Error::ClientError
-      say_error 'Something went wrong while uploading'
-      exit 1
+      say_error_and_exit 'Something went wrong while uploading'
     end
 
-    def say_error(msg)
+    def say_error_and_exit(msg)
       say msg, :red
+      exit 1
     end
 
     def check_status(response)
