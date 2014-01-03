@@ -57,13 +57,13 @@ describe ZendeskAppsTools::Command do
       @command.create
     end
 
-    it 'gives helpful error message when things go wrong in faraday' do
+    it 'catches errors thrown by faraday and exits' do
       @command.stub(:prepare_api_auth)
       @command.stub(:get_value_from_stdin) { 'abc' }
       @command.stub(:upload).and_raise(Faraday::Error::ClientError.new('hey'))
 
-      @command.should_receive(:say_error)
       expect { @command.create }.to_not raise_error(Faraday::Error::ClientError)
+      expect { @command.create }.to raise_error(SystemExit)
     end
 
   end
@@ -108,15 +108,30 @@ describe ZendeskAppsTools::Command do
       end
     end
 
-    it 'gives helpful error message when things go wrong in faraday' do
-      @command.stub(:find_app_id) { @app_id }
-      @command.stub(:get_cache) { @app_id }
+    it 'catches errors thrown by faraday and exits' do
+      @command.stub(:get_cache) { 123 }
+      @command.stub(:prepare_api_auth).and_raise(Faraday::Error::ClientError.new('hey'))
 
-      @command.stub(:prepare_api_auth)
-      @command.stub(:upload).and_raise(Faraday::Error::ClientError.new('hey'))
-
-      @command.should_receive(:say_error)
       expect { @command.update }.to_not raise_error(Faraday::Error::ClientError)
+      expect { @command.update }.to raise_error(SystemExit)
+    end
+
+    it 'exits when app id is not found' do
+      @command.stub(:get_cache)
+      @command.stub(:find_app_id)
+
+      expect { @command.update }.to raise_error(SystemExit)
+    end
+
+  end
+
+  describe '#find_app_id' do
+
+    it 'catches errors thrown by faraday and exits' do
+      @command.stub(:say_status).and_raise(Faraday::Error::ClientError.new('hey'))
+
+      expect { @command.send(:find_app_id) }.to_not raise_error(Faraday::Error::ClientError)
+      expect { @command.send(:find_app_id) }.to raise_error(SystemExit)
     end
 
   end
