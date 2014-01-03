@@ -150,59 +150,43 @@ module ZendeskAppsTools
     method_options SHARED_OPTIONS
     method_option :zipfile, :default => nil, :required => false, :type => :string
     def create
-      prepare_api_auth
-      upload_id = upload options[:path]
-
-      connection = get_connection
-
-      response = connection.post do |req|
-        req.url '/api/v2/apps.json'
-        req.headers[:content_type] = 'application/json'
-
-        app_name = get_value_from_stdin('Enter app name:')
-        req.body = JSON.generate :name => app_name, :upload_id => "#{upload_id}"
-      end
-
-      status, message, app_id = check_status response
-      if status == 'completed'
-        set_cache 'app_id' => app_id
-        say_status 'Create', 'OK'
-      else
-        say_status 'Create', message
-      end
-    rescue Faraday::Error::ClientError
-      say_error  NETWORK_ERROR_MSG
+      app_name = get_value_from_stdin('Enter app name:')
+      deploy_app(:post, '/api/v2/apps.json', {:name => app_name }, "Create")
     end
 
     desc "update", "Update app on the server"
     method_options SHARED_OPTIONS
     method_option :zipfile, :default => nil, :required => false, :type => :string
     def update
-      prepare_api_auth
-      upload_id = upload options[:path]
-
       app_id = get_cache('app_id') || find_app_id
-
-      connection = get_connection
-
-      response = connection.put do |req|
-        req.url "/api/v2/apps/#{app_id}.json"
-        req.headers[:content_type] = 'application/json'
-
-        req.body = JSON.generate upload_id: "#{upload_id}"
-      end
-
-      status, message, _ = check_status response
-      if status == 'completed'
-        say_status 'Update', 'OK'
-      else
-        say_status 'Update', message
-      end
-    rescue Faraday::Error::ClientError
-      say_error NETWORK_ERROR_MSG
+      deploy_app(:put, "/api/v2/apps/#{app_id}.json", {}, "Update")
     end
 
     protected
+
+    def deploy_app(connection_method, url, body, command)
+      prepare_api_auth
+      body[:upload_id] = upload(options[:path]).to_s
+
+      connection = get_connection
+
+      response = connection.send(connection_method) do |req|
+        req.url url
+        req.headers[:content_type] = 'application/json'
+
+        req.body = JSON.generate body
+      end
+
+      status, message, app_id = check_status response
+      if status == 'completed'
+        set_cache 'app_id' => app_id
+        say_status command, 'OK'
+      else
+        say_status command, message
+      end
+    rescue Faraday::Error::ClientError
+      say_error  NETWORK_ERROR_MSG
+    end
 
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path

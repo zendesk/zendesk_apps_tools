@@ -59,6 +59,7 @@ describe ZendeskAppsTools::Command do
 
     it 'gives helpful error message when things go wrong in faraday' do
       @command.stub(:prepare_api_auth)
+      @command.stub(:get_value_from_stdin) { 'abc' }
       @command.stub(:upload).and_raise(Faraday::Error::ClientError.new('hey'))
 
       @command.should_receive(:say_error)
@@ -108,6 +109,9 @@ describe ZendeskAppsTools::Command do
     end
 
     it 'gives helpful error message when things go wrong in faraday' do
+      @command.stub(:find_app_id) { @app_id }
+      @command.stub(:get_cache) { @app_id }
+
       @command.stub(:prepare_api_auth)
       @command.stub(:upload).and_raise(Faraday::Error::ClientError.new('hey'))
 
