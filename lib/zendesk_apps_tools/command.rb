@@ -257,13 +257,17 @@ module ZendeskAppsTools
       @password  = STDIN.noecho(&:gets).chomp
       puts
 
-      if FULL_URL =~ @subdomain
-        @url = @subdomain
-      else
-        @url = URL_TEMPLATE % @subdomain
-      end
+      @url = get_full_url
 
       set_cache 'subdomain' => @subdomain, 'username' => @username
+    end
+
+    def get_full_url
+      if FULL_URL =~ @subdomain
+        @subdomain
+      else
+        URL_TEMPLATE % @subdomain
+      end
     end
 
     def get_connection(middleware = :url_encoded)
