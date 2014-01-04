@@ -151,29 +151,34 @@ module ZendeskAppsTools
     method_options SHARED_OPTIONS
     method_option :zipfile, :default => nil, :required => false, :type => :string
     def create
+      clear_cache
+      @command = 'Create'
+
       if options[:zipfile]
         app_name = get_value_from_stdin('Enter app name:')
       else
         app_name = JSON.parse(File.read(File.join options[:path], 'manifest.json'))['name']
       end
-      deploy_app(:post, '/api/v2/apps.json', {:name => app_name }, "Create")
+      deploy_app(:post, '/api/v2/apps.json', {:name => app_name })
     end
 
     desc "update", "Update app on the server"
     method_options SHARED_OPTIONS
     method_option :zipfile, :default => nil, :required => false, :type => :string
     def update
+      clear_cache
+      @command = 'Update'
+
       app_id = get_cache('app_id') || find_app_id
       unless /\d+/ =~ app_id.to_s
         say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
       end
-      deploy_app(:put, "/api/v2/apps/#{app_id}.json", {}, "Update")
+      deploy_app(:put, "/api/v2/apps/#{app_id}.json", {})
     end
 
     protected
 
-    def deploy_app(connection_method, url, body, command)
-      prepare_api_auth
+    def deploy_app(connection_method, url, body)
       body[:upload_id] = upload(options[:path]).to_s
 
       connection = get_connection
@@ -185,15 +190,10 @@ module ZendeskAppsTools
         req.body = JSON.generate body
       end
 
-      status, message, app_id = check_status response
-      if status == 'completed'
-        set_cache 'app_id' => app_id
-        say_status command, 'OK'
-      else
-        say_status command, message
-      end
-    rescue Faraday::Error::ClientError
-      say_error_and_exit  NETWORK_ERROR_MSG
+      check_status response
+
+    rescue Faraday::Error::ClientError => e
+      say_error_and_exit e.message
     end
 
     def setup_path(path)
@@ -225,7 +225,7 @@ module ZendeskAppsTools
     end
 
     def clear_cache
-      File.delete cache_path if File.exists? cache_path
+      File.delete cache_path if options[:clean] && File.exists?(cache_path)
     end
 
     def cache_path
@@ -244,22 +244,21 @@ module ZendeskAppsTools
 
       set_cache 'app_id' => app['id']
       app['id']
-    rescue Faraday::Error::ClientError
-      say_error_and_exit 'Network error occurred when finding the app id'
+    rescue Faraday::Error::ClientError => e
+      say_error_and_exit e.message
     end
 
     def prepare_api_auth
-      clear_cache if options[:clean]
+      @subdomain ||= get_cache('subdomain') || get_value_from_stdin('Enter your Zendesk subdomain or full Zendesk URL:')
+      @username  ||= get_cache('username') || get_value_from_stdin('Enter your username:')
 
-      @subdomain = get_cache('subdomain') || get_value_from_stdin('Enter your subdomain:')
-      @username  = get_cache('username') || get_value_from_stdin('Enter your username:')
-      print 'Enter your password: '
-      @password  = STDIN.noecho(&:gets).chomp
-      puts
+      unless @password
+        print 'Enter your password: '
+        @password ||= STDIN.noecho(&:gets).chomp
+        puts
 
-      @url = get_full_url
-
-      set_cache 'subdomain' => @subdomain, 'username' => @username
+        set_cache 'subdomain' => @subdomain, 'username' => @username
+      end
     end
 
     def get_full_url
@@ -271,7 +270,8 @@ module ZendeskAppsTools
     end
 
     def get_connection(middleware = :url_encoded)
-      Faraday.new @url do |f|
+      prepare_api_auth
+      Faraday.new get_full_url do |f|
         f.request middleware
         f.adapter :net_http
         f.basic_auth @username, @password
@@ -292,8 +292,8 @@ module ZendeskAppsTools
 
       response = connection.post('/api/v2/apps/uploads.json', payload)
       JSON.parse(response.body)['id']
-    rescue Faraday::Error::ClientError
-      say_error_and_exit 'Something went wrong while uploading'
+    rescue Faraday::Error::ClientError => e
+      say_error_and_exit e.message
     end
 
     def say_error_and_exit(msg)
@@ -318,7 +318,16 @@ module ZendeskAppsTools
         message  = info['message']
         app_id   = info['app_id']
 
-        return status, message, app_id if ['completed', 'failed'].include? status
+        if ['completed', 'failed'].include? status
+          case status
+          when 'completed'
+            set_cache 'app_id' => app_id
+            say_status @command, 'OK'
+          when 'failed'
+            say_status @command, message
+          end
+          break
+        end
 
         say_status 'Status', status
         sleep 3
@@ -327,4 +336,3 @@ module ZendeskAppsTools
 
   end
 end
-
