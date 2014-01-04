@@ -162,7 +162,7 @@ module ZendeskAppsTools
       else
         app_name = JSON.parse(File.read(File.join options[:path], 'manifest.json'))['name']
       end
-      deploy_app(:post, '/api/v2/apps.json', {:name => app_name })
+      deploy_app(:post, '/api/v2/apps.json', { :name => app_name })
     end
 
     desc "update", "Update app on the server"
