@@ -76,14 +76,39 @@ describe ZendeskAppsTools::Command do
   end
 
   describe '#update' do
-    it 'uploads a file and puts build api' do
-      @command.should_receive(:upload).and_return(123)
-      @command.stub(:check_status)
-      @command.should_receive(:find_app_id) { 123 }
+    context 'when app id is in cache' do
+      it 'uploads a file and puts build api' do
+        @command.should_receive(:upload).and_return(123)
+        @command.stub(:check_status)
+        @command.should_receive(:get_cache).with('app_id').and_return(456)
 
-      stub_request(:put, PREFIX + '/api/v2/apps/123.json')
+        stub_request(:put, PREFIX + '/api/v2/apps/456.json')
 
-      @command.update
+        @command.update
+      end
+    end
+
+    context 'when app id is not in cache' do
+      it 'finds the app id first' do
+        @command.instance_variable_set(:@app_id, nil)
+        @command.stub(:get_value_from_stdin).and_return('itsme')
+
+        apps = {
+          :apps => [
+            { :name => "hello", :id => 123 },
+            { :name => "world", :id => 124 },
+            { :name => "itsme", :id => 125 },
+          ]
+        }
+
+        stub_request(:get, PREFIX + '/api/v2/apps.json')
+          .to_return(:body => JSON.generate(apps))
+
+        @command.send(:find_app_id).should == 125
+
+        @command.stub(:deploy_app)
+        @command.update
+      end
     end
   end
 end
