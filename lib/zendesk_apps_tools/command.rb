@@ -6,9 +6,12 @@ require 'json'
 require 'faraday'
 require 'io/console'
 
-require 'zendesk_apps_tools/translate'
+require 'zendesk_apps_tools/cache'
 require 'zendesk_apps_tools/common'
+require 'zendesk_apps_tools/connection'
+require 'zendesk_apps_tools/deploy'
 require 'zendesk_apps_tools/settings'
+require 'zendesk_apps_tools/translate'
 
 module ZendeskAppsTools
   require 'zendesk_apps_support'
@@ -16,18 +19,18 @@ module ZendeskAppsTools
   class Command < Thor
 
     DEFAULT_ZENDESK_URL = 'http://support.zendesk.com'
-    URL_TEMPLATE        = 'https://%s.zendesk.com/'
-    CACHE_FILE_NAME     = '.zat'
     NETWORK_ERROR_MSG   = 'Something went wrong, please try again!'
     SHARED_OPTIONS      = {
       :path =>  './',
       :clean => false
     }
-    FULL_URL            = /https?:\/\//
 
     include Thor::Actions
     include ZendeskAppsSupport
+    include ZendeskAppsTools::Cache
     include ZendeskAppsTools::Common
+    include ZendeskAppsTools::Connection
+    include ZendeskAppsTools::Deploy
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
@@ -178,24 +181,6 @@ module ZendeskAppsTools
 
     protected
 
-    def deploy_app(connection_method, url, body)
-      body[:upload_id] = upload(options[:path]).to_s
-
-      connection = get_connection
-
-      response = connection.send(connection_method) do |req|
-        req.url url
-        req.headers[:content_type] = 'application/json'
-
-        req.body = JSON.generate body
-      end
-
-      check_status response
-
-    rescue Faraday::Error::ClientError => e
-      say_error_and_exit e.message
-    end
-
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
     end
@@ -214,24 +199,6 @@ module ZendeskAppsTools
       @app_package ||= Package.new(self.app_dir.to_s)
     end
 
-    def set_cache(hash)
-      @cache = File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
-      File.open(@cache_path, 'w') { |f| f.write JSON.pretty_generate(@cache) }
-    end
-
-    def get_cache(key)
-      @cache ||= File.exists?(cache_path) ? JSON.parse(File.read(@cache_path)) : {}
-      @cache[key] if @cache
-    end
-
-    def clear_cache
-      File.delete cache_path if options[:clean] && File.exists?(cache_path)
-    end
-
-    def cache_path
-      @cache_path ||= File.join options[:path], CACHE_FILE_NAME
-    end
-
     def find_app_id
       say_status 'Update', 'app ID is missing, searching...'
       name = get_value_from_stdin('Enter the name of the app:')
@@ -246,92 +213,6 @@ module ZendeskAppsTools
       app['id']
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
-    end
-
-    def prepare_api_auth
-      @subdomain ||= get_cache('subdomain') || get_value_from_stdin('Enter your Zendesk subdomain or full Zendesk URL:')
-      @username  ||= get_cache('username') || get_value_from_stdin('Enter your username:')
-
-      unless @password
-        print 'Enter your password: '
-        @password ||= STDIN.noecho(&:gets).chomp
-        puts
-
-        set_cache 'subdomain' => @subdomain, 'username' => @username
-      end
-    end
-
-    def get_full_url
-      if FULL_URL =~ @subdomain
-        @subdomain
-      else
-        URL_TEMPLATE % @subdomain
-      end
-    end
-
-    def get_connection(middleware = :url_encoded)
-      prepare_api_auth
-      Faraday.new get_full_url do |f|
-        f.request middleware
-        f.adapter :net_http
-        f.basic_auth @username, @password
-      end
-    end
-
-    def upload(path)
-      connection = get_connection :multipart
-
-      if options[:zipfile]
-        package_path = options[:zipfile]
-      else
-        package
-        package_path = Dir[File.join path, '/tmp/*.zip'].sort.last
-      end
-
-      payload = { :uploaded_data => Faraday::UploadIO.new(package_path, 'application/zip') }
-
-      response = connection.post('/api/v2/apps/uploads.json', payload)
-      JSON.parse(response.body)['id']
-    rescue Faraday::Error::ClientError => e
-      say_error_and_exit e.message
-    end
-
-    def say_error_and_exit(msg)
-      say msg, :red
-      exit 1
-    end
-
-    def check_status(response)
-      job = response.body
-      job_id = JSON.parse(job)['job_id']
-
-      check_job job_id
-    end
-
-    def check_job(job_id)
-      connection = get_connection
-
-      loop do
-        response = connection.get("/api/v2/apps/job_statuses/#{job_id}")
-        info     = JSON.parse(response.body)
-        status   = info['status']
-        message  = info['message']
-        app_id   = info['app_id']
-
-        if ['completed', 'failed'].include? status
-          case status
-          when 'completed'
-            set_cache 'app_id' => app_id
-            say_status @command, 'OK'
-          when 'failed'
-            say_status @command, message
-          end
-          break
-        end
-
-        say_status 'Status', status
-        sleep 3
-      end
     end
 
   end
