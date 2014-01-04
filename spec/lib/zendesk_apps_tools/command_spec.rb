@@ -16,7 +16,6 @@ describe ZendeskAppsTools::Command do
     @command.stub(:set_cache)
     @command.stub(:clear_cache)
     @command.stub(:options) { { :clean => false, :path => './' } }
-    # @command.stub(:set_cache)
   end
 
   describe '#upload' do

@@ -19,7 +19,6 @@ module ZendeskAppsTools
   class Command < Thor
 
     DEFAULT_ZENDESK_URL = 'http://support.zendesk.com'
-    NETWORK_ERROR_MSG   = 'Something went wrong, please try again!'
     SHARED_OPTIONS      = {
       :path =>  './',
       :clean => false
