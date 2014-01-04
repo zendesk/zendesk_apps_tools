@@ -3,137 +3,88 @@ require 'command'
 
 describe ZendeskAppsTools::Command do
 
+  PREFIX = 'https://username:password@subdomain.zendesk.com'
+
   before do
     @command = ZendeskAppsTools::Command.new
-  end
+    @command.instance_variable_set(:@username, 'username')
+    @command.instance_variable_set(:@password, 'password')
+    @command.instance_variable_set(:@subdomain, 'subdomain')
+    @command.instance_variable_set(:@app_id, '123')
 
-  it 'can be instantiated' do
-    @command.should_not == nil
+    @command.stub(:get_cache)
+    @command.stub(:set_cache)
+    @command.stub(:clear_cache)
+    @command.stub(:options) { { :clean => false, :path => './' } }
+    # @command.stub(:set_cache)
   end
 
   describe '#upload' do
+    context 'when no zipfile is given' do
+      it 'uploads the zipfile and returns an upload id' do
+        @command.stub(:package)
+        @command.stub(:options) { { :zipfile => nil } }
+        Faraday::UploadIO.stub(:new)
 
-    it 'returns the id of the successfully uploaded app zipfile' do
-      data = double('data')
-      Faraday::UploadIO.stub(:new) { data }
+        stub_request(:post, PREFIX + '/api/v2/apps/uploads.json')
+          .to_return(:body => '{ "id": 123 }')
 
-      conn = double('conn')
-      @command.stub(:get_connection) { conn }
-
-      @command.stub(:package)
-
-      payload = { :uploaded_data => data }
-      response = double('response', :body => '{ "id": 123 }')
-      conn.should_receive(:post).with('/api/v2/apps/uploads.json', payload).and_return(response)
-
-      @command.send(:upload, 'hell').should == 123
+        @command.upload('nah').should == 123
+      end
     end
 
+    context 'when zipfile is given' do
+      it 'uploads the zipfile and returns an upload id' do
+        @command.stub(:options) { { :zipfile => 'app.zip' } }
+        Faraday::UploadIO.should_receive(:new).with('app.zip', 'application/zip').and_return(nil)
+
+        stub_request(:post, PREFIX + '/api/v2/apps/uploads.json')
+          .to_return(:body => '{ "id": 123 }')
+
+        @command.upload('nah').should == 123
+      end
+    end
   end
 
   describe '#create' do
+    context 'when no zipfile is given' do
+      it 'uploads a file and posts build api' do
+        @command.should_receive(:upload).and_return(123)
+        @command.stub(:check_status)
+        File.should_receive(:read) { '{ "name": "abc" }' }
 
-    it 'creates app on server' do
-      @command.stub(:prepare_api_auth)
-      @command.stub(:upload) { 123 }
-      @command.stub(:get_value_from_stdin) { 'abc' }
+        stub_request(:post, PREFIX + '/api/v2/apps.json')
+          .with(:body => JSON.generate({ :name => 'abc', :upload_id => '123' }))
 
-      conn = double('conn')
-      @command.stub(:get_connection) { conn }
-
-      request = double('request')
-      hash = double('hash')
-      conn.should_receive(:post).and_yield(request)
-      request.should_receive(:url).with('/api/v2/apps.json')
-      request.should_receive(:headers).and_return(hash)
-      hash.should_receive(:[]=).with(:content_type, 'application/json')
-
-      body = JSON.generate :name => 'abc', :upload_id => '123'
-      request.should_receive(:body=).with(body)
-
-      @command.stub(:set_cache)
-      @command.stub(:check_status).and_return('OK', nil, nil)
-
-      @command.create
+        @command.create
+      end
     end
 
-    it 'catches errors thrown by faraday and exits' do
-      @command.stub(:prepare_api_auth)
-      @command.stub(:get_value_from_stdin) { 'abc' }
-      @command.stub(:upload).and_raise(Faraday::Error::ClientError.new('hey'))
+    context 'when zipfile is given' do
+      it 'uploads the zipfile and posts build api' do
+        @command.should_receive(:upload).and_return(123)
+        @command.stub(:check_status)
+        @command.stub(:options) { { :clean => false, :path => './', :zipfile => 'abc.zip' } }
 
-      expect { @command.create }.to_not raise_error(Faraday::Error::ClientError)
-      expect { @command.create }.to raise_error(SystemExit)
+        @command.should_receive(:get_value_from_stdin) { 'abc' }
+
+        stub_request(:post, PREFIX + '/api/v2/apps.json')
+          .with(:body => JSON.generate({ :name => 'abc', :upload_id => '123' }))
+
+        @command.create
+      end
     end
-
   end
 
   describe '#update' do
+    it 'uploads a file and puts build api' do
+      @command.should_receive(:upload).and_return(123)
+      @command.stub(:check_status)
+      @command.should_receive(:find_app_id) { 123 }
 
-    context 'when no errors occur' do
-      before do
-        @command.stub(:prepare_api_auth)
-        @command.stub(:upload) { 123 }
+      stub_request(:put, PREFIX + '/api/v2/apps/123.json')
 
-        @app_id = 456
-
-        conn = double('conn')
-        @command.stub(:get_connection) { conn }
-
-        request = double('request')
-        hash = double('hash')
-        conn.should_receive(:put).and_yield(request)
-        request.should_receive(:url).with("/api/v2/apps/#{@app_id}.json")
-        request.should_receive(:headers).and_return(hash)
-        hash.should_receive(:[]=).with(:content_type, 'application/json')
-
-        body = JSON.generate :upload_id => '123'
-        request.should_receive(:body=).with(body)
-
-        @command.stub(:set_cache)
-        @command.stub(:check_status).and_return('ok', nil, nil)
-      end
-
-      it 'updates the app on server when app id is already in cache' do
-        @command.stub(:get_cache) { @app_id }
-
-        @command.update
-      end
-
-      it 'updates the app on server when app id is not already in cache' do
-        @command.stub(:get_cache) { nil }
-        @command.stub(:find_app_id) { @app_id }
-
-        @command.update
-      end
+      @command.update
     end
-
-    it 'catches errors thrown by faraday and exits' do
-      @command.stub(:get_cache) { 123 }
-      @command.stub(:prepare_api_auth).and_raise(Faraday::Error::ClientError.new('hey'))
-
-      expect { @command.update }.to_not raise_error(Faraday::Error::ClientError)
-      expect { @command.update }.to raise_error(SystemExit)
-    end
-
-    it 'exits when app id is not found' do
-      @command.stub(:get_cache)
-      @command.stub(:find_app_id)
-
-      expect { @command.update }.to raise_error(SystemExit)
-    end
-
   end
-
-  describe '#find_app_id' do
-
-    it 'catches errors thrown by faraday and exits' do
-      @command.stub(:say_status).and_raise(Faraday::Error::ClientError.new('hey'))
-
-      expect { @command.send(:find_app_id) }.to_not raise_error(Faraday::Error::ClientError)
-      expect { @command.send(:find_app_id) }.to raise_error(SystemExit)
-    end
-
-  end
-
 end
