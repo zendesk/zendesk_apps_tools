@@ -24,10 +24,10 @@ module ZendeskAppsTools
       end
     end
 
-    def get_connection(middleware = :url_encoded)
+    def get_connection(encoding = :url_encoded)
       prepare_api_auth
       Faraday.new get_full_url do |f|
-        f.request middleware
+        f.request encoding
         f.adapter :net_http
         f.basic_auth @username, @password
       end
