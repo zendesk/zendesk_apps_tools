@@ -40,6 +40,22 @@ module ZendeskAppsTools
       say_error_and_exit e.message
     end
 
+    def find_app_id
+      say_status 'Update', 'app ID is missing, searching...'
+      name = get_value_from_stdin('Enter the name of the app:')
+
+      connection = get_connection
+
+      all_apps = connection.get('/api/v2/apps.json').body
+
+      app = JSON.parse(all_apps)['apps'].find { |app| app['name'] == name }
+
+      set_cache 'app_id' => app['id']
+      app['id']
+    rescue Faraday::Error::ClientError => e
+      say_error_and_exit e.message
+    end
+
     def check_status(response)
       job = response.body
       job_id = JSON.parse(job)['job_id']
