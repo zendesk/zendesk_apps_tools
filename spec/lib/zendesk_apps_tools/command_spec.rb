@@ -20,8 +20,8 @@ describe ZendeskAppsTools::Command do
 
   describe '#upload' do
     context 'when no zipfile is given' do
-      it 'uploads the zipfile and returns an upload id' do
-        @command.stub(:package)
+      it 'uploads the newly packaged zipfile and returns an upload id' do
+        @command.should_receive(:package)
         @command.stub(:options) { { :zipfile => nil } }
         Faraday::UploadIO.stub(:new)
 
@@ -33,7 +33,7 @@ describe ZendeskAppsTools::Command do
     end
 
     context 'when zipfile is given' do
-      it 'uploads the zipfile and returns an upload id' do
+      it 'uploads the given zipfile and returns an upload id' do
         @command.stub(:options) { { :zipfile => 'app.zip' } }
         Faraday::UploadIO.should_receive(:new).with('app.zip', 'application/zip').and_return(nil)
 
