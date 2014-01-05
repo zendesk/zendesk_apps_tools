@@ -8,7 +8,7 @@ require 'io/console'
 
 require 'zendesk_apps_tools/cache'
 require 'zendesk_apps_tools/common'
-require 'zendesk_apps_tools/connection'
+require 'zendesk_apps_tools/api_connection'
 require 'zendesk_apps_tools/deploy'
 require 'zendesk_apps_tools/settings'
 require 'zendesk_apps_tools/translate'
@@ -28,7 +28,7 @@ module ZendeskAppsTools
     include ZendeskAppsSupport
     include ZendeskAppsTools::Cache
     include ZendeskAppsTools::Common
-    include ZendeskAppsTools::Connection
+    include ZendeskAppsTools::APIConnection
     include ZendeskAppsTools::Deploy
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))

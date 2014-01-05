@@ -1,5 +1,5 @@
 module ZendeskAppsTools
-  module Connection
+  module APIConnection
     FULL_URL     = /https?:\/\//
     URL_TEMPLATE = 'https://%s.zendesk.com/'
 
