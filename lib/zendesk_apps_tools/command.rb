@@ -3,20 +3,25 @@ require 'zip/zip'
 require 'pathname'
 require 'net/http'
 require 'json'
-require 'zendesk_apps_tools/translate'
-require 'zendesk_apps_tools/common'
-require 'zendesk_apps_tools/settings'
+require 'faraday'
+require 'io/console'
+
+require 'zendesk_apps_tools/command_helpers'
 
 module ZendeskAppsTools
+
   require 'zendesk_apps_support'
 
   class Command < Thor
 
-    DEFAULT_ZENDESK_URL = "http://support.zendesk.com"
+    SHARED_OPTIONS      = {
+      :path =>  './',
+      :clean => false
+    }
 
     include Thor::Actions
     include ZendeskAppsSupport
-    include ZendeskAppsTools::Common
+    include ZendeskAppsTools::CommandHelpers
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
@@ -29,35 +34,15 @@ module ZendeskAppsTools
       @author_email = get_value_from_stdin("Enter this app author's email:\n", :valid_regex => /^.+@.+\..+$/, :error_msg => "Invalid email, try again:")
       @app_name = get_value_from_stdin("Enter a name for this new app:\n", :error_msg => "Invalid app name, try again:")
 
-      prompt = "Enter a directory name to save the new app (will create the dir if it does not exist, default to current dir):\n"
-      opts = { :valid_regex => /^(\w|\/|\\)*$/, :allow_empty => true }
-      while @app_dir = get_value_from_stdin(prompt, opts) do
-        @app_dir = './' and break if @app_dir.empty?
-        if !File.exists?(@app_dir)
-          break
-        elsif !File.directory?(@app_dir)
-          puts "Invalid dir, try again:"
-        else
-          break
-        end
-      end
+      get_new_app_directory
 
       directory('app_template', @app_dir)
     end
 
     desc "validate", "Validate your app"
-    method_option :path, :default => './', :required => false
+    method_options SHARED_OPTIONS
     def validate
-      prompt = "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):\n"
-      zendesk = get_value_from_stdin(prompt, :valid_regex => /^http:\/\/\w+\.\w+|^$/, :error_msg => 'Invalid url, try again:')
-      zendesk = DEFAULT_ZENDESK_URL if zendesk.empty?
-      url = URI.parse(zendesk)
-      response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
-      version = JSON.parse(response.body, :symbolize_names => true)
-      if ZendeskAppsSupport::AppVersion::CURRENT != version[:current]
-        puts 'This tool is using an out of date Zendesk App Framework. Please upgrade!'
-        exit 1
-      end
+      test_framework_version
 
       setup_path(options[:path])
       errors = app_package.validate
@@ -78,27 +63,16 @@ module ZendeskAppsTools
     end
 
     desc "package", "Package your app"
-    method_option :path, :default => './', :required => false
+    method_options SHARED_OPTIONS
     def package
+      return false unless invoke(:validate, [])
+
       setup_path(options[:path])
       archive_path = File.join(tmp_dir, "app-#{Time.now.strftime('%Y%m%d%H%M%S')}.zip")
 
-      return false unless invoke(:validate, [])
-
       archive_rel_path = relative_to_original_destination_root(archive_path)
 
-      Zip::ZipFile.open(archive_path, 'w') do |zipfile|
-        app_package.files.each do |file|
-          path = file.relative_path
-          say_status "package", "adding #{path}"
-
-          # resolve symlink to source path
-          if File.symlink? file.absolute_path
-            path = File.readlink(file.absolute_path)
-          end
-          zipfile.add(file.relative_path, app_dir.join(path).to_s)
-        end
-      end
+      zip archive_path
 
       say_status "package", "created at #{archive_rel_path}"
       true
@@ -136,26 +110,40 @@ module ZendeskAppsTools
       end
     end
 
+    desc "create", "Create app on your account"
+    method_options SHARED_OPTIONS
+    method_option :zipfile, :default => nil, :required => false, :type => :string
+    def create
+      clear_cache
+      @command = 'Create'
+
+      if options[:zipfile]
+        app_name = get_value_from_stdin('Enter app name:')
+      else
+        app_name = JSON.parse(File.read(File.join options[:path], 'manifest.json'))['name']
+      end
+      deploy_app(:post, '/api/v2/apps.json', { :name => app_name })
+    end
+
+    desc "update", "Update app on the server"
+    method_options SHARED_OPTIONS
+    method_option :zipfile, :default => nil, :required => false, :type => :string
+    def update
+      clear_cache
+      @command = 'Update'
+
+      app_id = get_cache('app_id') || find_app_id
+      unless /\d+/ =~ app_id.to_s
+        say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
+      end
+      deploy_app(:put, "/api/v2/apps/#{app_id}.json", {})
+    end
+
     protected
 
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
     end
 
-    def app_dir
-      @app_dir ||= Pathname.new(destination_root)
-    end
-
-    def tmp_dir
-      @tmp_dir ||= Pathname.new(File.join(app_dir, "tmp")).tap do |dir|
-        FileUtils.mkdir_p(dir)
-      end
-    end
-
-    def app_package
-      @app_package ||= Package.new(self.app_dir.to_s)
-    end
-
   end
 end
-
