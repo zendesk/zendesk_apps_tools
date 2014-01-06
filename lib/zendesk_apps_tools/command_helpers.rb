@@ -9,7 +9,7 @@ require 'zendesk_apps_tools/translate'
 require 'zendesk_apps_tools/validate_helper'
 
 module ZendeskAppsTools
-  module Helpers
+  module CommandHelpers
     include ZendeskAppsTools::Cache
     include ZendeskAppsTools::Common
     include ZendeskAppsTools::APIConnection

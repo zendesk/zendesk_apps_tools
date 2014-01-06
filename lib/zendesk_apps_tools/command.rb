@@ -6,7 +6,7 @@ require 'json'
 require 'faraday'
 require 'io/console'
 
-require 'zendesk_apps_tools/helpers'
+require 'zendesk_apps_tools/command_helpers'
 
 module ZendeskAppsTools
 
@@ -21,7 +21,7 @@ module ZendeskAppsTools
 
     include Thor::Actions
     include ZendeskAppsSupport
-    include ZendeskAppsTools::Helpers
+    include ZendeskAppsTools::CommandHelpers
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
