@@ -6,6 +6,11 @@ module ZendeskAppsTools
       request.get(url)
     end
 
+    def say_error_and_exit(msg)
+      say msg, :red
+      exit 1
+    end
+
     def get_value_from_stdin(prompt, opts = {})
       options = {
         :valid_regex => opts[:allow_empty] ? /^.*$/ : /\S+/,
