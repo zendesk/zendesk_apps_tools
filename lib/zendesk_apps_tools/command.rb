@@ -10,6 +10,7 @@ require 'zendesk_apps_tools/cache'
 require 'zendesk_apps_tools/common'
 require 'zendesk_apps_tools/api_connection'
 require 'zendesk_apps_tools/deploy'
+require 'zendesk_apps_tools/directory'
 require 'zendesk_apps_tools/settings'
 require 'zendesk_apps_tools/translate'
 
@@ -30,6 +31,7 @@ module ZendeskAppsTools
     include ZendeskAppsTools::Common
     include ZendeskAppsTools::APIConnection
     include ZendeskAppsTools::Deploy
+    include ZendeskAppsTools::Directory
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
@@ -42,7 +44,7 @@ module ZendeskAppsTools
       @author_email = get_value_from_stdin("Enter this app author's email:\n", :valid_regex => /^.+@.+\..+$/, :error_msg => "Invalid email, try again:")
       @app_name = get_value_from_stdin("Enter a name for this new app:\n", :error_msg => "Invalid app name, try again:")
 
-      get_directory
+      get_new_app_directory
 
       directory('app_template', @app_dir)
     end
@@ -153,35 +155,6 @@ module ZendeskAppsTools
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
     end
 
-    def app_dir
-      @app_dir ||= Pathname.new(destination_root)
-    end
-
-    def tmp_dir
-      @tmp_dir ||= Pathname.new(File.join(app_dir, "tmp")).tap do |dir|
-        FileUtils.mkdir_p(dir)
-      end
-    end
-
-    def app_package
-      @app_package ||= Package.new(self.app_dir.to_s)
-    end
-
-    def get_directory
-      prompt = "Enter a directory name to save the new app (will create the dir if it does not exist, default to current dir):\n"
-      opts = { :valid_regex => /^(\w|\/|\\)*$/, :allow_empty => true }
-      while @app_dir = get_value_from_stdin(prompt, opts) do
-        @app_dir = './' and break if @app_dir.empty?
-        if !File.exists?(@app_dir)
-          break
-        elsif !File.directory?(@app_dir)
-          puts "Invalid dir, try again:"
-        else
-          break
-        end
-      end
-    end
-
     def test_framework_version
       prompt = "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):\n"
       zendesk  = get_value_from_stdin(prompt, :valid_regex => /^http:\/\/\w+\.\w+|^$/, :error_msg => 'Invalid url, try again:')
@@ -193,21 +166,6 @@ module ZendeskAppsTools
       if ZendeskAppsSupport::AppVersion::CURRENT != version[:current]
         puts 'This tool is using an out of date Zendesk App Framework. Please upgrade!'
         exit 1
-      end
-    end
-
-    def zip(archive_path)
-      Zip::ZipFile.open(archive_path, 'w') do |zipfile|
-        app_package.files.each do |file|
-          path = file.relative_path
-          say_status "package", "adding #{path}"
-
-          # resolve symlink to source path
-          if File.symlink? file.absolute_path
-            path = File.readlink(file.absolute_path)
-          end
-          zipfile.add(file.relative_path, app_dir.join(path).to_s)
-        end
       end
     end
 
