@@ -14,6 +14,7 @@ require 'zendesk_apps_tools/directory'
 require 'zendesk_apps_tools/package_helper'
 require 'zendesk_apps_tools/settings'
 require 'zendesk_apps_tools/translate'
+require 'zendesk_apps_tools/validate_helper'
 
 module ZendeskAppsTools
 
@@ -21,7 +22,6 @@ module ZendeskAppsTools
 
   class Command < Thor
 
-    DEFAULT_ZENDESK_URL = 'http://support.zendesk.com'
     SHARED_OPTIONS      = {
       :path =>  './',
       :clean => false
@@ -35,6 +35,7 @@ module ZendeskAppsTools
     include ZendeskAppsTools::Deploy
     include ZendeskAppsTools::Directory
     include ZendeskAppsTools::PackageHelper
+    include ZendeskAppsTools::ValidateHelper
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
 
@@ -156,20 +157,6 @@ module ZendeskAppsTools
 
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
-    end
-
-    def test_framework_version
-      prompt = "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):\n"
-      zendesk  = get_value_from_stdin(prompt, :valid_regex => /^http:\/\/\w+\.\w+|^$/, :error_msg => 'Invalid url, try again:')
-      zendesk  = DEFAULT_ZENDESK_URL if zendesk.empty?
-      url      = URI.parse(zendesk)
-      response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
-      version  = JSON.parse(response.body, :symbolize_names => true)
-
-      if ZendeskAppsSupport::AppVersion::CURRENT != version[:current]
-        puts 'This tool is using an out of date Zendesk App Framework. Please upgrade!'
-        exit 1
-      end
     end
 
   end
