@@ -61,16 +61,7 @@ module ZendeskAppsTools
     desc "validate", "Validate your app"
     method_options SHARED_OPTIONS
     def validate
-      prompt = "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):\n"
-      zendesk = get_value_from_stdin(prompt, :valid_regex => /^http:\/\/\w+\.\w+|^$/, :error_msg => 'Invalid url, try again:')
-      zendesk = DEFAULT_ZENDESK_URL if zendesk.empty?
-      url = URI.parse(zendesk)
-      response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
-      version = JSON.parse(response.body, :symbolize_names => true)
-      if ZendeskAppsSupport::AppVersion::CURRENT != version[:current]
-        puts 'This tool is using an out of date Zendesk App Framework. Please upgrade!'
-        exit 1
-      end
+      test_framework_version
 
       setup_path(options[:path])
       errors = app_package.validate
@@ -93,10 +84,10 @@ module ZendeskAppsTools
     desc "package", "Package your app"
     method_options SHARED_OPTIONS
     def package
+      return false unless invoke(:validate, [])
+
       setup_path(options[:path])
       archive_path = File.join(tmp_dir, "app-#{Time.now.strftime('%Y%m%d%H%M%S')}.zip")
-
-      return false unless invoke(:validate, [])
 
       archive_rel_path = relative_to_original_destination_root(archive_path)
 
@@ -196,6 +187,20 @@ module ZendeskAppsTools
 
     def app_package
       @app_package ||= Package.new(self.app_dir.to_s)
+    end
+
+    def test_framework_version
+      prompt = "Enter a zendesk URL that you'd like to install the app (for example: 'http://abc.zendesk.com', default to '#{DEFAULT_ZENDESK_URL}'):\n"
+      zendesk  = get_value_from_stdin(prompt, :valid_regex => /^http:\/\/\w+\.\w+|^$/, :error_msg => 'Invalid url, try again:')
+      zendesk  = DEFAULT_ZENDESK_URL if zendesk.empty?
+      url      = URI.parse(zendesk)
+      response = Net::HTTP.start(url.host, url.port) { |http| http.get('/api/v2/apps/framework_versions.json') }
+      version  = JSON.parse(response.body, :symbolize_names => true)
+
+      if ZendeskAppsSupport::AppVersion::CURRENT != version[:current]
+        puts 'This tool is using an out of date Zendesk App Framework. Please upgrade!'
+        exit 1
+      end
     end
 
   end
