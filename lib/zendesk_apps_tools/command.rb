@@ -42,18 +42,7 @@ module ZendeskAppsTools
       @author_email = get_value_from_stdin("Enter this app author's email:\n", :valid_regex => /^.+@.+\..+$/, :error_msg => "Invalid email, try again:")
       @app_name = get_value_from_stdin("Enter a name for this new app:\n", :error_msg => "Invalid app name, try again:")
 
-      prompt = "Enter a directory name to save the new app (will create the dir if it does not exist, default to current dir):\n"
-      opts = { :valid_regex => /^(\w|\/|\\)*$/, :allow_empty => true }
-      while @app_dir = get_value_from_stdin(prompt, opts) do
-        @app_dir = './' and break if @app_dir.empty?
-        if !File.exists?(@app_dir)
-          break
-        elsif !File.directory?(@app_dir)
-          puts "Invalid dir, try again:"
-        else
-          break
-        end
-      end
+      get_directory
 
       directory('app_template', @app_dir)
     end
@@ -176,6 +165,21 @@ module ZendeskAppsTools
 
     def app_package
       @app_package ||= Package.new(self.app_dir.to_s)
+    end
+
+    def get_directory
+      prompt = "Enter a directory name to save the new app (will create the dir if it does not exist, default to current dir):\n"
+      opts = { :valid_regex => /^(\w|\/|\\)*$/, :allow_empty => true }
+      while @app_dir = get_value_from_stdin(prompt, opts) do
+        @app_dir = './' and break if @app_dir.empty?
+        if !File.exists?(@app_dir)
+          break
+        elsif !File.directory?(@app_dir)
+          puts "Invalid dir, try again:"
+        else
+          break
+        end
+      end
     end
 
     def test_framework_version
