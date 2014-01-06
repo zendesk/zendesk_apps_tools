@@ -1,5 +1,10 @@
 module ZendeskAppsTools
-  module Package
+
+  require 'zendesk_apps_support'
+
+  module PackageHelper
+
+    include ZendeskAppsSupport
 
     def app_package
       @app_package ||= Package.new(self.app_dir.to_s)
