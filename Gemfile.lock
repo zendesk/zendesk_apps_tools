@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/zendesk/zendesk_apps_support.git
-  revision: cbc012ee8cc47385b050d20e611615deb5b19498
-  ref: v1.14.0
+  revision: bbd353185e4d96a889809633c14223dffcef66fb
+  ref: v1.14.1
   specs:
-    zendesk_apps_support (1.14.0)
+    zendesk_apps_support (1.14.1)
       erubis
       i18n
       jshintrb (= 0.2.4)
@@ -20,7 +20,7 @@ PATH
       rubyzip (~> 0.9.1)
       sinatra (~> 1.3.4)
       thor (~> 0.18.0)
-      zendesk_apps_support (~> 1.14.0)
+      zendesk_apps_support (~> 1.14.1)
 
 GEM
   remote: https://rubygems.org/
