@@ -59,11 +59,11 @@ module ZendeskAppsTools
     def check_status(response)
       job = response.body
       job_response = JSON.parse(job)
-      job_id = job_response['job_id']
       if job_response['error']
         say_error_and_exit job_response['error']
       end
 
+      job_id = job_response['job_id']
       check_job job_id
     end
 
