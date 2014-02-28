@@ -32,7 +32,7 @@ Feature: create a template for a new zendesk app
   "private": true,
   "location": "ticket_sidebar",
   "version": "1.0",
-  "frameworkVersion": "0.5"
+  "frameworkVersion": "1.0"
 }
 """
     And the app file "tmp/aruba/app.js" is created with:
