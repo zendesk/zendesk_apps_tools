@@ -117,11 +117,10 @@ module ZendeskAppsTools
       clear_cache
       @command = 'Create'
 
-      if options[:zipfile]
-        app_name = get_value_from_stdin('Enter app name:')
-      else
+      unless options[:zipfile]
         app_name = JSON.parse(File.read(File.join options[:path], 'manifest.json'))['name']
       end
+      app_name ||= get_value_from_stdin('Enter app name:')
       deploy_app(:post, '/api/v2/apps.json', { :name => app_name })
     end
 
