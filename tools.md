@@ -24,8 +24,6 @@ Runs a suite of validation tests against your app.
 
     $ zat validate
 
-The command runs the same tests run when an app is uploaded to the Zendesk App Market.
-
 ### Server
 
 Starts a local HTTP server that lets you run and test your apps locally.
@@ -57,11 +55,11 @@ To stop the server, switch to your command-line interface and press Control+C.
 
 ### Package
 
-Creates a zip file that you can [upload and install](https://support.zendesk.com/entries/25221787) in your Zendesk.
+Creates a zip file that you can [upload and install](https://support.zendesk.com/entries/25221787) in Zendesk.
 
     $ zat package
 
-The command saves the zip file in a tmp folder.
+The command saves the zip file in a folder named <tt>tmp</tt>.
 
 Example:
 
@@ -69,7 +67,7 @@ Example:
 
 ### Clean
 
-Removes the zip files in the tmp folder.
+Removes the zip files in the <tt>tmp</tt> folder that's created when you package the app.
 
     $ zat clean
 
