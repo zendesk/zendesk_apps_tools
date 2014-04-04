@@ -2,7 +2,8 @@
   "name": "<%= @app_name %>",
   "author": {
     "name": "<%= @author_name %>",
-    "email": "<%= @author_email %>"
+    "email": "<%= @author_email %>",
+    "url": "<%= @author_url %>"
   },
   "defaultLocale": "en",
   "private": true,
