@@ -6,6 +6,7 @@ Feature: create a template for a new zendesk app
     When I run "zat new" command with the following details:
       | author name  | John Citizen      |
       | author email | john@example.com  |
+      | author url   | http://myapp.com  |
       | app name     | John Test App     |
       | app dir      |                   |
 
@@ -17,6 +18,7 @@ Feature: create a template for a new zendesk app
     When I run "zat new" command with the following details:
       | author name  | John Citizen      |
       | author email | john@example.com  |
+      | author url   | http://myapp.com  |
       | app name     | John Test App     |
       | app dir      | tmp/aruba         |
 
@@ -26,7 +28,8 @@ Feature: create a template for a new zendesk app
   "name": "John Test App",
   "author": {
     "name": "John Citizen",
-    "email": "john@example.com"
+    "email": "john@example.com",
+    "url": "http://myapp.com"
   },
   "defaultLocale": "en",
   "private": true,

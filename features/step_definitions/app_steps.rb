@@ -22,6 +22,7 @@ Given /^an app is created in directory "(.*?)"$/ do |app_dir|
     And I run "zat new" command with the following details:
       | author name  | John Citizen      |
       | author email | john@example.com  |
+      | author url   | http://myapp.com  |
       | app name     | John Test App     |
       | app dir      | #{app_dir}        |
   }
