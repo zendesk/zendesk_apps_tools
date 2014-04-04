@@ -30,9 +30,10 @@ module ZendeskAppsTools
 
     desc "new", "Generate a new app"
     def new
-      @author_name = get_value_from_stdin("Enter this app author's name:\n", :error_msg => "Invalid name, try again:")
+      @author_name  = get_value_from_stdin("Enter this app author's name:\n", :error_msg => "Invalid name, try again:")
       @author_email = get_value_from_stdin("Enter this app author's email:\n", :valid_regex => /^.+@.+\..+$/, :error_msg => "Invalid email, try again:")
-      @app_name = get_value_from_stdin("Enter a name for this new app:\n", :error_msg => "Invalid app name, try again:")
+      @author_url   = get_value_from_stdin("Enter this app author's url:\n", :valid_regex => /^https?:\/\/.+$/, :error_msg => "Invalid url, try again:", :allow_empty => true)
+      @app_name     = get_value_from_stdin("Enter a name for this new app:\n", :error_msg => "Invalid app name, try again:")
 
       get_new_app_directory
 
