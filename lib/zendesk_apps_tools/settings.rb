@@ -1,4 +1,5 @@
 require 'zendesk_apps_tools/common'
+require 'yaml'
 
 module ZendeskAppsTools
   class Settings
@@ -22,6 +23,17 @@ module ZendeskAppsTools
 
         settings[param[:name]] = input if input != ''
         settings
+      end
+    end
+
+    def get_settings_yaml(path, parameters)
+      return {} if parameters.nil?
+
+      begin
+          settingsFile = File.read(path + '../settings.yml')
+          return YAML::load( settingsFile )
+      rescue => err
+          return false
       end
     end
 
