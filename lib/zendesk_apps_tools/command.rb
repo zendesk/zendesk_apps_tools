@@ -80,7 +80,7 @@ module ZendeskAppsTools
     end
 
     desc "clean", "Remove app packages in temp folder"
-    method_option :path, :default => './', :required => false
+    method_option :path, :default => './', :required => false, :aliases => "-p"
     def clean
       setup_path(options[:path])
 
@@ -93,7 +93,7 @@ module ZendeskAppsTools
     DEFAULT_SERVER_PORT = 4567
 
     desc "server", "Run a http server to serve the local app"
-    method_option :path, :default => DEFAULT_SERVER_PATH, :required => false
+    method_option :path, :default => DEFAULT_SERVER_PATH, :required => false, :aliases => "-p"
     method_option :port, :default => DEFAULT_SERVER_PORT, :required => false
     def server
       setup_path(options[:path])
