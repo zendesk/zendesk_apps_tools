@@ -30,10 +30,10 @@ module ZendeskAppsTools
       return {} if parameters.nil?
 
       begin
-          settingsFile = File.read(path + '../settings.yml')
-          return YAML::load( settingsFile )
+        settingsFile = File.read(path + '../settings.yml')
+        return YAML::load( settingsFile )
       rescue => err
-          return false
+        return false
       end
     end
 
