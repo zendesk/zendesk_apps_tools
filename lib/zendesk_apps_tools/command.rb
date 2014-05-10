@@ -14,8 +14,8 @@ module ZendeskAppsTools
 
   class Command < Thor
 
-    SHARED_OPTIONS      = {
-      :path =>  './',
+    SHARED_OPTIONS = {
+      ['path', '-p'] => './',
       :clean => false
     }
 
