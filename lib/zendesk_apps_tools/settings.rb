@@ -33,8 +33,20 @@ module ZendeskAppsTools
         settingsFile = File.read(path + '../settings.yml')
         return YAML::load( settingsFile )
       rescue => err
-        return false
+        return {}
       end
+    end
+
+    def get_settings_json(path, parameters)
+      return {} if parameters.nil?
+
+      begin
+        settingsFile = File.read(path + '../settings.json')
+        return JSON.parse(settingsFile)
+      rescue => err
+        return {}
+      end
+
     end
 
     private
