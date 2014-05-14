@@ -31,7 +31,12 @@ module ZendeskAppsTools
 
       begin
         settingsFile = File.read(path + '../settings.yml')
-        return YAML::load( settingsFile )
+        settings = YAML::load( settingsFile )
+        settings.each do |index, setting|
+          if (setting.is_a?(Object) || setting.is_a?(Array))
+            settings[index] = setting.to_s
+          end
+        end
       rescue => err
         return {}
       end
@@ -42,7 +47,12 @@ module ZendeskAppsTools
 
       begin
         settingsFile = File.read(path + '../settings.json')
-        return JSON.parse(settingsFile)
+        settings = JSON.parse(settingsFile)
+        settings.each do |index, setting|
+          if (setting.is_a?(Object) || setting.is_a?(Array))
+            settings[index] = setting.to_s
+          end
+        end
       rescue => err
         return {}
       end
