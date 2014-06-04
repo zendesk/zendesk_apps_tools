@@ -67,7 +67,7 @@ module ZendeskAppsTools
           locale_response = api_request(locale_url, request_builder).body
           translations    = JSON.parse(locale_response)['locale']['translations']
 
-          locale_name = ZendeskAppsTools::LocaleIdentifier.new(locale['locale']).language_id
+          locale_name = ZendeskAppsTools::LocaleIdentifier.new(locale['locale']).locale_id
           write_json("#{destination_root}/translations/#{locale_name}.json", nest_translations_hash(translations, key_prefix))
         end
         say("Translations updated", :green)
