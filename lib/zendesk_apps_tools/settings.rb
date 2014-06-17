@@ -30,7 +30,7 @@ module ZendeskAppsTools
       return {} if parameters.nil?
 
       begin
-        settingsFile = File.read(path + '../settings.yml')
+        settingsFile = File.read( File.join( path, 'config', 'settings.yaml') )
         settings = YAML::load( settingsFile )
         settings.each do |index, setting|
           if (setting.is_a?(Hash) || setting.is_a?(Array))
@@ -40,23 +40,6 @@ module ZendeskAppsTools
       rescue => err
         return {}
       end
-    end
-
-    def get_settings_json(path, parameters)
-      return {} if parameters.nil?
-
-      begin
-        settingsFile = File.read(path + '../settings.json')
-        settings = JSON.parse(settingsFile)
-        settings.each do |index, setting|
-          if (setting.is_a?(Hash) || setting.is_a?(Array))
-            settings[index] = JSON.dump(setting)
-          end
-        end
-      rescue => err
-        return {}
-      end
-
     end
 
     private
