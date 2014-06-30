@@ -6,7 +6,6 @@ require 'zendesk_apps_tools/directory'
 require 'zendesk_apps_tools/package_helper'
 require 'zendesk_apps_tools/settings'
 require 'zendesk_apps_tools/translate'
-require 'zendesk_apps_tools/validate_helper'
 
 module ZendeskAppsTools
   module CommandHelpers
@@ -16,6 +15,5 @@ module ZendeskAppsTools
     include ZendeskAppsTools::Deploy
     include ZendeskAppsTools::Directory
     include ZendeskAppsTools::PackageHelper
-    include ZendeskAppsTools::ValidateHelper
   end
 end
