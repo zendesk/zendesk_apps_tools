@@ -98,7 +98,7 @@ module ZendeskAppsTools
       manifest = app_package.manifest_json
 
       settings_helper = ZendeskAppsTools::Settings.new
-      settings = settings_helper.get_settings_yaml( options[:path], manifest[:parameters])
+      settings = settings_helper.get_settings_yaml(options[:path], manifest[:parameters])
       unless settings
         settings = settings_helper.get_settings_from(self, manifest[:parameters])
       end

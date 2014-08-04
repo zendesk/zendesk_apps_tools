@@ -30,8 +30,8 @@ module ZendeskAppsTools
       return {} if parameters.nil?
 
       begin
-        settingsFile = File.read( File.join( path, 'config', 'settings.yaml') )
-        settings = YAML::load( settingsFile )
+        settingsFile = File.read(File.join( path, 'config', 'settings.yaml'))
+        settings = YAML::load(settingsFile)
         settings.each do |index, setting|
           if (setting.is_a?(Hash) || setting.is_a?(Array))
             settings[index] = JSON.dump(setting)
