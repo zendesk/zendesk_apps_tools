@@ -30,15 +30,35 @@ module ZendeskAppsTools
       return {} if parameters.nil?
 
       begin
-        settingsFile = File.read(File.join( path, 'config', 'settings.yaml'))
-        settings = YAML::load(settingsFile)
-        settings.each do |index, setting|
+        settingsFile = File.read(File.join(path, 'config', 'settings.yaml'))
+        settingsY = YAML::load(settingsFile)
+        settingsY.each do |index, setting|
           if (setting.is_a?(Hash) || setting.is_a?(Array))
-            settings[index] = JSON.dump(setting)
+            settingsY[index] = JSON.dump(setting)
           end
         end
       rescue => err
-        return {}
+        return nil
+      end
+
+      parameters.inject({}) do |settings, param|
+        input = settingsY[param[:name]]
+
+        if !input && param[:default]
+          input = param[:default]
+        end
+
+        if !input && param[:required]
+          puts "'#{param[:name]}' is required but not specified in the yaml file.\n"
+          return nil
+        end
+
+        if param[:type] == 'checkbox'
+          input = convert_to_boolean_for_checkbox(input)
+        end
+
+        settings[param[:name]] = input if input != ''
+        settings
       end
     end
 
