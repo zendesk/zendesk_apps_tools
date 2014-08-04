@@ -43,8 +43,6 @@ module ZendeskAppsTools
     desc "validate", "Validate your app"
     method_options SHARED_OPTIONS
     def validate
-      test_framework_version
-
       setup_path(options[:path])
       errors = app_package.validate
       valid = errors.none?
