@@ -28,13 +28,14 @@ module ZendeskAppsTools
 
     def get_settings_yaml(filepath, parameters)
       return {} if parameters.nil?
+      return {} unless File.exists? filepath
 
       begin
-        settingsFile = File.read(filepath)
-        settingsY = YAML::load(settingsFile)
-        settingsY.each do |index, setting|
+        settings_file = File.read(filepath)
+        settings_yml = YAML::load(settings_file)
+        settings_yml.each do |index, setting|
           if (setting.is_a?(Hash) || setting.is_a?(Array))
-            settingsY[index] = JSON.dump(setting)
+            settings_yml[index] = JSON.dump(setting)
           end
         end
       rescue => err
@@ -42,7 +43,7 @@ module ZendeskAppsTools
       end
 
       parameters.inject({}) do |settings, param|
-        input = settingsY[param[:name]]
+        input = settings_yml[param[:name]]
 
         if !input && param[:default]
           input = param[:default]
