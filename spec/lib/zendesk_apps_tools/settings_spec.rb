@@ -88,7 +88,7 @@ describe ZendeskAppsTools::Settings do
 
   describe '#get_settings_yaml' do
     it 'return nil when the file doesn\'t exist' do
-      @context.get_settings_yaml('spec/fixture/none_existing/settings.yaml', []).should == nil
+      @context.get_settings_yaml('spec/fixture/none_existing/settings.yml', []).should == nil
     end
 
     it 'return the settings 1 level deep when the file exist' do
@@ -123,7 +123,7 @@ describe ZendeskAppsTools::Settings do
         "object" => "{\"test1\":\"value\"}"
       }
 
-      @context.get_settings_yaml('spec/fixture/config_yml/settings.yaml', parameters).should == settings
+      @context.get_settings_yaml('spec/fixture/config_yml/settings.yml', parameters).should == settings
     end
 
     it 'returns the default because you forgot to specifiy a required field with a default' do
@@ -140,7 +140,7 @@ describe ZendeskAppsTools::Settings do
         "required" => "ok",
       }
 
-      @context.get_settings_yaml('spec/fixture/config_yml/settings.yaml', parameters).should == settings
+      @context.get_settings_yaml('spec/fixture/config_yml/settings.yml', parameters).should == settings
     end
 
     it 'return nil because you forgot to specifiy a required field without a default' do
@@ -152,7 +152,7 @@ describe ZendeskAppsTools::Settings do
         }
       ]
 
-      @context.get_settings_yaml('spec/fixture/config_yml/settings.yaml', parameters).should == nil
+      @context.get_settings_yaml('spec/fixture/config_yml/settings.yml', parameters).should == nil
     end
   end
 
