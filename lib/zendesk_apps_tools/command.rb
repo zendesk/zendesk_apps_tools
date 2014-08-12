@@ -99,7 +99,7 @@ module ZendeskAppsTools
 
       settings_helper = ZendeskAppsTools::Settings.new
 
-      settings = settings_helper.get_settings_yaml(File.join(options[:path], 'config', 'settings.yaml'), manifest[:parameters])
+      settings = settings_helper.get_settings_yaml(File.join(Dir.pwd, 'settings.yaml'), manifest[:parameters])
       unless settings
         settings = settings_helper.get_settings_from(self, manifest[:parameters])
       end
