@@ -88,7 +88,7 @@ module ZendeskAppsTools
     end
 
     DEFAULT_SERVER_PATH = "./"
-    DEFAULT_CONFIG_PATH = Dir.pwd
+    DEFAULT_CONFIG_PATH = "./"
     DEFAULT_SERVER_PORT = 4567
 
     desc "server", "Run a http server to serve the local app"
