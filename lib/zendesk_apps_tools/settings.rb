@@ -26,11 +26,11 @@ module ZendeskAppsTools
       end
     end
 
-    def get_settings_yaml(path, parameters)
+    def get_settings_yaml(filepath, parameters)
       return {} if parameters.nil?
 
       begin
-        settingsFile = File.read(File.join(path, 'config', 'settings.yaml'))
+        settingsFile = File.read(filepath)
         settingsY = YAML::load(settingsFile)
         settingsY.each do |index, setting|
           if (setting.is_a?(Hash) || setting.is_a?(Array))
