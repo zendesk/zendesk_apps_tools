@@ -28,7 +28,7 @@ module ZendeskAppsTools
 
     def get_settings_yaml(filepath, parameters)
       return {} if parameters.nil?
-      return {} unless File.exists? filepath
+      return nil unless File.exists? filepath
 
       begin
         settings_file = File.read(filepath)
