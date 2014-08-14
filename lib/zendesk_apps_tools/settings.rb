@@ -1,4 +1,5 @@
 require 'zendesk_apps_tools/common'
+require 'yaml'
 
 module ZendeskAppsTools
   class Settings
@@ -14,6 +15,43 @@ module ZendeskAppsTools
           input = user_input.get_value_from_stdin("Enter a value for required parameter '#{param[:name]}':\n")
         else
           input = user_input.get_value_from_stdin("Enter a value for optional parameter '#{param[:name]}' or press 'Return' to skip:\n", :allow_empty => true)
+        end
+
+        if param[:type] == 'checkbox'
+          input = convert_to_boolean_for_checkbox(input)
+        end
+
+        settings[param[:name]] = input if input != ''
+        settings
+      end
+    end
+
+    def get_settings_yaml(filepath, parameters)
+      return {} if parameters.nil?
+      return nil unless File.exists? filepath
+
+      begin
+        settings_file = File.read(filepath)
+        settings_yml = YAML::load(settings_file)
+        settings_yml.each do |index, setting|
+          if (setting.is_a?(Hash) || setting.is_a?(Array))
+            settings_yml[index] = JSON.dump(setting)
+          end
+        end
+      rescue => err
+        return nil
+      end
+
+      parameters.inject({}) do |settings, param|
+        input = settings_yml[param[:name]]
+
+        if !input && param[:default]
+          input = param[:default]
+        end
+
+        if !input && param[:required]
+          puts "'#{param[:name]}' is required but not specified in the yaml file.\n"
+          return nil
         end
 
         if param[:type] == 'checkbox'
