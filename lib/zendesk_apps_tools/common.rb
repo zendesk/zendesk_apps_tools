@@ -29,5 +29,12 @@ module ZendeskAppsTools
 
       return input
     end
+
+    def get_password_from_stdin(prompt, opts = {})
+      print "#{prompt} "
+      password = STDIN.noecho(&:gets).chomp
+      puts
+      password
+    end
   end
 end
