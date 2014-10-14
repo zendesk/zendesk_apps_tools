@@ -6,14 +6,9 @@ module ZendeskAppsTools
     def prepare_api_auth
       @subdomain ||= get_cache('subdomain') || get_value_from_stdin('Enter your Zendesk subdomain or full Zendesk URL:')
       @username  ||= get_cache('username') || get_value_from_stdin('Enter your username:')
+      @password  ||= get_cache('password') || get_password_from_stdin('Enter your password:')
 
-      unless @password
-        print 'Enter your password: '
-        @password ||= STDIN.noecho(&:gets).chomp
-        puts
-
-        set_cache 'subdomain' => @subdomain, 'username' => @username
-      end
+      set_cache 'subdomain' => @subdomain, 'username' => @username
     end
 
     def get_full_url
