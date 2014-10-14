@@ -18,7 +18,7 @@ module ZendeskAppsTools
 
           # resolve symlink to source path
           if File.symlink? file.absolute_path
-            path = File.readlink(file.absolute_path)
+            path = File.expand_path(File.readlink(file.absolute_path), File.dirname(file.absolute_path))
           end
           zipfile.add(file.relative_path, app_dir.join(path).to_s)
         end
