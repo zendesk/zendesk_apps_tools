@@ -4,7 +4,7 @@ require 'yaml'
 module ZendeskAppsTools
   class Settings
 
-    def get_settings_from(user_input, parameters)
+    def get_settings_from_user_input(user_input, parameters)
       return {} if parameters.nil?
 
       parameters.inject({}) do |settings, param|
@@ -26,16 +26,22 @@ module ZendeskAppsTools
       end
     end
 
-    def get_settings_yaml(filepath, parameters)
+    def get_settings_from_file(filepath, parameters)
       return {} if parameters.nil?
       return nil unless File.exists? filepath
 
       begin
         settings_file = File.read(filepath)
-        settings_yml = YAML::load(settings_file)
-        settings_yml.each do |index, setting|
+
+        if filepath =~ /\.json$/ || settings_file =~ /\A\s*{/
+          settings_data = JSON.load(settings_file)
+        else
+          settings_data = YAML::load(settings_file)
+        end
+
+        settings_data.each do |index, setting|
           if (setting.is_a?(Hash) || setting.is_a?(Array))
-            settings_yml[index] = JSON.dump(setting)
+            settings_data[index] = JSON.dump(setting)
           end
         end
       rescue => err
@@ -43,14 +49,14 @@ module ZendeskAppsTools
       end
 
       parameters.inject({}) do |settings, param|
-        input = settings_yml[param[:name]]
+        input = settings_data[param[:name]]
 
         if !input && param[:default]
           input = param[:default]
         end
 
         if !input && param[:required]
-          puts "'#{param[:name]}' is required but not specified in the yaml file.\n"
+          puts "'#{param[:name]}' is required but not specified in the config file.\n"
           return nil
         end
 
@@ -74,4 +80,3 @@ module ZendeskAppsTools
 
   end
 end
-
