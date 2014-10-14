@@ -11,7 +11,7 @@ describe ZendeskAppsTools::Settings do
     @user_input.stub(:ask).and_return('') # this represents the default user input
   end
 
-  describe '#get_settings_from' do
+  describe '#get_settings_from_user_input' do
     it 'accepts user input with colon & slashes' do
       parameters = [
         {
@@ -27,7 +27,7 @@ describe ZendeskAppsTools::Settings do
 
       @user_input.stub(:ask).with("Enter a value for required parameter 'backend':\n").and_return("https://example.com:3000")
 
-      @context.get_settings_from(@user_input, parameters).should == settings
+      @context.get_settings_from_user_input(@user_input, parameters).should == settings
     end
 
     it 'should use default boolean parameter' do
@@ -46,7 +46,7 @@ describe ZendeskAppsTools::Settings do
 
       @user_input.stub(:ask).with("Enter a value for required parameter 'isUrgent':\n").and_return('')
 
-      @context.get_settings_from(@user_input, parameters).should == settings
+      @context.get_settings_from_user_input(@user_input, parameters).should == settings
     end
 
     it 'prompts the user for settings' do
@@ -82,77 +82,118 @@ describe ZendeskAppsTools::Settings do
       @user_input.stub(:ask).with("Enter a value for required parameter 'required':\n").and_return('xyz')
       @user_input.stub(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n").and_return('456')
 
-      @context.get_settings_from(@user_input, parameters).should == settings
+      @context.get_settings_from_user_input(@user_input, parameters).should == settings
     end
   end
 
-  describe '#get_settings_yaml' do
-    it 'return nil when the file doesn\'t exist' do
-      @context.get_settings_yaml('spec/fixture/none_existing/settings.yml', []).should == nil
+  describe '#get_settings_from_file' do
+    context 'when the file doesn\'t exist' do
+      it 'returns nil' do
+        @context.get_settings_from_file('spec/fixture/none_existing/settings.yml', []).should == nil
+      end
     end
 
-    it 'return the settings 1 level deep when the file exist' do
-      parameters = [
-        {
-          :name     => "text",
-          :type     => "text"
-        },
-        {
-          :name     => "number",
-          :type     => "text"
-        },
-        {
-          :name     => "checkbox",
-          :type     => "checkbox"
-        },
-        {
-          :name     => "array",
-          :type     => "multiline"
-        },
-        {
-          :name     => "object",
-          :type     => "multiline"
+    context 'with a JSON file' do
+      it 'returns the settings' do
+        parameters = [
+          {
+            :name     => "text",
+            :type     => "text"
+          },
+          {
+            :name     => "number",
+            :type     => "text"
+          },
+          {
+            :name     => "checkbox",
+            :type     => "checkbox"
+          },
+          {
+            :name     => "array",
+            :type     => "multiline"
+          },
+          {
+            :name     => "object",
+            :type     => "multiline"
+          }
+        ]
+
+        settings = {
+          "text" => "text",
+          "number" => 1,
+          "checkbox" => true,
+          "array" => "[\"test1\"]",
+          "object" => "{\"test1\":\"value\"}"
         }
-      ]
 
-      settings = {
-        "text" => "text",
-        "number" => 1,
-        "checkbox" => true,
-        "array" => "[\"test1\"]",
-        "object" => "{\"test1\":\"value\"}"
-      }
-
-      @context.get_settings_yaml('spec/fixture/config_yml/settings.yml', parameters).should == settings
+        @context.get_settings_from_file('spec/fixture/config/settings.json', parameters).should == settings
+      end
     end
 
-    it 'returns the default because you forgot to specifiy a required field with a default' do
-      parameters = [
-        {
-          :name     => "required",
-          :type     => "text",
-          :required => true,
-          :default  => "ok"
+    context 'with a YAML file' do
+      it 'returns the settings 1 level deep when the file exist' do
+        parameters = [
+          {
+            :name     => "text",
+            :type     => "text"
+          },
+          {
+            :name     => "number",
+            :type     => "text"
+          },
+          {
+            :name     => "checkbox",
+            :type     => "checkbox"
+          },
+          {
+            :name     => "array",
+            :type     => "multiline"
+          },
+          {
+            :name     => "object",
+            :type     => "multiline"
+          }
+        ]
+
+        settings = {
+          "text" => "text",
+          "number" => 1,
+          "checkbox" => true,
+          "array" => "[\"test1\"]",
+          "object" => "{\"test1\":\"value\"}"
         }
-      ]
 
-      settings = {
-        "required" => "ok",
-      }
+        @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should == settings
+      end
 
-      @context.get_settings_yaml('spec/fixture/config_yml/settings.yml', parameters).should == settings
-    end
+      it 'returns the default because you forgot to specifiy a required field with a default' do
+        parameters = [
+          {
+            :name     => "required",
+            :type     => "text",
+            :required => true,
+            :default  => "ok"
+          }
+        ]
 
-    it 'return nil because you forgot to specifiy a required field without a default' do
-      parameters = [
-        {
-          :name     => "required",
-          :type     => "text",
-          :required => true
+        settings = {
+          "required" => "ok",
         }
-      ]
 
-      @context.get_settings_yaml('spec/fixture/config_yml/settings.yml', parameters).should == nil
+        @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should == settings
+      end
+
+      it 'returns nil because you forgot to specifiy a required field without a default' do
+        parameters = [
+          {
+            :name     => "required",
+            :type     => "text",
+            :required => true
+          }
+        ]
+
+        @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should == nil
+      end
     end
   end
 
