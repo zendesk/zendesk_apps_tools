@@ -38,13 +38,13 @@ Follow these steps to run an app locally:
 
 - In a browser, navigate to any ticket in Zendesk. The URL should look something like this:
 
-	<tt>https://subdomain.zendesk.com/agent/#/tickets/321321</tt>
+	<tt>https://subdomain.zendesk.com/agent/tickets/321321</tt>
 
-- Insert `?zat=true` after <tt>agent/</tt> in the Address bar.
+- Insert `?zat=true` at the end of the URL in the Address bar.
 
 	The URL should now look like this:
 
-	<tt>https://subdomain.zendesk.com/agent/?zat=true#/tickets/321321</tt>
+	<tt>https://subdomain.zendesk.com/agent/tickets/321321?zat=true</tt>
 
 - Click the Reload Apps icon in the upper-right side of the Apps panel to load your local app.	
 
