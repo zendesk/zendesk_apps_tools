@@ -60,7 +60,7 @@ Then /^the app file "(.*?)" is created with:$/ do |file, content|
 end
 
 Then /^the app file "(.*?)" is created$/ do |filename|
-  File.exists?(filename).should be_true
+  File.exists?(filename).should be_truthy
 end
 
 Then /^the fixture "(.*?)" is used for "(.*?)"$/ do |fixture, app_file|
@@ -93,11 +93,11 @@ Then /^the command output should contain "(.*?)"$/ do |output|
 end
 
 Then /^"(.*?)" should be a symlink$/ do |path|
-  File.symlink?(path).should be_true
+  File.symlink?(path).should be_truthy
 end
 
 Then /^the zip file in "(.*?)" should not contain any symlinks$/ do |path|
   Zip::ZipFile.foreach Dir[path+'/app-*.zip'][0] do |p|
-   p.symlink?.should be_false
+   p.symlink?.should be_falsy
   end
 end

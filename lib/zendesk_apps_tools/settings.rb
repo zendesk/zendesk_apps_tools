@@ -9,12 +9,12 @@ module ZendeskAppsTools
 
       parameters.inject({}) do |settings, param|
         if param[:default]
-          input = user_input.get_value_from_stdin("Enter a value for parameter '#{param[:name]}' or press 'Return' to use the default value '#{param[:default]}':\n", :allow_empty => true)
+          input = user_input.get_value_from_stdin("Enter a value for parameter '#{param[:name]}' or press 'Return' to use the default value '#{param[:default]}':\n", allow_empty: true)
           input = param[:default] if input.empty?
         elsif param[:required]
           input = user_input.get_value_from_stdin("Enter a value for required parameter '#{param[:name]}':\n")
         else
-          input = user_input.get_value_from_stdin("Enter a value for optional parameter '#{param[:name]}' or press 'Return' to skip:\n", :allow_empty => true)
+          input = user_input.get_value_from_stdin("Enter a value for optional parameter '#{param[:name]}' or press 'Return' to skip:\n", allow_empty: true)
         end
 
         if param[:type] == 'checkbox'
