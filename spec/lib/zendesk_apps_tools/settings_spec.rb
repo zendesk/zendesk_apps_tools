@@ -15,9 +15,9 @@ describe ZendeskAppsTools::Settings do
     it 'accepts user input with colon & slashes' do
       parameters = [
         {
-          :name     => "backend",
-          :required => true,
-          :default  => "https://example.com:3000"
+          name: "backend",
+          required: true,
+          default: "https://example.com:3000"
         }
       ]
 
@@ -33,10 +33,10 @@ describe ZendeskAppsTools::Settings do
     it 'should use default boolean parameter' do
       parameters = [
         {
-          :name     => "isUrgent",
-          :type     => "checkbox",
-          :required => true,
-          :default  => true
+          name: "isUrgent",
+          type: "checkbox",
+          required: true,
+          default: true
         }
       ]
 
@@ -52,23 +52,23 @@ describe ZendeskAppsTools::Settings do
     it 'prompts the user for settings' do
       parameters = [
         {
-          :name     => "required",
-          :required => true
+          name: "required",
+          required: true
         },
         {
-          :name     => "required_with_default",
-          :required => true,
-          :default  => "123"
+          name: "required_with_default",
+          required: true,
+          default: "123"
         },
         {
-          :name     => "not_required",
+          name: "not_required",
         },
         {
-          :name     => "not_required_with_default",
-          :default  => "789"
+          name: "not_required_with_default",
+          default: "789"
         },
         {
-          :name     => "skipped",
+          name: "skipped",
         }
       ]
 
