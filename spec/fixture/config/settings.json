@@ -1,0 +1,9 @@
+{
+  "text": "text",
+  "number": 1,
+  "checkbox": true,
+  "array": [ "test1" ],
+  "object": {
+    "test1": "value"
+  }
+}

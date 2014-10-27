@@ -88,17 +88,24 @@ module ZendeskAppsTools
     end
 
     DEFAULT_SERVER_PATH = "./"
+    DEFAULT_CONFIG_PATH = "./settings.yml"
     DEFAULT_SERVER_PORT = 4567
 
     desc "server", "Run a http server to serve the local app"
     method_option :path, default: DEFAULT_SERVER_PATH, required: false, aliases: "-p"
+    method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: "-c"
     method_option :port, default: DEFAULT_SERVER_PORT, required: false
     def server
       setup_path(options[:path])
       manifest = app_package.manifest_json
 
       settings_helper = ZendeskAppsTools::Settings.new
-      settings = settings_helper.get_settings_from(self, manifest[:parameters])
+
+      settings = settings_helper.get_settings_from_file options[:config], manifest[:parameters]
+
+      unless settings
+        settings = settings_helper.get_settings_from_user_input self, manifest[:parameters]
+      end
 
       require 'zendesk_apps_tools/server'
       ZendeskAppsTools::Server.tap do |server|
