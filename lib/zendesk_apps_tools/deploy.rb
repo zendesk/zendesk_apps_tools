@@ -29,7 +29,7 @@ module ZendeskAppsTools
         package_path = Dir[File.join path, '/tmp/*.zip'].sort.last
       end
 
-      payload = { :uploaded_data => Faraday::UploadIO.new(package_path, 'application/zip') }
+      payload = { uploaded_data: Faraday::UploadIO.new(package_path, 'application/zip') }
 
       response = connection.post('/api/v2/apps/uploads.json', payload)
       JSON.parse(response.body)['id']

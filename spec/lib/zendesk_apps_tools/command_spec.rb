@@ -15,18 +15,18 @@ describe ZendeskAppsTools::Command do
     @command.stub(:get_cache)
     @command.stub(:set_cache)
     @command.stub(:clear_cache)
-    @command.stub(:options) { { :clean => false, :path => './' } }
+    @command.stub(:options) { { clean: false, path: './' } }
   end
 
   describe '#upload' do
     context 'when no zipfile is given' do
       it 'uploads the newly packaged zipfile and returns an upload id' do
         @command.should_receive(:package)
-        @command.stub(:options) { { :zipfile => nil } }
+        @command.stub(:options) { { zipfile: nil } }
         Faraday::UploadIO.stub(:new)
 
         stub_request(:post, PREFIX + '/api/v2/apps/uploads.json')
-          .to_return(:body => '{ "id": 123 }')
+          .to_return(body: '{ "id": 123 }')
 
         @command.upload('nah').should == 123
       end
@@ -34,11 +34,11 @@ describe ZendeskAppsTools::Command do
 
     context 'when zipfile is given' do
       it 'uploads the given zipfile and returns an upload id' do
-        @command.stub(:options) { { :zipfile => 'app.zip' } }
+        @command.stub(:options) { { zipfile: 'app.zip' } }
         Faraday::UploadIO.should_receive(:new).with('app.zip', 'application/zip').and_return(nil)
 
         stub_request(:post, PREFIX + '/api/v2/apps/uploads.json')
-          .to_return(:body => '{ "id": 123 }')
+          .to_return(body: '{ "id": 123 }')
 
         @command.upload('nah').should == 123
       end
@@ -53,7 +53,7 @@ describe ZendeskAppsTools::Command do
         File.should_receive(:read) { '{ "name": "abc" }' }
 
         stub_request(:post, PREFIX + '/api/v2/apps.json')
-          .with(:body => JSON.generate({ :name => 'abc', :upload_id => '123' }))
+          .with(body: JSON.generate({ name: 'abc', upload_id: '123' }))
 
         @command.create
       end
@@ -63,12 +63,12 @@ describe ZendeskAppsTools::Command do
       it 'uploads the zipfile and posts build api' do
         @command.should_receive(:upload).and_return(123)
         @command.stub(:check_status)
-        @command.stub(:options) { { :clean => false, :path => './', :zipfile => 'abc.zip' } }
+        @command.stub(:options) { { clean: false, path: './', zipfile: 'abc.zip' } }
 
         @command.should_receive(:get_value_from_stdin) { 'abc' }
 
         stub_request(:post, PREFIX + '/api/v2/apps.json')
-          .with(:body => JSON.generate({ :name => 'abc', :upload_id => '123' }))
+          .with(body: JSON.generate({ name: 'abc', upload_id: '123' }))
 
         @command.create
       end
@@ -94,15 +94,15 @@ describe ZendeskAppsTools::Command do
         @command.stub(:get_value_from_stdin).and_return('itsme')
 
         apps = {
-          :apps => [
-            { :name => "hello", :id => 123 },
-            { :name => "world", :id => 124 },
-            { :name => "itsme", :id => 125 },
+          apps: [
+            { name: "hello", id: 123 },
+            { name: "world", id: 124 },
+            { name: "itsme", id: 125 },
           ]
         }
 
         stub_request(:get, PREFIX + '/api/v2/apps.json')
-          .to_return(:body => JSON.generate(apps))
+          .to_return(body: JSON.generate(apps))
 
         @command.send(:find_app_id).should == 125
 
