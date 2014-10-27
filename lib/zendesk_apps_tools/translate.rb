@@ -15,14 +15,14 @@ module ZendeskAppsTools
     LOCALE_ENDPOINT = "https://support.zendesk.com/api/v2/locales/agent.json"
 
     desc 'to_yml', 'Create Zendesk translation file from en.json'
-    method_option :path, :default => './', :required => false
+    method_option :path, default: './', required: false
     def to_yml
       setup_path(options[:path]) if options[:path]
       manifest = JSON.parse(File.open("#{destination_root}/manifest.json").read)
       app_name = manifest['name']
 
       unless app_name
-        app_name = get_value_from_stdin('What is the name of this app?', :error_msg => "Invalid name, try again:")
+        app_name = get_value_from_stdin('What is the name of this app?', error_msg: "Invalid name, try again:")
       end
 
       en_json = JSON.parse(File.open("#{destination_root}/translations/en.json").read)
@@ -35,7 +35,7 @@ module ZendeskAppsTools
     end
 
     desc 'to_json', 'Convert Zendesk translation yml to I18n formatted json'
-    method_option :path, :default => './', :required => false
+    method_option :path, default: './', required: false
     def to_json
       setup_path(options[:path]) if options[:path]
       en_yml = YAML.load_file("#{destination_root}/translations/en.yml")
@@ -49,10 +49,10 @@ module ZendeskAppsTools
     end
 
     desc 'update', 'Update translation files from Zendesk'
-    method_option :path, :default => './', :required => false
+    method_option :path, default: './', required: false
     def update(request_builder = Faraday.new)
       setup_path(options[:path]) if options[:path]
-      app_package = get_value_from_stdin("What is the package name for this app? (without app_)", :valid_regex => /^[a-z_]+$/, :error_msg => "Invalid package name, try again:")
+      app_package = get_value_from_stdin("What is the package name for this app? (without app_)", valid_regex: /^[a-z_]+$/, error_msg: "Invalid package name, try again:")
 
       key_prefix = "txt.apps.#{app_package}."
 
