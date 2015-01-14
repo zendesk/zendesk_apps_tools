@@ -112,6 +112,8 @@ module ZendeskAppsTools
         server.set :port, options[:port]
         server.set :root, options[:path]
         server.set :parameters, settings
+        server.set :manifest, manifest[:parameters]
+        server.set :config, options[:config]
         server.run!
       end
     end
