@@ -9,12 +9,12 @@ module ZendeskAppsTools
     get '/app.js' do
       content_type 'text/javascript'
 
-      if (File.exists? settings.config)
+      if File.exists? settings.config
         curr_mtime = File.stat(settings.config).mtime
-        if (curr_mtime > last_mtime)
+        if curr_mtime > last_mtime
           settings_helper = ZendeskAppsTools::Settings.new
-          settings.parameters = settings_helper.get_settings_from_file settings.config, settings.manifest
-          last_mtime = File.stat(settings.config).mtime
+          settings.parameters = settings_helper.get_settings_from_file(settings.config, settings.manifest)
+          last_mtime = curr_mtime
         end
       end
 
