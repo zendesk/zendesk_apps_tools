@@ -3,7 +3,6 @@ require 'yaml'
 
 module ZendeskAppsTools
   class Settings
-
     def get_settings_from_user_input(user_input, parameters)
       return {} if parameters.nil?
 
@@ -28,7 +27,7 @@ module ZendeskAppsTools
 
     def get_settings_from_file(filepath, parameters)
       return {} if parameters.nil?
-      return nil unless File.exists? filepath
+      return nil unless File.exist? filepath
 
       begin
         settings_file = File.read(filepath)
@@ -36,11 +35,11 @@ module ZendeskAppsTools
         if filepath =~ /\.json$/ || settings_file =~ /\A\s*{/
           settings_data = JSON.load(settings_file)
         else
-          settings_data = YAML::load(settings_file)
+          settings_data = YAML.load(settings_file)
         end
 
         settings_data.each do |index, setting|
-          if (setting.is_a?(Hash) || setting.is_a?(Array))
+          if setting.is_a?(Hash) || setting.is_a?(Array)
             settings_data[index] = JSON.dump(setting)
           end
         end
@@ -72,11 +71,10 @@ module ZendeskAppsTools
     private
 
     def convert_to_boolean_for_checkbox(input)
-      if ![TrueClass, FalseClass].include?(input.class)
+      unless [TrueClass, FalseClass].include?(input.class)
         return (input =~ /^(true|t|yes|y|1)$/i) ? true : false
       end
       input
     end
-
   end
 end

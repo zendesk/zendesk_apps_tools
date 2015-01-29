@@ -4,10 +4,10 @@ module ZendeskAppsTools
 
     # Convert :"en-US-x-12" to 'en-US'
     def initialize(code)
-      @locale_id = if code.start_with?('en-US') #default locale
-        'en-US'
-      else
-        code.sub(/-x-.*/, '').downcase
+      @locale_id = if code.start_with?('en-US') # default locale
+                     'en-US'
+                   else
+                     code.sub(/-x-.*/, '').downcase
       end
     end
   end
