@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'command'
 
 describe ZendeskAppsTools::Command do
-
   PREFIX = 'https://username:password@subdomain.zendesk.com'
 
   before do
@@ -53,7 +52,7 @@ describe ZendeskAppsTools::Command do
         File.should_receive(:read) { '{ "name": "abc" }' }
 
         stub_request(:post, PREFIX + '/api/v2/apps.json')
-          .with(body: JSON.generate({ name: 'abc', upload_id: '123' }))
+          .with(body: JSON.generate(name: 'abc', upload_id: '123'))
 
         @command.create
       end
@@ -68,7 +67,7 @@ describe ZendeskAppsTools::Command do
         @command.should_receive(:get_value_from_stdin) { 'abc' }
 
         stub_request(:post, PREFIX + '/api/v2/apps.json')
-          .with(body: JSON.generate({ name: 'abc', upload_id: '123' }))
+          .with(body: JSON.generate(name: 'abc', upload_id: '123'))
 
         @command.create
       end
@@ -95,9 +94,9 @@ describe ZendeskAppsTools::Command do
 
         apps = {
           apps: [
-            { name: "hello", id: 123 },
-            { name: "world", id: 124 },
-            { name: "itsme", id: 125 },
+            { name: 'hello', id: 123 },
+            { name: 'world', id: 124 },
+            { name: 'itsme', id: 125 }
           ]
         }
 

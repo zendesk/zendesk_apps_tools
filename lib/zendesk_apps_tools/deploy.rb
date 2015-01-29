@@ -77,7 +77,7 @@ module ZendeskAppsTools
         message  = info['message']
         app_id   = info['app_id']
 
-        if ['completed', 'failed'].include? status
+        if %w(completed failed).include? status
           case status
           when 'completed'
             set_cache 'app_id' => app_id
@@ -94,6 +94,5 @@ module ZendeskAppsTools
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
     end
-
   end
 end

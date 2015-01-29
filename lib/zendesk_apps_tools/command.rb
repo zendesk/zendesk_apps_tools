@@ -1,4 +1,4 @@
-require "thor"
+require 'thor'
 require 'zip/zip'
 require 'pathname'
 require 'net/http'
@@ -9,11 +9,9 @@ require 'io/console'
 require 'zendesk_apps_tools/command_helpers'
 
 module ZendeskAppsTools
-
   require 'zendesk_apps_support'
 
   class Command < Thor
-
     SHARED_OPTIONS = {
       ['path', '-p'] => './',
       clean: false
@@ -23,24 +21,24 @@ module ZendeskAppsTools
     include ZendeskAppsSupport
     include ZendeskAppsTools::CommandHelpers
 
-    source_root File.expand_path(File.join(File.dirname(__FILE__), "../.."))
+    source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 
     desc 'translate SUBCOMMAND', 'Manage translation files', hide: true
     subcommand 'translate', Translate
 
-    desc "new", "Generate a new app"
+    desc 'new', 'Generate a new app'
     def new
-      @author_name  = get_value_from_stdin("Enter this app author's name:\n", error_msg: "Invalid name, try again:")
-      @author_email = get_value_from_stdin("Enter this app author's email:\n", valid_regex: /^.+@.+\..+$/, error_msg: "Invalid email, try again:")
-      @author_url   = get_value_from_stdin("Enter this app author's url:\n", valid_regex: /^https?:\/\/.+$/, error_msg: "Invalid url, try again:", allow_empty: true)
-      @app_name     = get_value_from_stdin("Enter a name for this new app:\n", error_msg: "Invalid app name, try again:")
+      @author_name  = get_value_from_stdin("Enter this app author's name:\n", error_msg: 'Invalid name, try again:')
+      @author_email = get_value_from_stdin("Enter this app author's email:\n", valid_regex: /^.+@.+\..+$/, error_msg: 'Invalid email, try again:')
+      @author_url   = get_value_from_stdin("Enter this app author's url:\n", valid_regex: /^https?:\/\/.+$/, error_msg: 'Invalid url, try again:', allow_empty: true)
+      @app_name     = get_value_from_stdin("Enter a name for this new app:\n", error_msg: 'Invalid app name, try again:')
 
       get_new_app_directory
 
       directory('app_template', @app_dir)
     end
 
-    desc "validate", "Validate your app"
+    desc 'validate', 'Validate your app'
     method_options SHARED_OPTIONS
     def validate
       setup_path(options[:path])
@@ -61,7 +59,7 @@ module ZendeskAppsTools
       true
     end
 
-    desc "package", "Package your app"
+    desc 'package', 'Package your app'
     method_options SHARED_OPTIONS
     def package
       return false unless invoke(:validate, [])
@@ -73,27 +71,27 @@ module ZendeskAppsTools
 
       zip archive_path
 
-      say_status "package", "created at #{archive_rel_path}"
+      say_status 'package', "created at #{archive_rel_path}"
       true
     end
 
-    desc "clean", "Remove app packages in temp folder"
-    method_option :path, default: './', required: false, aliases: "-p"
+    desc 'clean', 'Remove app packages in temp folder'
+    method_option :path, default: './', required: false, aliases: '-p'
     def clean
       setup_path(options[:path])
 
-      return unless File.exists?(Pathname.new(File.join(app_dir, "tmp")).to_s)
+      return unless File.exist?(Pathname.new(File.join(app_dir, 'tmp')).to_s)
 
       FileUtils.rm(Dir["#{tmp_dir}/app-*.zip"])
     end
 
-    DEFAULT_SERVER_PATH = "./"
-    DEFAULT_CONFIG_PATH = "./settings.yml"
+    DEFAULT_SERVER_PATH = './'
+    DEFAULT_CONFIG_PATH = './settings.yml'
     DEFAULT_SERVER_PORT = 4567
 
-    desc "server", "Run a http server to serve the local app"
-    method_option :path, default: DEFAULT_SERVER_PATH, required: false, aliases: "-p"
-    method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: "-c"
+    desc 'server', 'Run a http server to serve the local app'
+    method_option :path, default: DEFAULT_SERVER_PATH, required: false, aliases: '-p'
+    method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
     method_option :port, default: DEFAULT_SERVER_PORT, required: false
     def server
       setup_path(options[:path])
@@ -116,7 +114,7 @@ module ZendeskAppsTools
       end
     end
 
-    desc "create", "Create app on your account"
+    desc 'create', 'Create app on your account'
     method_options SHARED_OPTIONS
     method_option :zipfile, default: nil, required: false, type: :string
     def create
@@ -127,10 +125,10 @@ module ZendeskAppsTools
         app_name = JSON.parse(File.read(File.join options[:path], 'manifest.json'))['name']
       end
       app_name ||= get_value_from_stdin('Enter app name:')
-      deploy_app(:post, '/api/v2/apps.json', { name: app_name })
+      deploy_app(:post, '/api/v2/apps.json',  name: app_name)
     end
 
-    desc "update", "Update app on the server"
+    desc 'update', 'Update app on the server'
     method_options SHARED_OPTIONS
     method_option :zipfile, default: nil, required: false, type: :string
     def update
@@ -149,6 +147,5 @@ module ZendeskAppsTools
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
     end
-
   end
 end
