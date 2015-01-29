@@ -36,7 +36,7 @@ describe ZendeskAppsTools::Translate do
 
       result = { 'app' => { 'description' => 'Description' } }
 
-      context = translate = ZendeskAppsTools::Translate.new
+      context = ZendeskAppsTools::Translate.new
       context.nest_translations_hash(translations, 'txt.apps.my_app.').should == result
     end
 
@@ -66,7 +66,7 @@ describe ZendeskAppsTools::Translate do
             'requesting' => 'Requesting data from Magento...' },
           'errormessage' => 'General error' }
 
-        context = translate = ZendeskAppsTools::Translate.new
+        context = ZendeskAppsTools::Translate.new
         context.nest_translations_hash(translations, '').should == result
       end
     end

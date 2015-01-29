@@ -2,14 +2,14 @@ module ZendeskAppsTools
   module Cache
     CACHE_FILE_NAME = '.zat'
 
-    def set_cache(hash)
+    def save_cache(hash)
       return if options[:zipfile]
 
       @cache = File.exist?(cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
       File.open(@cache_path, 'w') { |f| f.write JSON.pretty_generate(@cache) }
     end
 
-    def get_cache(key)
+    def fetch_cache(key)
       @cache ||= File.exist?(cache_path) ? JSON.parse(File.read(@cache_path)) : {}
       @cache[key] if @cache
     end
