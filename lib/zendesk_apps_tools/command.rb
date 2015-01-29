@@ -33,7 +33,7 @@ module ZendeskAppsTools
       @author_url   = get_value_from_stdin("Enter this app author's url:\n", valid_regex: /^https?:\/\/.+$/, error_msg: 'Invalid url, try again:', allow_empty: true)
       @app_name     = get_value_from_stdin("Enter a name for this new app:\n", error_msg: 'Invalid app name, try again:')
 
-      get_new_app_directory
+      prompt_new_app_dir
 
       directory('app_template', @app_dir)
     end
@@ -135,7 +135,7 @@ module ZendeskAppsTools
       clear_cache
       @command = 'Update'
 
-      app_id = get_cache('app_id') || find_app_id
+      app_id = fetch_cache('app_id') || find_app_id
       unless /\d+/ =~ app_id.to_s
         say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
       end

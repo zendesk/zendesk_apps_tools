@@ -20,17 +20,17 @@ module ZendeskAppsTools
 
       while input = ask(prompt)
         return '' if input.empty? && options[:allow_empty]
-        unless input =~ options[:valid_regex]
-          say(options[:error_msg], :red)
-        else
+        if input =~ options[:valid_regex]
           break
+        else
+          say(options[:error_msg], :red)
         end
       end
 
       input
     end
 
-    def get_password_from_stdin(prompt, _opts = {})
+    def get_password_from_stdin(prompt)
       print "#{prompt} "
       password = STDIN.noecho(&:gets).chomp
       puts
