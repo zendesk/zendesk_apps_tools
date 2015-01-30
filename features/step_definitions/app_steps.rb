@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'zip/zip'
+require 'English'
 
 When /^I move to the app directory$/ do
   @previous_dir = Dir.pwd
