@@ -39,8 +39,7 @@ module ZendeskAppsTools
     def to_json
       setup_path(options[:path]) if options[:path]
       en_yml = YAML.load_file("#{destination_root}/translations/en.yml")
-      en_yml['parts'][0]['translation']['key'] =~ /^txt.apps.([^\.]+)/
-      package = Regexp.last_match[1]
+      package = /^txt.apps.([^\.]+)/.match(en_yml['parts'][0]['translation']['key'])[1]
       translations = en_yml['parts'].map { |part| part['translation'] }
       en_json = array_to_nested_hash(translations)['txt']['apps'][package]
       en_json['app']['package'] = package
