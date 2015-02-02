@@ -48,10 +48,10 @@ module ZendeskAppsTools
 
       all_apps = connection.get('/api/v2/apps.json').body
 
-      app = JSON.parse(all_apps)['apps'].find { |app| app['name'] == name }
+      app_id = JSON.parse(all_apps)['apps'].find { |app| app['name'] == name }['id']
 
-      set_cache 'app_id' => app['id']
-      app['id']
+      save_cache 'app_id' => app_id
+      app_id
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
     end
@@ -59,9 +59,7 @@ module ZendeskAppsTools
     def check_status(response)
       job = response.body
       job_response = JSON.parse(job)
-      if job_response['error']
-        say_error_and_exit job_response['error']
-      end
+      say_error_and_exit job_response['error'] if job_response['error']
 
       job_id = job_response['job_id']
       check_job job_id
@@ -77,10 +75,10 @@ module ZendeskAppsTools
         message  = info['message']
         app_id   = info['app_id']
 
-        if ['completed', 'failed'].include? status
+        if %w(completed failed).include? status
           case status
           when 'completed'
-            set_cache 'app_id' => app_id
+            save_cache 'app_id' => app_id
             say_status @command, 'OK'
           when 'failed'
             say_status @command, message
@@ -94,6 +92,5 @@ module ZendeskAppsTools
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
     end
-
   end
 end

@@ -7,8 +7,8 @@
 
 require 'webmock/rspec'
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-$:.unshift(File.dirname(__FILE__) + '/../lib/zendesk_apps_tools')
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib/zendesk_apps_tools')
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true

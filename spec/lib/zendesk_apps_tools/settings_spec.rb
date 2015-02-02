@@ -3,7 +3,6 @@ require 'common'
 require 'settings'
 
 describe ZendeskAppsTools::Settings do
-
   before(:each) do
     @context = ZendeskAppsTools::Settings.new
     @user_input = Object.new
@@ -15,17 +14,17 @@ describe ZendeskAppsTools::Settings do
     it 'accepts user input with colon & slashes' do
       parameters = [
         {
-          name: "backend",
+          name: 'backend',
           required: true,
-          default: "https://example.com:3000"
+          default: 'https://example.com:3000'
         }
       ]
 
       settings = {
-        "backend" => "https://example.com:3000"
+        'backend' => 'https://example.com:3000'
       }
 
-      @user_input.stub(:ask).with("Enter a value for required parameter 'backend':\n").and_return("https://example.com:3000")
+      @user_input.stub(:ask).with("Enter a value for required parameter 'backend':\n").and_return('https://example.com:3000')
 
       @context.get_settings_from_user_input(@user_input, parameters).should == settings
     end
@@ -33,15 +32,15 @@ describe ZendeskAppsTools::Settings do
     it 'should use default boolean parameter' do
       parameters = [
         {
-          name: "isUrgent",
-          type: "checkbox",
+          name: 'isUrgent',
+          type: 'checkbox',
           required: true,
           default: true
         }
       ]
 
       settings = {
-        "isUrgent" => true
+        'isUrgent' => true
       }
 
       @user_input.stub(:ask).with("Enter a value for required parameter 'isUrgent':\n").and_return('')
@@ -52,31 +51,31 @@ describe ZendeskAppsTools::Settings do
     it 'prompts the user for settings' do
       parameters = [
         {
-          name: "required",
+          name: 'required',
           required: true
         },
         {
-          name: "required_with_default",
+          name: 'required_with_default',
           required: true,
-          default: "123"
+          default: '123'
         },
         {
-          name: "not_required",
+          name: 'not_required'
         },
         {
-          name: "not_required_with_default",
-          default: "789"
+          name: 'not_required_with_default',
+          default: '789'
         },
         {
-          name: "skipped",
+          name: 'skipped'
         }
       ]
 
       settings = {
-        "required"                  => "xyz",
-        "required_with_default"     => "123",
-        "not_required"              => "456",
-        "not_required_with_default" => "789"
+        'required'                  => 'xyz',
+        'required_with_default'     => '123',
+        'not_required'              => '456',
+        'not_required_with_default' => '789'
       }
 
       @user_input.stub(:ask).with("Enter a value for required parameter 'required':\n").and_return('xyz')
@@ -89,7 +88,7 @@ describe ZendeskAppsTools::Settings do
   describe '#get_settings_from_file' do
     context 'when the file doesn\'t exist' do
       it 'returns nil' do
-        @context.get_settings_from_file('spec/fixture/none_existing/settings.yml', []).should == nil
+        @context.get_settings_from_file('spec/fixture/none_existing/settings.yml', []).should.nil?
       end
     end
 
@@ -97,33 +96,33 @@ describe ZendeskAppsTools::Settings do
       it 'returns the settings' do
         parameters = [
           {
-            :name     => "text",
-            :type     => "text"
+            name: 'text',
+            type: 'text'
           },
           {
-            :name     => "number",
-            :type     => "text"
+            name: 'number',
+            type: 'text'
           },
           {
-            :name     => "checkbox",
-            :type     => "checkbox"
+            name: 'checkbox',
+            type: 'checkbox'
           },
           {
-            :name     => "array",
-            :type     => "multiline"
+            name: 'array',
+            type: 'multiline'
           },
           {
-            :name     => "object",
-            :type     => "multiline"
+            name: 'object',
+            type: 'multiline'
           }
         ]
 
         settings = {
-          "text" => "text",
-          "number" => 1,
-          "checkbox" => true,
-          "array" => "[\"test1\"]",
-          "object" => "{\"test1\":\"value\"}"
+          'text' => 'text',
+          'number' => 1,
+          'checkbox' => true,
+          'array' => "[\"test1\"]",
+          'object' => "{\"test1\":\"value\"}"
         }
 
         @context.get_settings_from_file('spec/fixture/config/settings.json', parameters).should == settings
@@ -134,33 +133,33 @@ describe ZendeskAppsTools::Settings do
       it 'returns the settings 1 level deep when the file exist' do
         parameters = [
           {
-            :name     => "text",
-            :type     => "text"
+            name: 'text',
+            type: 'text'
           },
           {
-            :name     => "number",
-            :type     => "text"
+            name: 'number',
+            type: 'text'
           },
           {
-            :name     => "checkbox",
-            :type     => "checkbox"
+            name: 'checkbox',
+            type: 'checkbox'
           },
           {
-            :name     => "array",
-            :type     => "multiline"
+            name: 'array',
+            type: 'multiline'
           },
           {
-            :name     => "object",
-            :type     => "multiline"
+            name: 'object',
+            type: 'multiline'
           }
         ]
 
         settings = {
-          "text" => "text",
-          "number" => 1,
-          "checkbox" => true,
-          "array" => "[\"test1\"]",
-          "object" => "{\"test1\":\"value\"}"
+          'text' => 'text',
+          'number' => 1,
+          'checkbox' => true,
+          'array' => "[\"test1\"]",
+          'object' => "{\"test1\":\"value\"}"
         }
 
         @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should == settings
@@ -169,15 +168,15 @@ describe ZendeskAppsTools::Settings do
       it 'returns the default because you forgot to specifiy a required field with a default' do
         parameters = [
           {
-            :name     => "required",
-            :type     => "text",
-            :required => true,
-            :default  => "ok"
+            name: 'required',
+            type: 'text',
+            required: true,
+            default: 'ok'
           }
         ]
 
         settings = {
-          "required" => "ok",
+          'required' => 'ok'
         }
 
         @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should == settings
@@ -186,15 +185,14 @@ describe ZendeskAppsTools::Settings do
       it 'returns nil because you forgot to specifiy a required field without a default' do
         parameters = [
           {
-            :name     => "required",
-            :type     => "text",
-            :required => true
+            name: 'required',
+            type: 'text',
+            required: true
           }
         ]
 
-        @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should == nil
+        @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should.nil?
       end
     end
   end
-
 end
