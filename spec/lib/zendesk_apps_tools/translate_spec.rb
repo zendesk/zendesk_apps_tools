@@ -63,8 +63,10 @@ describe ZendeskAppsTools::Translate do
               'message' => 'Please try the previous action again.'
             },
             'loading'    => 'Waiting for ticket data to load...',
-            'requesting' => 'Requesting data from Magento...' },
-          'errormessage' => 'General error' }
+            'requesting' => 'Requesting data from Magento...'
+          },
+          'errormessage' => 'General error'
+        }
 
         context = ZendeskAppsTools::Translate.new
         context.nest_translations_hash(translations, '').should == result
