@@ -9,7 +9,7 @@ RSpec::Core::RakeTask.new(:spec)
 CLEAN << 'tmp'
 
 Cucumber::Rake::Task.new do |t|
-  t.cucumber_opts = %w{--format progress}
+  t.cucumber_opts = %w(--format progress)
 end
 
-task :default => [:spec, :cucumber]
+task default: [:spec, :cucumber]
