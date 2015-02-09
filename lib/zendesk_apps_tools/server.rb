@@ -18,7 +18,7 @@ module ZendeskAppsTools
         end
       end
 
-      ZendeskAppsSupport::Package.new(settings.root).readified_js(nil, 0, "http://localhost:#{settings.port}/", settings.parameters)
+      ZendeskAppsSupport::Package.new(settings.root).readified_js(nil, settings.app_id, "http://localhost:#{settings.port}/", settings.parameters)
     end
   end
 end
