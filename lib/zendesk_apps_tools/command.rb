@@ -88,11 +88,13 @@ module ZendeskAppsTools
     DEFAULT_SERVER_PATH = './'
     DEFAULT_CONFIG_PATH = './settings.yml'
     DEFAULT_SERVER_PORT = 4567
+    DEFAULT_APP_ID = 0
 
     desc 'server', 'Run a http server to serve the local app'
     method_option :path, default: DEFAULT_SERVER_PATH, required: false, aliases: '-p'
     method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
     method_option :port, default: DEFAULT_SERVER_PORT, required: false
+    method_option :app_id, default: DEFAULT_APP_ID, required: false
     def server
       setup_path(options[:path])
       manifest = app_package.manifest_json
@@ -112,6 +114,7 @@ module ZendeskAppsTools
         server.set :parameters, settings
         server.set :manifest, manifest[:parameters]
         server.set :config, options[:config]
+        server.set :app_id, options[:app_id]
         server.run!
       end
     end
