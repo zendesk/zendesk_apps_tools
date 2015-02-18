@@ -11,7 +11,7 @@ describe ZendeskAppsTools::Translate do
       translate.setup_path(root)
       translate.to_yml
 
-      File.read(target_yml).should == File.read("#{root}/translations/expected.yml")
+      expect(File.read(target_yml)).to eq(File.read("#{root}/translations/expected.yml"))
       File.delete(target_yml) if File.exist?(target_yml)
     end
   end
@@ -25,7 +25,7 @@ describe ZendeskAppsTools::Translate do
       translate.setup_path(root)
       translate.to_json
 
-      File.read(target_json).should == File.read("#{root}/translations/expected.json")
+      expect(File.read(target_json)).to eq(File.read("#{root}/translations/expected.json"))
       File.delete(target_json) if File.exist?(target_json)
     end
   end
@@ -37,7 +37,7 @@ describe ZendeskAppsTools::Translate do
       result = { 'app' => { 'description' => 'Description' } }
 
       context = ZendeskAppsTools::Translate.new
-      context.nest_translations_hash(translations, 'txt.apps.my_app.').should == result
+      expect(context.nest_translations_hash(translations, 'txt.apps.my_app.')).to eq(result)
     end
 
     context 'with a mix of nested and unnested keys' do
@@ -69,7 +69,7 @@ describe ZendeskAppsTools::Translate do
         }
 
         context = ZendeskAppsTools::Translate.new
-        context.nest_translations_hash(translations, '').should == result
+        expect(context.nest_translations_hash(translations, '')).to eq(result)
       end
     end
   end
@@ -80,11 +80,11 @@ describe ZendeskAppsTools::Translate do
   describe '#update' do
     it 'fetches locales, translations and generates json files for each' do
       translate = ZendeskAppsTools::Translate.new
-      translate.stub(:say)
-      translate.stub(:ask).with('What is the package name for this app? (without app_)').and_return('my_app')
-      translate.stub(:create_file)
+      allow(translate).to receive(:say)
+      allow(translate).to receive(:ask).with('What is the package name for this app? (without app_)').and_return('my_app')
+      allow(translate).to receive(:create_file)
 
-      translate.should_receive(:nest_translations_hash).once.and_return({})
+      expect(translate).to receive(:nest_translations_hash).once.and_return({})
 
       test = Faraday.new do |builder|
         builder.adapter :test do |stub|
