@@ -6,6 +6,7 @@ require 'zendesk_apps_tools/directory'
 require 'zendesk_apps_tools/package_helper'
 require 'zendesk_apps_tools/settings'
 require 'zendesk_apps_tools/translate'
+require 'zendesk_apps_tools/bump'
 
 module ZendeskAppsTools
   module CommandHelpers
