@@ -43,6 +43,7 @@ module ZendeskAppsTools
     def write_manifest
       File.open('manifest.json', 'w') do |f|
         f.write(JSON.pretty_generate(@manifest))
+        f.write("\n")
       end
     end
 
