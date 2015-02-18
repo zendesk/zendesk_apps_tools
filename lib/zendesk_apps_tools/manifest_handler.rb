@@ -10,6 +10,7 @@ module ZendeskAppsTools
         read_version
         normalize_version
         super()
+        update_version
         write_manifest
       end
     end
@@ -35,8 +36,11 @@ module ZendeskAppsTools
       end
     end
 
-    def write_manifest
+    def update_version
       @manifest['version'] = version
+    end
+
+    def write_manifest
       File.open('manifest.json', 'w') do |f|
         f.write(JSON.pretty_generate(@manifest))
       end
