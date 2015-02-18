@@ -25,6 +25,9 @@ module ZendeskAppsTools
     desc 'translate SUBCOMMAND', 'Manage translation files', hide: true
     subcommand 'translate', Translate
 
+    desc 'bump SUBCOMMAND', 'Bump version for app', hide: true
+    subcommand 'bump', Bump
+
     desc 'new', 'Generate a new app'
     def new
       @author_name  = get_value_from_stdin("Enter this app author's name:\n", error_msg: 'Invalid name, try again:')
