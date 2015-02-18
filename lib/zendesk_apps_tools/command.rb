@@ -5,21 +5,20 @@ require 'net/http'
 require 'json'
 require 'faraday'
 require 'io/console'
+require 'zendesk_apps_support'
 
 require 'zendesk_apps_tools/command_helpers'
 
 module ZendeskAppsTools
-  require 'zendesk_apps_support'
-
   class Command < Thor
+    include Thor::Actions
+    include ZendeskAppsSupport
+    include ZendeskAppsTools::CommandHelpers
+
     SHARED_OPTIONS = {
       ['path', '-p'] => './',
       clean: false
     }
-
-    include Thor::Actions
-    include ZendeskAppsSupport
-    include ZendeskAppsTools::CommandHelpers
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 
