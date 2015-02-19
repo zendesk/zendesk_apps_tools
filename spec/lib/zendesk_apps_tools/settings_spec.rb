@@ -7,7 +7,7 @@ describe ZendeskAppsTools::Settings do
     @context = ZendeskAppsTools::Settings.new
     @user_input = Object.new
     @user_input.extend(ZendeskAppsTools::Common)
-    @user_input.stub(:ask).and_return('') # this represents the default user input
+    allow(@user_input).to receive(:ask).and_return('') # this represents the default user input
   end
 
   describe '#get_settings_from_user_input' do
@@ -24,9 +24,9 @@ describe ZendeskAppsTools::Settings do
         'backend' => 'https://example.com:3000'
       }
 
-      @user_input.stub(:ask).with("Enter a value for required parameter 'backend':\n").and_return('https://example.com:3000')
+      allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'backend':\n").and_return('https://example.com:3000')
 
-      @context.get_settings_from_user_input(@user_input, parameters).should == settings
+      expect(@context.get_settings_from_user_input(@user_input, parameters)).to eq(settings)
     end
 
     it 'should use default boolean parameter' do
@@ -43,9 +43,9 @@ describe ZendeskAppsTools::Settings do
         'isUrgent' => true
       }
 
-      @user_input.stub(:ask).with("Enter a value for required parameter 'isUrgent':\n").and_return('')
+      allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'isUrgent':\n").and_return('')
 
-      @context.get_settings_from_user_input(@user_input, parameters).should == settings
+      expect(@context.get_settings_from_user_input(@user_input, parameters)).to eq(settings)
     end
 
     it 'prompts the user for settings' do
@@ -78,17 +78,17 @@ describe ZendeskAppsTools::Settings do
         'not_required_with_default' => '789'
       }
 
-      @user_input.stub(:ask).with("Enter a value for required parameter 'required':\n").and_return('xyz')
-      @user_input.stub(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n").and_return('456')
+      allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'required':\n").and_return('xyz')
+      allow(@user_input).to receive(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n").and_return('456')
 
-      @context.get_settings_from_user_input(@user_input, parameters).should == settings
+      expect(@context.get_settings_from_user_input(@user_input, parameters)).to eq(settings)
     end
   end
 
   describe '#get_settings_from_file' do
     context 'when the file doesn\'t exist' do
       it 'returns nil' do
-        @context.get_settings_from_file('spec/fixture/none_existing/settings.yml', []).should.nil?
+        expect(@context.get_settings_from_file('spec/fixture/none_existing/settings.yml', [])).to be_nil
       end
     end
 
@@ -125,7 +125,7 @@ describe ZendeskAppsTools::Settings do
           'object' => "{\"test1\":\"value\"}"
         }
 
-        @context.get_settings_from_file('spec/fixture/config/settings.json', parameters).should == settings
+        expect(@context.get_settings_from_file('spec/fixture/config/settings.json', parameters)).to eq(settings)
       end
     end
 
@@ -162,7 +162,7 @@ describe ZendeskAppsTools::Settings do
           'object' => "{\"test1\":\"value\"}"
         }
 
-        @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should == settings
+        expect(@context.get_settings_from_file('spec/fixture/config/settings.yml', parameters)).to eq(settings)
       end
 
       it 'returns the default because you forgot to specifiy a required field with a default' do
@@ -179,7 +179,7 @@ describe ZendeskAppsTools::Settings do
           'required' => 'ok'
         }
 
-        @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should == settings
+        expect(@context.get_settings_from_file('spec/fixture/config/settings.yml', parameters)).to eq(settings)
       end
 
       it 'returns nil because you forgot to specifiy a required field without a default' do
@@ -191,7 +191,7 @@ describe ZendeskAppsTools::Settings do
           }
         ]
 
-        @context.get_settings_from_file('spec/fixture/config/settings.yml', parameters).should.nil?
+        expect(@context.get_settings_from_file('spec/fixture/config/settings.yml', parameters)).to be_nil
       end
     end
   end
