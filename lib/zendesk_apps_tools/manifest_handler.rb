@@ -17,8 +17,12 @@ module ZendeskAppsTools
 
     private
 
+    def manifest_json
+      'manifest.json'
+    end
+
     def load_manifest
-      manifest_json = File.read('manifest.json')
+      manifest_json = File.read(manifest_json)
       @manifest = JSON.load(manifest_json)
     rescue => e
       say(e.message, :red) and exit 1
@@ -41,7 +45,7 @@ module ZendeskAppsTools
     end
 
     def write_manifest
-      File.open('manifest.json', 'w') do |f|
+      File.open(manifest_json, 'w') do |f|
         f.write(JSON.pretty_generate(@manifest))
         f.write("\n")
       end
