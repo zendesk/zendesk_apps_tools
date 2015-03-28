@@ -1,5 +1,5 @@
 class Array
-  unless defined? :to_h
+  unless instance_methods.include? :to_h
     def to_h
       if elem_index = index { |elem| !elem.is_a?(Array) }
         raise TypeError.new("wrong element type #{self[elem_index].class} at #{elem_index} (expected array)")
