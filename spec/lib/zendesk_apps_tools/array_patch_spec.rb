@@ -1,4 +1,5 @@
-require_relative '../../spec_helper.rb'
+require 'spec_helper'
+require 'zendesk_apps_tools/array_patch'
 
 describe Array do
   describe '#to_h' do
