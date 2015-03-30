@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'zendesk_apps_tools/bump'
-require 'zendesk_apps_tools/manifest_handler'
 
 describe ZendeskAppsTools::Bump do
   VERSION_PARTS = ZendeskAppsTools::ManifestHandler::VERSION_PARTS

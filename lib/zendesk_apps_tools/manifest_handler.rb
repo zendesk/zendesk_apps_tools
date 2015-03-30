@@ -1,3 +1,5 @@
+require 'zendesk_apps_tools/array_patch'
+
 module ZendeskAppsTools
   module ManifestHandler
     VERSION_PARTS = %i(major minor patch)
