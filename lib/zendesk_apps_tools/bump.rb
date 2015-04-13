@@ -25,5 +25,7 @@ module ZendeskAppsTools
     def patch
       semver[:patch] += 1
     end
+
+    default_task :patch
   end
 end
