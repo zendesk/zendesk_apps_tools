@@ -40,7 +40,7 @@ describe ZendeskAppsTools::Translate do
       expect(context.nest_translations_hash(translations, 'txt.apps.my_app.')).to eq(result)
     end
 
-    context 'with a mix of nested and unnested keys' do
+    describe 'with a mix of nested and unnested keys' do
       it 'returns a mixed depth hash' do
         translations = {
           'app.description' => 'This app is awesome',
@@ -100,6 +100,20 @@ describe ZendeskAppsTools::Translate do
       end
 
       translate.update(test)
+    end
+  end
+
+  describe "#pseudotranslate" do
+    it 'generates a json file for the specified locale' do
+      root = 'spec/fixture/i18n_app_pseudotranslate'
+      target_json = "#{root}/translations/fr.json"
+      File.delete(target_json) if File.exist?(target_json)
+      translate = ZendeskAppsTools::Translate.new
+      translate.setup_path(root)
+      translate.pseudotranslate
+
+      expect(File.read(target_json)).to eq(File.read("#{root}/translations/expected.json"))
+      File.delete(target_json) if File.exist?(target_json)
     end
   end
 end
