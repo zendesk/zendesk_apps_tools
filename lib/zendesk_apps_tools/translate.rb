@@ -76,6 +76,20 @@ module ZendeskAppsTools
       end
     end
 
+    desc 'pseudotranslate', 'Generate a Pseudo-translation to use for testing. This will pretend to be French.'
+    method_option :path, default: './', required: false
+    def pseudotranslate
+      setup_path(options[:path]) if options[:path]
+
+      en_json = JSON.parse(File.open("#{destination_root}/translations/en.json").read)
+
+      package = en_json['app']['package']
+      say('No package defined inside en.json! Abort.', :red) and exit 1 unless package
+
+      pseudo = build_pseudotranslation(en_json, package)
+      write_json("translations/fr.json", pseudo)
+    end
+
     def self.source_root
       File.expand_path(File.join(File.dirname(__FILE__), '../..'))
     end
@@ -132,6 +146,14 @@ module ZendeskAppsTools
           current[keys[-1]] = { 'title' => item['title'], 'value' => item['value'] }
           result
         end
+      end
+
+      def build_pseudotranslation(translations_hash, package_name)
+        titles       = to_flattened_namespaced_hash(translations_hash, I18N_TITLE_KEY)
+        values       = to_flattened_namespaced_hash(translations_hash, I18N_VALUE_KEY)
+        translations = titles.each { |k, v| titles[k] = { 'title' => v, 'value' => "[日本#{values[k]}éñđ]" } }
+        translations['app.package'] = package_name # don't pseudo translate the package name
+        nest_translations_hash(translations, '')
       end
     end
   end
