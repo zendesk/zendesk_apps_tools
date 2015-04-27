@@ -1,0 +1,21 @@
+{
+  "app": {
+    "package": "my_app",
+    "abc": {
+      "title": "description for abc field",
+      "value": "[日本value of \"abc\"éñđ]"
+    }
+  },
+  "a": {
+    "a1": {
+      "title": "description for a1 field",
+      "value": "[日本value of a1éñđ]"
+    },
+    "b": {
+      "b1": {
+        "title": "description for b1 field",
+        "value": "[日本value of b1éñđ]"
+      }
+    }
+  }
+}
