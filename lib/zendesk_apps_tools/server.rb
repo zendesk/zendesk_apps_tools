@@ -17,13 +17,9 @@ module ZendeskAppsTools
           last_mtime = curr_mtime
         end
       end
-      settings.parameters.merge!( { locale: normalize_locale(params['locale']) } )
+      settings.parameters.merge!(locale: params['locale'])
 
       ZendeskAppsSupport::Package.new(settings.root).readified_js(nil, settings.app_id, "http://localhost:#{settings.port}/", settings.parameters)
-    end
-
-    def normalize_locale(locale)
-      locale.downcase.gsub("-us", "")
     end
   end
 end
