@@ -56,10 +56,10 @@ Feature: create a template for a new zendesk app
     And the app file "tmp/aruba/templates/layout.hdbs" is created with:
     """
 <header>
-  <span class="logo"/>
+  <span class="logo"></span>
   <h3>{{setting "name"}}</h3>
 </header>
-<section data-main/>
+<section data-main></section>
 <footer>
   <a href="mailto:{{author.email}}">
     {{author.name}}
