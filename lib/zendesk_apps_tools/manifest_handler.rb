@@ -14,6 +14,7 @@ module ZendeskAppsTools
         super()
         update_version
         write_manifest
+        post_actions
       end
     end
 
@@ -57,9 +58,9 @@ module ZendeskAppsTools
       v.match(/\A(?<v>v)?(?<major>\d+)(?:\.(?<minor>\d+)(?:\.(?<patch>\d+))?)?\Z/)
     end
 
-    def version
+    def version(v: false)
       [
-        semver[:v],
+        v ? 'v' : semver[:v],
         [
           semver[:major],
           semver[:minor],
