@@ -16,7 +16,7 @@ Creates all the files necessary to start building a Zendesk app.
 
 Example:
 
-![image]https://zen-marketing-documentation.s3.amazonaws.com/docs/en/zat_mac_cmd_new.png)
+![image](https://zen-marketing-documentation.s3.amazonaws.com/docs/en/zat_mac_cmd_new.png)
 
 ### Validate
 
@@ -57,7 +57,7 @@ To stop the server, switch to your command-line interface and press Control+C.
 
 ### Package
 
-Creates a zip file that you can [upload and install](hhttps://support.zendesk.com/hc/en-us/articles/203691246) in Zendesk.
+Creates a zip file that you can [upload and install](https://support.zendesk.com/hc/en-us/articles/203691246) in Zendesk.
 
     $ zat package
 
