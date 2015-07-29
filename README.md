@@ -12,7 +12,7 @@ Please refer to [our guide](http://developer.zendesk.com/documentation/apps/refe
 
 # Supported Ruby Versions
 
-Tested with Ruby 1.8.7 and 1.9.3.
+Tested with Ruby 2+
 
 # Contribution
 
