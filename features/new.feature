@@ -92,7 +92,7 @@ Feature: create a template for a new zendesk app
       "title": "fetch success"
     },
     "fail": {
-      "value": "failed to fecth information from the server",
+      "value": "failed to fetch information from the server",
       "title": "fetch failure"
     }
   },
