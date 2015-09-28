@@ -54,6 +54,9 @@ Follow these steps to run an app locally:
 
 To stop the server, switch to your command-line interface and press Control+C.
 
+#### App Settings
+
+In testing some apps it is necessary to specify the settings for the app. `zat server` will ask interactively for the values of all settings specified in the app's `manifest.json`. However, `zat server -c [$CONFIG_FILE]` allows specifying the settings using a JSON or YAML file where the keys are the same as in the manifest. The default filename is `settings.yml`.
 
 ### Package
 
