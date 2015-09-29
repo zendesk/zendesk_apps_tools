@@ -56,9 +56,12 @@ To stop the server, switch to your command-line interface and press Control+C.
 
 #### App Settings
 
-In testing some apps it is necessary to specify the settings for the app. `zat server` will ask interactively for the values of all settings specified in the app's `manifest.json`. However, `zat server -c [$CONFIG_FILE]` allows specifying the settings using a JSON or YAML file where the keys are the same as in the manifest. The default filename is `settings.yml`.
+When testing your app, you might need to specify some [app settings](manifest#app-settings). If you started the local server with `zat server`, ZAT will ask interactively for the values of all the settings specified in the app's `manifest.json` file. However, you might prefer to specify the settings in a JSON or YAML file.
 
-As a concrete example if `manifest.json` contains
+1. Create a JSON or YAML file with your settings. The keys in the file should be the same as in your manifest file.
+2. Start the server with `zat server -c [$CONFIG_FILE]`, where $CONFIG_FILE is the name of your JSON or YAML file. The default filename is `settings.yml`. You don't need to specify it in the command if your file uses that name.
+
+If `manifest.json` contains the following settings:
 
 ```json
 ...
@@ -69,7 +72,7 @@ As a concrete example if `manifest.json` contains
 ...
 ```
 
-There may be settings files like
+Then you can specify the settings in a file as follows:
 
 ```json
 ./settings.json
@@ -83,10 +86,11 @@ or
 
 ```yaml
 ./settings.yml
+
 mySetting: test value
 ```
 
-These may be used by either `zat server -c settings.json` or `zat server -c`.
+With the first file, you'd start the server with `zat server -c settings.json`. With the second file, you'd start it with `zat server -c`.
 
 ### Package
 
