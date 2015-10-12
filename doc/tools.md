@@ -92,6 +92,22 @@ mySetting: test value
 
 With the first file, you'd start the server with `zat server -c settings.json`. With the second file, you'd start it with `zat server -c`.
 
+You can then make use of the setting value in your JavaScript code or your Handlebars templates.
+
+In your **app.js** code, use the `setting('name')` framework method to retrieve the value of a setting. Example:
+
+```javascript
+alert( this.setting('mySetting') );
+```
+
+The snippet displays a JavaScript alert box with the value of the `mySetting` setting.
+
+In your templates, use the `{{setting 'name'}}` [template helper](./templates#setting-name). Example:
+
+```html
+<a href="{{setting 'mySetting'}}" />
+```
+
 ### Package
 
 Creates a zip file that you can [upload and install](https://support.zendesk.com/hc/en-us/articles/203691246) in Zendesk.
