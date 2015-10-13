@@ -92,6 +92,8 @@ mySetting: test value
 
 With the first file, you'd start the server with `zat server -c settings.json`. With the second file, you'd start it with `zat server -c`.
 
+For details on how to access the settings values from your JavaScript code or Handlebar templates, see [Retrieving setting values](settings#retrieving-settings-values).
+
 ### Package
 
 Creates a zip file that you can [upload and install](https://support.zendesk.com/hc/en-us/articles/203691246) in Zendesk.
