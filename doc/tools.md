@@ -101,7 +101,7 @@ alert( this.setting('mySetting') );
 To access the settings from your Handlebars templates, use the `{{setting 'name'}}` [template helper](./templates#setting-name). Example:
 
 ```html
-<p>mySetting Value: {{setting 'mySetting'}}</p>
+<p>Setting Value: {{setting 'mySetting'}}</p>
 ```
 
 ### Package
