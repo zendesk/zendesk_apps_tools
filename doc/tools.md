@@ -98,7 +98,7 @@ To access the settings from your JavaScript code, use the `setting('name')` fram
 alert( this.setting('mySetting') );
 ```
 
-To access the seetings from your Handlebars templates, use the `{{setting 'name'}}` [template helper](./templates#setting-name). Example:
+To access the setings from your Handlebars templates, use the `{{setting 'name'}}` [template helper](./templates#setting-name). Example:
 
 ```html
 <a href="{{setting 'mySetting'}}" />
