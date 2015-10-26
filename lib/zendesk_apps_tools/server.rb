@@ -3,6 +3,7 @@ require 'zendesk_apps_support/package'
 
 module ZendeskAppsTools
   class Server < Sinatra::Base
+    set :protection, :except => :frame_options
     set :public_folder, proc { "#{settings.root}/assets" }
     last_mtime = Time.new(0)
 
