@@ -37,7 +37,7 @@ module ZendeskAppsTools
         locale: params['locale']
       )
 
-      ZendeskAppsSupport::Installed.new([app_js], [installation]).compile_js()
+      ZendeskAppsSupport::Installed.new([app_js], [installation]).compile_js
     end
   end
 end
