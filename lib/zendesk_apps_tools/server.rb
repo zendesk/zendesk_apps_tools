@@ -19,7 +19,25 @@ module ZendeskAppsTools
         end
       end
 
-      ZendeskAppsSupport::Package.new(settings.root).readified_js(nil, settings.app_id, "http://localhost:#{settings.port}/", settings.parameters, params['locale'])
+      package = ZendeskAppsSupport::Package.new(settings.root)
+      installation = ZendeskAppsSupport::Installation.new(
+        id: settings.app_id,
+        app_id: settings.app_id,
+        app_name: package.name,
+        enabled: true,
+        requirements: package.requirements_json,
+        settings: settings.parameters,
+        updated_at: Time.now.iso8601,
+        created_at: Time.now.iso8601
+      )
+
+      app_js = package.compile_js(
+        app_id: settings.app_id,
+        assets_dir: "http://localhost:#{settings.port}/",
+        locale: params['locale']
+      )
+
+      ZendeskAppsSupport::Installed.new([app_js], [installation]).compile_js()
     end
   end
 end
