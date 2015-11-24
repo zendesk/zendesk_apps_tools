@@ -19,7 +19,7 @@ module ZendeskAppsTools
         end
       end
 
-      package = ZendeskAppsSupport::Package.new(settings.root)
+      package = ZendeskAppsSupport::Package.new(settings.root, false)
       installation = ZendeskAppsSupport::Installation.new(
         id: settings.app_id,
         app_id: settings.app_id,
