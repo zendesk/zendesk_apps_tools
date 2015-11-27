@@ -23,7 +23,7 @@ module ZendeskAppsTools
       installation = ZendeskAppsSupport::Installation.new(
         id: settings.app_id,
         app_id: settings.app_id,
-        app_name: package.name,
+        app_name: package.manifest_json['name'] || 'Local App',
         enabled: true,
         requirements: package.requirements_json,
         settings: settings.parameters,
@@ -33,6 +33,7 @@ module ZendeskAppsTools
 
       app_js = package.compile_js(
         app_id: settings.app_id,
+        app_name: package.manifest_json['name'] || 'Local App',
         assets_dir: "http://localhost:#{settings.port}/",
         locale: params['locale']
       )
