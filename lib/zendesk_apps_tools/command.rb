@@ -44,7 +44,7 @@ module ZendeskAppsTools
     method_options SHARED_OPTIONS
     def validate
       setup_path(options[:path])
-      errors = app_package.validate
+      errors = app_package.validate(marketplace: false)
       valid = errors.none?
 
       if valid
@@ -103,10 +103,10 @@ module ZendeskAppsTools
 
       settings_helper = ZendeskAppsTools::Settings.new
 
-      settings = settings_helper.get_settings_from_file options[:config], manifest[:parameters]
+      settings = settings_helper.get_settings_from_file options[:config], manifest['parameters']
 
       unless settings
-        settings = settings_helper.get_settings_from_user_input self, manifest[:parameters]
+        settings = settings_helper.get_settings_from_user_input self, manifest['parameters']
       end
 
       require 'zendesk_apps_tools/server'
@@ -114,7 +114,7 @@ module ZendeskAppsTools
         server.set :port, options[:port]
         server.set :root, options[:path]
         server.set :parameters, settings
-        server.set :manifest, manifest[:parameters]
+        server.set :manifest, manifest['parameters']
         server.set :config, options[:config]
         server.set :app_id, options[:app_id]
         server.run!
