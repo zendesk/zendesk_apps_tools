@@ -20,13 +20,14 @@ module ZendeskAppsTools
       end
 
       package = ZendeskAppsSupport::Package.new(settings.root, false)
+      app_name = package.manifest_json['name'] || 'Local App'
       installation = ZendeskAppsSupport::Installation.new(
         id: settings.app_id,
         app_id: settings.app_id,
-        app_name: package.manifest_json['name'] || 'Local App',
+        app_name: app_name,
         enabled: true,
         requirements: package.requirements_json,
-        settings: settings.parameters,
+        settings: settings.parameters.merge({title: app_name}),
         updated_at: Time.now.iso8601,
         created_at: Time.now.iso8601
       )
