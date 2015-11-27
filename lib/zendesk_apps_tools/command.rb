@@ -44,7 +44,7 @@ module ZendeskAppsTools
     method_options SHARED_OPTIONS
     def validate
       setup_path(options[:path])
-      errors = app_package.validate
+      errors = app_package.validate(marketplace: false)
       valid = errors.none?
 
       if valid
