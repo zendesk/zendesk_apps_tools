@@ -14,9 +14,9 @@ describe ZendeskAppsTools::Settings do
     it 'accepts user input with colon & slashes' do
       parameters = [
         {
-          name: 'backend',
-          required: true,
-          default: 'https://example.com:3000'
+          'name' => 'backend',
+          'required' => true,
+          'default' => 'https://example.com:3000'
         }
       ]
 
@@ -32,10 +32,10 @@ describe ZendeskAppsTools::Settings do
     it 'should use default boolean parameter' do
       parameters = [
         {
-          name: 'isUrgent',
-          type: 'checkbox',
-          required: true,
-          default: true
+          'name' => 'isUrgent',
+          'type' => 'checkbox',
+          'required' => true,
+          'default' => true
         }
       ]
 
@@ -51,23 +51,23 @@ describe ZendeskAppsTools::Settings do
     it 'prompts the user for settings' do
       parameters = [
         {
-          name: 'required',
-          required: true
+          'name' => 'required',
+          'required' => true
         },
         {
-          name: 'required_with_default',
-          required: true,
-          default: '123'
+          'name' => 'required_with_default',
+          'required' => true,
+          'default' => '123'
         },
         {
-          name: 'not_required'
+          'name' => 'not_required'
         },
         {
-          name: 'not_required_with_default',
-          default: '789'
+          'name' => 'not_required_with_default',
+          'default' => '789'
         },
         {
-          name: 'skipped'
+          'name' => 'skipped'
         }
       ]
 
@@ -96,24 +96,24 @@ describe ZendeskAppsTools::Settings do
       it 'returns the settings' do
         parameters = [
           {
-            name: 'text',
-            type: 'text'
+            'name' => 'text',
+            'type' => 'text'
           },
           {
-            name: 'number',
-            type: 'text'
+            'name' => 'number',
+            'type' => 'text'
           },
           {
-            name: 'checkbox',
-            type: 'checkbox'
+            'name' => 'checkbox',
+            'type' => 'checkbox'
           },
           {
-            name: 'array',
-            type: 'multiline'
+            'name' => 'array',
+            'type' => 'multiline'
           },
           {
-            name: 'object',
-            type: 'multiline'
+            'name' => 'object',
+            'type' => 'multiline'
           }
         ]
 
@@ -133,24 +133,24 @@ describe ZendeskAppsTools::Settings do
       it 'returns the settings 1 level deep when the file exist' do
         parameters = [
           {
-            name: 'text',
-            type: 'text'
+            'name' => 'text',
+            'type' => 'text'
           },
           {
-            name: 'number',
-            type: 'text'
+            'name' => 'number',
+            'type' => 'text'
           },
           {
-            name: 'checkbox',
-            type: 'checkbox'
+            'name' => 'checkbox',
+            'type' => 'checkbox'
           },
           {
-            name: 'array',
-            type: 'multiline'
+            'name' => 'array',
+            'type' => 'multiline'
           },
           {
-            name: 'object',
-            type: 'multiline'
+            'name' => 'object',
+            'type' => 'multiline'
           }
         ]
 
@@ -168,10 +168,10 @@ describe ZendeskAppsTools::Settings do
       it 'returns the default because you forgot to specifiy a required field with a default' do
         parameters = [
           {
-            name: 'required',
-            type: 'text',
-            required: true,
-            default: 'ok'
+            'name' => 'required',
+            'type' => 'text',
+            'required' => true,
+            'default' => 'ok'
           }
         ]
 
@@ -185,9 +185,9 @@ describe ZendeskAppsTools::Settings do
       it 'returns nil because you forgot to specifiy a required field without a default' do
         parameters = [
           {
-            name: 'required',
-            type: 'text',
-            required: true
+            'name' => 'required',
+            'type' => 'text',
+            'required' => true
           }
         ]
 
