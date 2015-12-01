@@ -7,20 +7,20 @@ module ZendeskAppsTools
       return {} if parameters.nil?
 
       parameters.inject({}) do |settings, param|
-        if param[:default]
-          input = user_input.get_value_from_stdin("Enter a value for parameter '#{param[:name]}' or press 'Return' to use the default value '#{param[:default]}':\n", allow_empty: true)
-          input = param[:default] if input.empty?
-        elsif param[:required]
-          input = user_input.get_value_from_stdin("Enter a value for required parameter '#{param[:name]}':\n")
+        if param['default']
+          input = user_input.get_value_from_stdin("Enter a value for parameter '#{param['name']}' or press 'Return' to use the default value '#{param['default']}':\n", allow_empty: true)
+          input = param['default'] if input.empty?
+        elsif param['required']
+          input = user_input.get_value_from_stdin("Enter a value for required parameter '#{param['name']}':\n")
         else
-          input = user_input.get_value_from_stdin("Enter a value for optional parameter '#{param[:name]}' or press 'Return' to skip:\n", allow_empty: true)
+          input = user_input.get_value_from_stdin("Enter a value for optional parameter '#{param['name']}' or press 'Return' to skip:\n", allow_empty: true)
         end
 
-        if param[:type] == 'checkbox'
+        if param['type'] == 'checkbox'
           input = convert_to_boolean_for_checkbox(input)
         end
 
-        settings[param[:name]] = input if input != ''
+        settings[param['name']] = input if input != ''
         settings
       end
     end
@@ -50,22 +50,22 @@ module ZendeskAppsTools
       end
 
       parameters.inject({}) do |settings, param|
-        input = settings_data[param[:name]]
+        input = settings_data[param['name']]
 
-        if !input && param[:default]
-          input = param[:default]
+        if !input && param['default']
+          input = param['default']
         end
 
-        if !input && param[:required]
-          puts "'#{param[:name]}' is required but not specified in the config file.\n"
+        if !input && param['required']
+          puts "'#{param['name']}' is required but not specified in the config file.\n"
           return nil
         end
 
-        if param[:type] == 'checkbox'
+        if param['type'] == 'checkbox'
           input = convert_to_boolean_for_checkbox(input)
         end
 
-        settings[param[:name]] = input if input != ''
+        settings[param['name']] = input if input != ''
         settings
       end
     end
