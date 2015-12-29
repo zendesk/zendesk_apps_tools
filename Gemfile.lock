@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zendesk_apps_tools (1.27.0)
+    zendesk_apps_tools (1.28.0)
       faraday (~> 0.8.10)
       rubyzip (~> 0.9.1)
       sinatra (~> 1.4.6)
@@ -96,4 +96,4 @@ DEPENDENCIES
   zendesk_apps_tools!
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
