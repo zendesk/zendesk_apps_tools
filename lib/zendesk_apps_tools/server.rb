@@ -8,6 +8,7 @@ module ZendeskAppsTools
     last_mtime = Time.new(0)
 
     get '/app.js' do
+      headers 'Access-Control-Allow-Origin' => '*'
       content_type 'text/javascript'
 
       if File.exists? settings.config
