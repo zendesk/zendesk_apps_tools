@@ -29,15 +29,23 @@ module ZendeskAppsTools
     subcommand 'bump', Bump
 
     desc 'new', 'Generate a new app'
+    method_option :'iframe-only', type: :boolean, default: false, desc: 'Create an iFrame Only app template', aliases: '-i'
     def new
       @author_name  = get_value_from_stdin("Enter this app author's name:\n", error_msg: 'Invalid name, try again:')
       @author_email = get_value_from_stdin("Enter this app author's email:\n", valid_regex: /^.+@.+\..+$/, error_msg: 'Invalid email, try again:')
       @author_url   = get_value_from_stdin("Enter this app author's url:\n", valid_regex: /^https?:\/\/.+$/, error_msg: 'Invalid url, try again:', allow_empty: true)
       @app_name     = get_value_from_stdin("Enter a name for this new app:\n", error_msg: 'Invalid app name, try again:')
 
+      @iframe_location = if options[:'iframe-only']
+        get_value_from_stdin("Enter your iFrame URI:\n", allow_empty: true) || 'assets/iframe.html'
+      else
+        '_legacy'
+      end
+
       prompt_new_app_dir
 
-      directory('app_template', @app_dir)
+      skeleton = options[:'iframe-only'] ? 'app_template_iframe' : 'app_template'
+      directory(skeleton, @app_dir)
     end
 
     desc 'validate', 'Validate your app'
