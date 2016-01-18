@@ -37,10 +37,10 @@ module ZendeskAppsTools
       @app_name     = get_value_from_stdin("Enter a name for this new app:\n", error_msg: 'Invalid app name, try again:')
 
       @iframe_location = if options[:'iframe-only']
-        get_value_from_stdin("Enter your iFrame URI:\n", allow_empty: true) || 'assets/iframe.html'
-      else
-        '_legacy'
-      end
+                           get_value_from_stdin("Enter your iFrame URI:\n", allow_empty: true) || 'assets/iframe.html'
+                         else
+                           '_legacy'
+                         end
 
       prompt_new_app_dir
 
