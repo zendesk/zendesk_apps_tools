@@ -33,7 +33,7 @@ Feature: create a template for a new zendesk app
    },
    "defaultLocale": "en",
    "private": true,
-   location":["ticket_sidebar"],
+   "location":["ticket_sidebar"],
    "version": "1.0",
    "frameworkVersion": "1.0"
  }
