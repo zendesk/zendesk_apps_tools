@@ -29,12 +29,24 @@ module ZendeskAppsTools
     subcommand 'bump', Bump
 
     desc 'new', 'Generate a new app'
-    method_option :'iframe-only', type: :boolean, default: false, desc: 'Create an iFrame Only app template', aliases: '-i'
+    method_option :'iframe-only', type: :boolean,
+                                  default: false,
+                                  desc: 'Create an iFrame Only app template',
+                                  aliases: '-i'
     def new
-      @author_name  = get_value_from_stdin("Enter this app author's name:\n", error_msg: 'Invalid name, try again:')
-      @author_email = get_value_from_stdin("Enter this app author's email:\n", valid_regex: /^.+@.+\..+$/, error_msg: 'Invalid email, try again:')
-      @author_url   = get_value_from_stdin("Enter this app author's url:\n", valid_regex: /^https?:\/\/.+$/, error_msg: 'Invalid url, try again:', allow_empty: true)
-      @app_name     = get_value_from_stdin("Enter a name for this new app:\n", error_msg: 'Invalid app name, try again:')
+      enter = ->(variable) { "Enter this app author's #{variable}:\n" }
+      invalid = ->(variable) { "Invalid #{variable}, try again:" }
+      @author_name  = get_value_from_stdin(enter.call('name'),
+                                           error_msg: invalid.call('name'))
+      @author_email = get_value_from_stdin(enter.call('email'),
+                                           valid_regex: /^.+@.+\..+$/,
+                                           error_msg: invalid.call('email'))
+      @author_url   = get_value_from_stdin(enter.call('url'),
+                                           valid_regex: %r{^https?://.+$},
+                                           error_msg: invalid.call('url'),
+                                           allow_empty: true)
+      @app_name     = get_value_from_stdin("Enter a name for this new app:\n",
+                                           error_msg: invalid.call('app name'))
 
       @iframe_location = if options[:'iframe-only']
                            get_value_from_stdin("Enter your iFrame URI:\n", allow_empty: true) || 'assets/iframe.html'
@@ -45,7 +57,8 @@ module ZendeskAppsTools
       prompt_new_app_dir
 
       skeleton = options[:'iframe-only'] ? 'app_template_iframe' : 'app_template'
-      directory(skeleton, @app_dir)
+      directory_options = options[:'iframe-only'] && @iframe_location ? { exclude_pattern: /iframe.html/ } : {}
+      directory(skeleton, @app_dir, directory_options)
     end
 
     desc 'validate', 'Validate your app'
