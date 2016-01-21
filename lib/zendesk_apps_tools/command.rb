@@ -57,7 +57,8 @@ module ZendeskAppsTools
       prompt_new_app_dir
 
       skeleton = options[:'iframe-only'] ? 'app_template_iframe' : 'app_template'
-      directory_options = options[:'iframe-only'] && @iframe_location ? { exclude_pattern: /iframe.html/ } : {}
+      default_iframe = options[:'iframe-only'] && @iframe_location != 'assets/iframe.html'
+      directory_options = default_iframe ? { exclude_pattern: /iframe.html/ } : {}
       directory(skeleton, @app_dir, directory_options)
     end
 
