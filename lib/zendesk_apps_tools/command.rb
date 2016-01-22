@@ -49,7 +49,8 @@ module ZendeskAppsTools
                                            error_msg: invalid.call('app name'))
 
       @iframe_location = if options[:'iframe-only']
-                           get_value_from_stdin("Enter your iFrame URI:\n", allow_empty: true) || 'assets/iframe.html'
+                           value = get_value_from_stdin("Enter your iFrame URI:\n", allow_empty: true)
+                           'assets/iframe.html' if value == ''
                          else
                            '_legacy'
                          end
