@@ -52,7 +52,7 @@ module ZendeskAppsTools
                            iframe_uri_text = 'Enter your iFrame URI or leave it blank to use'\
                                              " a default local template page:\n"
                            value = get_value_from_stdin(iframe_uri_text, allow_empty: true)
-                           'assets/iframe.html' if value == ''
+                           value == '' ? 'assets/iframe.html' : value
                          else
                            '_legacy'
                          end

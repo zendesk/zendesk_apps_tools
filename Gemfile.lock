@@ -94,3 +94,6 @@ DEPENDENCIES
   rspec
   webmock
   zendesk_apps_tools!
+
+BUNDLED WITH
+   1.11.2
