@@ -80,7 +80,7 @@ Given /^I remove file "(.*?)"$/ do |file|
 end
 
 Then /^the zip file in "(.*?)" folder should not exist$/ do |path|
-  Dir[path + '/app-*.zip'].size.should == 0
+  expect(Dir[path + '/app-*.zip'].size).to eq 0
 end
 
 Then /^it should pass the validation$/ do

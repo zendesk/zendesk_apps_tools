@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'bump'
   s.add_development_dependency 'webmock'
 
-  s.files        = Dir.glob('{bin,lib,app_template,templates}/**/*') + %w(README.md LICENSE)
+  s.files        = Dir.glob('{bin,lib,app_template*,templates}/**/*') + %w(README.md LICENSE)
   s.test_files   = Dir.glob('features/**/*')
   s.require_path = 'lib'
 end
