@@ -19,7 +19,7 @@ module ZendeskAppsTools
           if File.symlink? file.absolute_path
             path = File.expand_path(File.readlink(file.absolute_path), File.dirname(file.absolute_path))
           end
-          if file.basename == 'app.scss'
+          if file.to_s == 'app.scss'
             relative_path = relative_path.sub 'app.scss', 'app.css'
           end
           zipfile.add(relative_path, app_dir.join(path).to_s)
