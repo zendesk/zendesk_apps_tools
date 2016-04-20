@@ -49,14 +49,14 @@ module ZendeskAppsTools
 
     desc 'update', 'Update translation files from Zendesk'
     method_option :path, default: './', required: false
-    def update(request_builder = Faraday.new)
+    def update()
       setup_path(options[:path]) if options[:path]
       app_package = get_value_from_stdin('What is the package name for this app? (without app_)', valid_regex: /^[a-z_]+$/, error_msg: 'Invalid package name, try again:')
 
       key_prefix = "txt.apps.#{app_package}."
 
       say('Fetching translations...')
-      locale_response = api_request(LOCALE_ENDPOINT, request_builder)
+      locale_response = Faraday.get(LOCALE_ENDPOINT)
 
       if locale_response.status == 200
         locales = JSON.parse(locale_response.body)['locales']
