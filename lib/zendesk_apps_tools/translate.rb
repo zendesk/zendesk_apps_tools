@@ -61,10 +61,10 @@ module ZendeskAppsTools
       if locale_response.status == 200
         locales = JSON.parse(locale_response.body)['locales']
 
+        locales = locales.map { |locale| fetch_locale_async locale, app_package}.map(&:value)
+
         locales.each do |locale|
-          locale_url      = "#{locale['url']}?include=translations&packages=app_#{app_package}"
-          locale_response = api_request(locale_url, request_builder).body
-          translations    = JSON.parse(locale_response)['locale']['translations']
+          translations    = locale['translations']
 
           locale_name = ZendeskAppsTools::LocaleIdentifier.new(locale['locale']).locale_id
           write_json("#{destination_root}/translations/#{locale_name}.json", nest_translations_hash(translations, key_prefix))
@@ -95,6 +95,14 @@ module ZendeskAppsTools
     end
 
     no_commands do
+      def fetch_locale_async(locale, app_package)
+        Thread.new do
+          say("Fetching #{locale['locale']}")
+          json = Faraday.get("#{locale['url']}?include=translations&packages=app_#{app_package}").body
+          JSON.parse(json)['locale']
+        end
+      end
+
       def setup_path(path)
         @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
       end
