@@ -49,22 +49,22 @@ module ZendeskAppsTools
 
     desc 'update', 'Update translation files from Zendesk'
     method_option :path, default: './', required: false
-    def update(request_builder = Faraday.new)
+    def update()
       setup_path(options[:path]) if options[:path]
       app_package = get_value_from_stdin('What is the package name for this app? (without app_)', valid_regex: /^[a-z_]+$/, error_msg: 'Invalid package name, try again:')
 
       key_prefix = "txt.apps.#{app_package}."
 
       say('Fetching translations...')
-      locale_response = api_request(LOCALE_ENDPOINT, request_builder)
+      locale_response = Faraday.get(LOCALE_ENDPOINT)
 
       if locale_response.status == 200
         locales = JSON.parse(locale_response.body)['locales']
 
+        locales = locales.map { |locale| fetch_locale_async locale, app_package}.map(&:value)
+
         locales.each do |locale|
-          locale_url      = "#{locale['url']}?include=translations&packages=app_#{app_package}"
-          locale_response = api_request(locale_url, request_builder).body
-          translations    = JSON.parse(locale_response)['locale']['translations']
+          translations    = locale['translations']
 
           locale_name = ZendeskAppsTools::LocaleIdentifier.new(locale['locale']).locale_id
           write_json("#{destination_root}/translations/#{locale_name}.json", nest_translations_hash(translations, key_prefix))
@@ -95,6 +95,14 @@ module ZendeskAppsTools
     end
 
     no_commands do
+      def fetch_locale_async(locale, app_package)
+        Thread.new do
+          say("Fetching #{locale['locale']}")
+          json = Faraday.get("#{locale['url']}?include=translations&packages=app_#{app_package}").body
+          JSON.parse(json)['locale']
+        end
+      end
+
       def setup_path(path)
         @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
       end
