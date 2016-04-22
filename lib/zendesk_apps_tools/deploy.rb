@@ -8,7 +8,6 @@ module ZendeskAppsTools
       response = connection.send(connection_method) do |req|
         req.url url
         req.headers[:content_type] = 'application/json'
-
         req.body = JSON.generate body
       end
 
@@ -16,11 +15,13 @@ module ZendeskAppsTools
 
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
+    rescue JSON::ParserError => e
+      say_error_and_exit e.message
     end
 
     def upload(path)
       connection = get_connection :multipart
-      zipfile_path  = options[:zipfile]
+      zipfile_path = options[:zipfile]
 
       if zipfile_path
         package_path = zipfile_path
