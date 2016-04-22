@@ -78,7 +78,8 @@ module ZendeskAppsTools
             save_cache 'app_id' => app_id
             say_status @command, 'OK'
           when 'failed'
-            say_status @command, message
+            say_status @command, message, :red
+            exit 1
           end
           break
         end
