@@ -6,7 +6,7 @@ PATH
       rubyzip (~> 0.9.1)
       sinatra (~> 1.4.6)
       thor (~> 0.18.1)
-      zendesk_apps_support (~> 1.23)
+      zendesk_apps_support (~> 1.28)
 
 GEM
   remote: https://rubygems.org/
