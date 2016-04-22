@@ -13,9 +13,7 @@ module ZendeskAppsTools
 
       check_status response
 
-    rescue Faraday::Error::ClientError => e
-      say_error_and_exit e.message
-    rescue JSON::ParserError => e
+    rescue Faraday::Error::ClientError, JSON::ParserError => e
       say_error_and_exit e.message
     end
 
@@ -35,9 +33,7 @@ module ZendeskAppsTools
       response = connection.post('/api/v2/apps/uploads.json', payload)
       JSON.parse(response.body)['id']
 
-    rescue Faraday::Error::ClientError => e
-      say_error_and_exit e.message
-    rescue JSON::ParserError => e
+    rescue Faraday::Error::ClientError, JSON::ParserError => e
       say_error_and_exit e.message
     end
 
