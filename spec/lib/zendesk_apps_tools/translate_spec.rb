@@ -86,20 +86,13 @@ describe ZendeskAppsTools::Translate do
 
       expect(translate).to receive(:nest_translations_hash).once.and_return({})
 
-      test = Faraday.new do |builder|
-        builder.adapter :test do |stub|
-          stub.get('/api/v2/locales/agent.json') do
-            [200, {}, JSON.dump('locales' => [{ 'url' => 'https://support.zendesk.com/api/v2/rosetta/locales/1.json',
-                                                'locale' => 'en' }])]
-          end
-          stub.get('/api/v2/rosetta/locales/1.json?include=translations&packages=app_my_app') do
-            [200, {}, JSON.dump('locale' => { 'translations' =>
-                                                    { 'app.description' => 'my awesome app' } })]
-          end
-        end
-      end
+      stub_request(:get, "https://support.zendesk.com/api/v2/locales/agent.json").
+         to_return(:status => 200, :body => JSON.dump('locales' => [{ 'url' => 'https://support.zendesk.com/api/v2/rosetta/locales/1.json', 'locale' => 'en' }]))
 
-      translate.update(test)
+      stub_request(:get, "https://support.zendesk.com/api/v2/rosetta/locales/1.json?include=translations&packages=app_my_app").
+         to_return(:status => 200, :body => JSON.dump('locale' => { 'locale' => 'en', 'translations' => { 'app.description' => 'my awesome app' } }))
+
+      translate.update()
     end
   end
 
