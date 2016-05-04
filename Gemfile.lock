@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zendesk_apps_tools (1.31.0)
+    zendesk_apps_tools (1.31.1)
       faraday (~> 0.9.2)
       rubyzip (~> 0.9.1)
       sinatra (~> 1.4.6)
@@ -76,7 +76,7 @@ GEM
     webmock (1.20.4)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
-    zendesk_apps_support (1.28.0)
+    zendesk_apps_support (1.29.0)
       erubis
       i18n
       image_size
@@ -97,4 +97,4 @@ DEPENDENCIES
   zendesk_apps_tools!
 
 BUNDLED WITH
-   1.11.2
+   1.12.1
