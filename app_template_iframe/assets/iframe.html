@@ -1,16 +1,12 @@
 <html>
 <body>
   <!-- https://github.com/zendesk/zendesk_app_framework_sdk -->
-  <script type="text/javascript" src="http://assets.zendesk.com/apps/sdk/latest/zaf_sdk.js"></script>
+  <script type="text/javascript" src="http://assets.zendesk.com/apps/sdk/2.0.0-beta1/zaf_sdk.js"></script>
   <script>
   // Initialise the Zendesk JavaScript API client
-  // https://developer.zendesk.com/apps/docs/agent/iframes_in_apps
-    var app = window.ZAFClient.init(function(context) {
-      var currentUser = context.currentUser;
-      console.log('Hi ' + currentUser.name);
-    });
-    app.postMessage('helloApp', { works: true });
+  // https://developer.zendesk.com/apps/docs/agent/zaf_v2
+    var client = ZAFClient.init();
+    client.invoke('resize', { width: '100%', height: '400px' });
   </script>
-  <p>It works!</p>
 </body>
 </html>
