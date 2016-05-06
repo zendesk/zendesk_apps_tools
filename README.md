@@ -1,26 +1,25 @@
 # Zendesk Apps Tools
 
-These tools make it easy to develop [Zendesk Apps](http://developer.zendesk.com/documentation/apps/).
+## Description
+Zendesk Apps Tools (ZAT) is the number one tool for developing Zendesk Apps. It makes it easy to develop [Zendesk Apps](http://developer.zendesk.com/documentation/apps/). We have a [guide](http://developer.zendesk.com/documentation/apps/reference/tools.html) that explains how to use this tool.
 
-# How to use
+## Owners
+This repo is owned and maintained by the Zendesk Apps team. You can reach us on vegemite@zendesk.com. We are located in Melbourne!
 
-Please refer to [our guide](http://developer.zendesk.com/documentation/apps/reference/tools.html).
+## Getting Started
+`bundle install` is really all that is needed to get it going.
 
-# Features
+## Testing
+This project uses rspec, which can be run with `bundle exec rake`.
 
-Please refer to [our guide](http://developer.zendesk.com/documentation/apps/reference/tools.html).
+## Contribute
+Improvements are always welcome. To contribute, please:
 
-# Supported Ruby Versions
+* Put up a PR into the master branch.
+* CC and get a +1 from @zendesk/vegemite.
 
-Tested with Ruby 2+
-
-# Contribution
-
-Improvements are always welcome. To contribute, please submit detailed Pull Requests.
-
-# Issues
-
-Please <a href="https://support.zendesk.com/requests/new">submit bug reports to Zendesk</a>.
+## Bugs
+Bugs can be reported as an issue here on github, or submitted to support@zendesk.com. By mentioning this project it will assigned to the right team.
 
 # Copyright and license
 Copyright 2013 Zendesk
