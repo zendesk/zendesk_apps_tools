@@ -12,7 +12,7 @@ If you want to **use** this tool, all you need to do is `gem install zendesk_app
 ## Getting Started To **Develop** ZAT
 When you want to help **develop** this tool, you will need to clone this repo and run `bundle install` to get it going.
 
-ZAT uses a gem called [ZAS](https://github.com/zendesk/zendesk_apps_support/). In the case you are developing ZAT, it is likely you want to edit code in ZAS too, which means you will need to clone the ZAS repo and change the `Gemfile` (in the ZAT project) to say `gem 'zendesk_apps_support' path: '../zendesk_apps_support'`. The path should point to your local ZAS directory. This way your clone of ZAT will use a local version of ZAS which is very helpful for development. Run a `bundle install` after changing the Gemfile.
+ZAT uses a gem called [ZAS](https://github.com/zendesk/zendesk_apps_support/). In the case you are developing ZAT, it is likely you want to edit code in ZAS too, which means you will need to clone the ZAS repo and change the `Gemfile` (in the ZAT project) to say `gem 'zendesk_apps_support', path: '../zendesk_apps_support'`. The path should point to your local ZAS directory. This way your clone of ZAT will use a local version of ZAS which is very helpful for development. Run a `bundle install` after changing the Gemfile.
 
 ## Testing
 This project uses rspec, which can be run with `bundle exec rake`.
