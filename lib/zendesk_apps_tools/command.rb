@@ -29,10 +29,10 @@ module ZendeskAppsTools
     subcommand 'bump', Bump
 
     desc 'new', 'Generate a new app'
-    method_option :'v2', type: :boolean,
+    method_option :'iframe-only', type: :boolean,
                                   default: false,
                                   desc: 'Create an iFrame Only app template',
-                                  aliases: '-i'
+                                  aliases: ['-i', '--v2']
     def new
       enter = ->(variable) { "Enter this app author's #{variable}:\n" }
       invalid = ->(variable) { "Invalid #{variable}, try again:" }
@@ -48,7 +48,7 @@ module ZendeskAppsTools
       @app_name     = get_value_from_stdin("Enter a name for this new app:\n",
                                            error_msg: invalid.call('app name'))
 
-      @iframe_location = if options[:'v2']
+      @iframe_location = if options[:'iframe-only']
                            iframe_uri_text = 'Enter your iFrame URI or leave it blank to use'\
                                              " a default local template page:\n"
                            value = get_value_from_stdin(iframe_uri_text, allow_empty: true)
@@ -59,8 +59,8 @@ module ZendeskAppsTools
 
       prompt_new_app_dir
 
-      skeleton = options[:'v2'] ? 'app_template_iframe' : 'app_template'
-      is_custom_iframe = options[:'v2'] && @iframe_location != 'assets/iframe.html'
+      skeleton = options[:'iframe-only'] ? 'app_template_iframe' : 'app_template'
+      is_custom_iframe = options[:'iframe-only'] && @iframe_location != 'assets/iframe.html'
       directory_options = is_custom_iframe ? { exclude_pattern: /iframe.html/ } : {}
       directory(skeleton, @app_dir, directory_options)
     end
