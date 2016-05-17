@@ -86,10 +86,10 @@ Feature: create a template for a new zendesk app
  }
  """
 
- Scenario: create a template for a new iframe only app by running 'zat new --iframe-only' command
+ Scenario: create a template for a new iframe only app by running 'zat new --v2' command
    Given an app directory "tmp/aruba" exists
    And I move to the app directory
-   When I run "zat new --iframe-only" command with the following details:
+   When I run "zat new --v2" command with the following details:
      | author name  | John Citizen      |
      | author email | john@example.com  |
      | author url   | http://myapp.com  |
