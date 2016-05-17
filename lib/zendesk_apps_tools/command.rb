@@ -32,7 +32,7 @@ module ZendeskAppsTools
     method_option :'iframe-only', type: :boolean,
                                   default: false,
                                   desc: 'Create an iFrame Only app template',
-                                  aliases: '-i'
+                                  aliases: ['-i', '--v2']
     def new
       enter = ->(variable) { "Enter this app author's #{variable}:\n" }
       invalid = ->(variable) { "Invalid #{variable}, try again:" }
