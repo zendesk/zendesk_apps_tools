@@ -4,7 +4,6 @@ require 'zendesk_apps_support/package'
 module ZendeskAppsTools
   class Server < Sinatra::Base
     set :protection, :except => :frame_options
-    set :public_folder, proc { "#{settings.root}/assets" }
     last_mtime = Time.new(0)
     ZENDESK_DOMAINS_REGEX = /^http(?:s)?:\/\/[a-z0-9-]+\.(?:zendesk|zopim|zd-(?:dev|master|staging))\.com$/
 
@@ -44,6 +43,20 @@ module ZendeskAppsTools
       ZendeskAppsSupport::Installed.new([app_js], [installation]).compile_js
     end
 
+    get "/:file" do |file|
+      access_control_allow_origin
+      send_file File.join(settings.root, 'assets', file)
+    end
+
+    # This is for any preflight request
+    # It reads 'Access-Control-Request-Headers' to set 'Access-Control-Allow-Headers'
+    # And also sets 'Access-Control-Allow-Origin' header
+    options "*" do
+      access_control_allow_origin
+      headers 'Access-Control-Allow-Headers' => request.env['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] if request.env['HTTP_ORIGIN'] =~ ZENDESK_DOMAINS_REGEX
+    end
+
+    # This sets the 'Access-Control-Allow-Origin' header for requests coming from zendesk
     def access_control_allow_origin
       origin = request.env['HTTP_ORIGIN']
       headers 'Access-Control-Allow-Origin' => origin if origin =~ ZENDESK_DOMAINS_REGEX
