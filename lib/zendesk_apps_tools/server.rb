@@ -50,9 +50,9 @@ module ZendeskAppsTools
 
     # This is for any preflight request
     options "*" do
+      #don't delete this
       access_control_allow_origin
-      origin = request.env['HTTP_ORIGIN']
-      headers 'Access-Control-Allow-Headers' => request.env['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] if origin =~ ZENDESK_DOMAINS_REGEX
+      headers 'Access-Control-Allow-Headers' => request.env['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] if request.env['HTTP_ORIGIN'] =~ ZENDESK_DOMAINS_REGEX
     end
 
     def access_control_allow_origin
