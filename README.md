@@ -1,26 +1,30 @@
 # Zendesk Apps Tools
 
-These tools make it easy to develop [Zendesk Apps](http://developer.zendesk.com/documentation/apps/).
+## Description
+Zendesk Apps Tools (ZAT) is the only tool needed for developing Zendesk Apps. It makes it easy to develop [Zendesk Apps](http://developer.zendesk.com/documentation/apps/). We have a [guide](http://developer.zendesk.com/documentation/apps/reference/tools.html) that explains how to use this tool.
 
-# How to use
+## Owners
+This repo is owned and maintained by the Zendesk Apps team. You can reach us on vegemite@zendesk.com. We are located in Melbourne!
 
-Please refer to [our guide](http://developer.zendesk.com/documentation/apps/reference/tools.html).
+## Getting Started To **Use** ZAT
+If you want to **use** this tool, all you need to do is `gem install zendesk_apps_tools` and periodically run `gem update zendesk_apps_tools` because we will keep updating this tool.
 
-# Features
+## Getting Started To **Develop** ZAT
+When you want to help **develop** this tool, you will need to clone this repo and run `bundle install` to get it going.
 
-Please refer to [our guide](http://developer.zendesk.com/documentation/apps/reference/tools.html).
+ZAT uses a gem called [ZAS](https://github.com/zendesk/zendesk_apps_support/). In the case you are developing ZAT, it is likely you want to edit code in ZAS too, which means you will need to clone the ZAS repo and change the `Gemfile` (in the ZAT project) to say `gem 'zendesk_apps_support', path: '../zendesk_apps_support'`. The path should point to your local ZAS directory. This way your clone of ZAT will use a local version of ZAS which is very helpful for development. Run a `bundle install` after changing the Gemfile.
 
-# Supported Ruby Versions
+## Testing
+This project uses rspec, which can be run with `bundle exec rake`.
 
-Tested with Ruby 2+
+## Contribute
+Improvements are always welcome. To contribute, please:
 
-# Contribution
+* Put up a PR into the master branch.
+* CC and get two +1 from @zendesk/vegemite.
 
-Improvements are always welcome. To contribute, please submit detailed Pull Requests.
-
-# Issues
-
-Please <a href="https://support.zendesk.com/requests/new">submit bug reports to Zendesk</a>.
+## Bugs
+Bugs can be reported as an issue here on github, or submitted to support@zendesk.com. By mentioning this project it will assigned to the right team.
 
 # Copyright and license
 Copyright 2013 Zendesk
