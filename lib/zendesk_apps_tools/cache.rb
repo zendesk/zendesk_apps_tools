@@ -1,6 +1,16 @@
+# frozen_string_literal: true
+require 'json'
+
 module ZendeskAppsTools
-  module Cache
-    CACHE_FILE_NAME = '.zat'
+  class Cache
+    LOCAL_CACHE_FILE_NAME = '.zat'
+    GLOBAL_CACHE_FILE_NAME = File.join(Dir.home, '.zat').freeze
+
+    attr_reader :options
+
+    def initialize(options)
+      @options = options
+    end
 
     def save_cache(hash)
       return if options[:zipfile]
@@ -18,8 +28,13 @@ module ZendeskAppsTools
       File.delete cache_path if options[:clean] && File.exist?(cache_path)
     end
 
+    private
+
     def cache_path
-      @cache_path ||= File.join options[:path], CACHE_FILE_NAME
+      @cache_path ||= begin
+        cache_file_name = LOCAL_CACHE_FILE_NAME
+        File.join options[:path], cache_file_name
+      end
     end
   end
 end
