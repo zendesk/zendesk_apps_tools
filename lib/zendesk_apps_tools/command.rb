@@ -13,7 +13,7 @@ module ZendeskAppsTools
     SHARED_OPTIONS = {
       ['path', '-p'] => './',
       clean: false
-    }.freeze
+    }
 
     map %w(-v) => :version
 
@@ -155,7 +155,7 @@ module ZendeskAppsTools
     method_options SHARED_OPTIONS
     method_option :zipfile, default: nil, required: false, type: :string
     def create
-      clear_cache
+      cache.clear_cache
       @command = 'Create'
 
       unless options[:zipfile]
@@ -169,10 +169,10 @@ module ZendeskAppsTools
     method_options SHARED_OPTIONS
     method_option :zipfile, default: nil, required: false, type: :string
     def update
-      clear_cache
+      cache.clear_cache
       @command = 'Update'
 
-      app_id = fetch_cache('app_id') || find_app_id
+      app_id = cache.fetch_cache('app_id') || find_app_id
       unless /\d+/ =~ app_id.to_s
         say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
       end
