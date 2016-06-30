@@ -6,7 +6,7 @@ PATH
       rubyzip (~> 0.9.1)
       sinatra (~> 1.4.6)
       thor (~> 0.18.1)
-      zendesk_apps_support (~> 1.28)
+      zendesk_apps_support (~> 1.29)
 
 GEM
   remote: https://rubygems.org/
@@ -76,7 +76,7 @@ GEM
     webmock (1.20.4)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
-    zendesk_apps_support (1.29.0)
+    zendesk_apps_support (1.29.2)
       erubis
       i18n
       image_size
