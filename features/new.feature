@@ -112,6 +112,6 @@ Feature: create a template for a new zendesk app
    { "ticket_sidebar": "assets/index.html" }
  },
  "version": "1.0",
- "frameworkVersion": "1.0"
+ "frameworkVersion": "2.0"
 }
 """
