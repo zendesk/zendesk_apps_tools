@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'sinatra/cross_origin'
 require 'zendesk_apps_support/package'
 
 module ZendeskAppsTools
@@ -11,7 +12,7 @@ module ZendeskAppsTools
       access_control_allow_origin
       content_type 'text/javascript'
 
-      if File.exists? settings.config
+      if File.exist? settings.config
         curr_mtime = File.stat(settings.config).mtime
         if curr_mtime > last_mtime
           settings_helper = ZendeskAppsTools::Settings.new
@@ -43,10 +44,7 @@ module ZendeskAppsTools
       ZendeskAppsSupport::Installed.new([app_js], [installation]).compile_js
     end
 
-    get "/:file" do |file|
-      access_control_allow_origin
-      send_file File.join(settings.root, 'assets', file)
-    end
+    enable :cross_origin
 
     # This is for any preflight request
     # It reads 'Access-Control-Request-Headers' to set 'Access-Control-Allow-Headers'

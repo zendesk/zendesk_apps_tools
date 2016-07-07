@@ -138,6 +138,7 @@ module ZendeskAppsTools
       ZendeskAppsTools::Server.tap do |server|
         server.set :port, options[:port]
         server.set :root, options[:path]
+        server.set :public_folder, File.join(options[:path], 'assets')
         server.set :parameters, settings
         server.set :manifest, manifest['parameters']
         server.set :config, options[:config]
