@@ -20,6 +20,8 @@ module ZendeskAppsTools
       clean: false
     }
 
+    map %w[--version -v] => :__print_version
+
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 
     desc 'translate SUBCOMMAND', 'Manage translation files', hide: true
@@ -173,6 +175,13 @@ module ZendeskAppsTools
         say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
       end
       deploy_app(:put, "/api/v2/apps/#{app_id}.json", {})
+    end
+
+    desc "--version, -v", "print the version"
+    def __print_version
+      file = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'zendesk_apps_tools.gemspec'))
+      spec = Gem::Specification::load(file)
+      puts spec.version
     end
 
     protected
