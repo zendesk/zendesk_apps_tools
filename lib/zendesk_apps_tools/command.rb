@@ -20,7 +20,7 @@ module ZendeskAppsTools
       clean: false
     }
 
-    map %w[--version -v] => :__print_version
+    map %w[--version -v] => :version
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 
@@ -178,7 +178,7 @@ module ZendeskAppsTools
     end
 
     desc "--version, -v", "print the version"
-    def __print_version
+    def version
       puts ZendeskAppsTools::VERSION
     end
 
