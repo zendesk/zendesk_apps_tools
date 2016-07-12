@@ -179,9 +179,7 @@ module ZendeskAppsTools
 
     desc "--version, -v", "print the version"
     def __print_version
-      file = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'zendesk_apps_tools.gemspec'))
-      spec = Gem::Specification::load(file)
-      puts spec.version
+      puts ZendeskAppsTools::VERSION
     end
 
     protected

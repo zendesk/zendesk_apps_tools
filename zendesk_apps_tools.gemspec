@@ -1,6 +1,10 @@
+lib = File.expand_path('../lib/', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'zendesk_apps_tools/version'
+
 Gem::Specification.new do |s|
   s.name        = 'zendesk_apps_tools'
-  s.version     = '1.34.1'
+  s.version     = ZendeskAppsTools::VERSION
   s.executables << 'zat'
   s.platform    = Gem::Platform::RUBY
   s.license     = 'Apache License Version 2.0'
