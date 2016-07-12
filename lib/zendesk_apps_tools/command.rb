@@ -7,6 +7,7 @@ require 'faraday'
 require 'io/console'
 require 'zendesk_apps_support'
 
+require 'zendesk_apps_tools/version'
 require 'zendesk_apps_tools/command_helpers'
 
 module ZendeskAppsTools
@@ -19,6 +20,8 @@ module ZendeskAppsTools
       ['path', '-p'] => './',
       clean: false
     }
+
+    map %w[--version -v] => :version
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 
@@ -173,6 +176,11 @@ module ZendeskAppsTools
         say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
       end
       deploy_app(:put, "/api/v2/apps/#{app_id}.json", {})
+    end
+
+    desc "--version, -v", "print the version"
+    def version
+      puts ZendeskAppsTools::VERSION
     end
 
     protected
