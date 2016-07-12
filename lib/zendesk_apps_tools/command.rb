@@ -7,6 +7,7 @@ require 'faraday'
 require 'io/console'
 require 'zendesk_apps_support'
 
+require 'zendesk_apps_tools/version'
 require 'zendesk_apps_tools/command_helpers'
 
 module ZendeskAppsTools
