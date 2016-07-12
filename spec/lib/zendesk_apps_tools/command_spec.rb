@@ -115,9 +115,9 @@ describe ZendeskAppsTools::Command do
     context 'when -v is run' do
       it 'shows the version' do
         old_v = Gem::Version.new '0.0.1'
-        new_v = Gem::Version.new '0.0.1'
+        new_v = nil
 
-        expect(@command).to receive(:puts).and_wrap_original { |m, *args| new_v = Gem::Version.new args.first }
+        expect(@command).to receive(:puts) { |arg| new_v = Gem::Version.new arg }
         @command.version
 
         expect(old_v).to be < new_v
