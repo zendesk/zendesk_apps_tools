@@ -22,7 +22,7 @@ module ZendeskAppsTools
       end
 
       package = ZendeskAppsSupport::Package.new(settings.root, false)
-      app_name = package.manifest.name || 'Local App'
+      app_name = ENV.fetch('ZAT_APP_NAME', 'Local App')
       installation = ZendeskAppsSupport::Installation.new(
         id: settings.app_id,
         app_id: settings.app_id,
