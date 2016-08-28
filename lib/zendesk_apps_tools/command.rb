@@ -127,14 +127,14 @@ module ZendeskAppsTools
     method_option :app_id, default: DEFAULT_APP_ID, required: false
     def server
       setup_path(options[:path])
-      manifest = app_package.manifest_json
+      manifest = app_package.manifest
 
       settings_helper = ZendeskAppsTools::Settings.new
 
-      settings = settings_helper.get_settings_from_file options[:config], manifest['parameters']
+      settings = settings_helper.get_settings_from_file options[:config], manifest.original_parameters
 
       unless settings
-        settings = settings_helper.get_settings_from_user_input self, manifest['parameters']
+        settings = settings_helper.get_settings_from_user_input self, manifest.original_parameters
       end
 
       require 'zendesk_apps_tools/server'
@@ -143,7 +143,7 @@ module ZendeskAppsTools
         server.set :root, options[:path]
         server.set :public_folder, File.join(options[:path], 'assets')
         server.set :parameters, settings
-        server.set :manifest, manifest['parameters']
+        server.set :manifest, manifest.original_parameters
         server.set :config, options[:config]
         server.set :app_id, options[:app_id]
         server.run!
