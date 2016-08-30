@@ -72,7 +72,15 @@ module ZendeskAppsTools
     method_options SHARED_OPTIONS
     def validate
       setup_path(options[:path])
-      errors = app_package.validate(marketplace: false)
+      begin
+        errors = app_package.validate(marketplace: false)
+      rescue ExecJS::RuntimeError
+        error = "There was an error trying to validate this app.\n"
+        if ExecJS.runtime.name == 'JScript'
+          error += 'To validate on Windows, please install node from https://nodejs.org/'
+        end
+        say_error_and_exit error
+      end
       valid = errors.none?
 
       if valid
