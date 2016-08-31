@@ -45,7 +45,9 @@ module ZendeskAppsTools
 
       all_apps = connection.get('/api/v2/apps.json').body
 
-      app_id = JSON.parse(all_apps)['apps'].find { |app| app['name'] == name }['id']
+      app_json = JSON.parse(all_apps)['apps'].find { |app| app['name'] == name }
+      say_error_and_exit('The app was not found. Please verify your credentials, subdomain, and app name are correct.') unless app_json
+      app_id = app_json['id']
 
       save_cache 'app_id' => app_id
       app_id
