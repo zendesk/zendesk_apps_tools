@@ -1,6 +1,4 @@
 require 'thor'
-require 'json'
-
 require 'zendesk_apps_tools/manifest_handler'
 
 module ZendeskAppsTools

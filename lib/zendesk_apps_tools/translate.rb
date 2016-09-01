@@ -2,15 +2,12 @@ require 'thor'
 require 'json'
 require 'zendesk_apps_tools/common'
 require 'zendesk_apps_tools/locale_identifier'
-require 'zendesk_apps_support'
-require 'yaml'
 
 module ZendeskAppsTools
   class Translate < Thor
     include Thor::Shell
     include Thor::Actions
     include ZendeskAppsTools::Common
-    include ZendeskAppsSupport::BuildTranslation
 
     LOCALE_ENDPOINT = 'https://support.zendesk.com/api/v2/locales/agent.json'
 
@@ -37,6 +34,7 @@ module ZendeskAppsTools
     desc 'to_json', 'Convert Zendesk translation yml to I18n formatted json'
     method_option :path, default: './', required: false
     def to_json
+      require 'yaml'
       setup_path(options[:path]) if options[:path]
       en_yml = YAML.load_file("#{destination_root}/translations/en.yml")
       package = /^txt.apps.([^\.]+)/.match(en_yml['parts'][0]['translation']['key'])[1]
@@ -56,6 +54,8 @@ module ZendeskAppsTools
       key_prefix = "txt.apps.#{app_package}."
 
       say('Fetching translations...')
+      require 'net/http'
+      require 'faraday'
       locale_response = Faraday.get(LOCALE_ENDPOINT)
 
       if locale_response.status == 200
@@ -132,8 +132,8 @@ module ZendeskAppsTools
       end
 
       def write_yml(en_json, app_name, package_name)
-        titles        = to_flattened_namespaced_hash(en_json, I18N_TITLE_KEY)
-        values        = to_flattened_namespaced_hash(en_json, I18N_VALUE_KEY)
+        titles        = to_flattened_namespaced_hash(en_json, :title)
+        values        = to_flattened_namespaced_hash(en_json, :value)
         @translations = titles.each { |k, v| titles[k] = { 'title' => v, 'value' => escape_special_characters(values[k]) } }
         @app_name     = app_name
         @package_name = package_name
@@ -142,6 +142,19 @@ module ZendeskAppsTools
 
       def escape_special_characters(v)
         v.gsub('"', '\"')
+      end
+
+      def to_flattened_namespaced_hash(hash, target_key)
+        require 'zendesk_apps_support/build_translation'
+        @includer_class ||= Class.new { include ZendeskAppsSupport::BuildTranslation }
+        target_key_constant = case target_key
+                              when :title
+                                @includer_class::I18N_TITLE_KEY
+                              when :value
+                                @includer_class::I18N_VALUE_KEY
+                              end
+        (@includer ||= @includer_class.new)
+          .to_flattened_namespaced_hash(hash, target_key_constant)
       end
 
       def array_to_nested_hash(array)
@@ -157,8 +170,8 @@ module ZendeskAppsTools
       end
 
       def build_pseudotranslation(translations_hash, package_name)
-        titles       = to_flattened_namespaced_hash(translations_hash, I18N_TITLE_KEY)
-        values       = to_flattened_namespaced_hash(translations_hash, I18N_VALUE_KEY)
+        titles       = to_flattened_namespaced_hash(translations_hash, :title)
+        values       = to_flattened_namespaced_hash(translations_hash, :value)
         translations = titles.each { |k, v| titles[k] = { 'title' => v, 'value' => "[日本#{values[k]}éñđ]" } }
         translations['app.package'] = package_name # don't pseudo translate the package name
         nest_translations_hash(translations, '')

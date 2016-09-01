@@ -1,11 +1,5 @@
-require 'faraday'
-
 module ZendeskAppsTools
   module Common
-    def api_request(url, request = Faraday.new)
-      request.get(url)
-    end
-
     def say_error_and_exit(msg)
       say_error msg
       exit 1
