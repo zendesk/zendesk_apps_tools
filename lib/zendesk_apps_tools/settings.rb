@@ -1,5 +1,4 @@
 require 'zendesk_apps_tools/common'
-require 'yaml'
 
 module ZendeskAppsTools
   class Settings
@@ -82,6 +81,7 @@ module ZendeskAppsTools
         if filepath =~ /\.json$/ || contents =~ /\A\s*{/
           JSON.load(contents)
         else
+          require 'yaml'
           YAML.load(contents)
         end
       settings_data.each do |index, setting|

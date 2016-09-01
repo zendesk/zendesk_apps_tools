@@ -35,7 +35,7 @@ describe ZendeskAppsTools::Command do
     context 'when zipfile is given' do
       it 'uploads the given zipfile and returns an upload id' do
         allow(@command).to receive(:options) { { zipfile: 'app.zip' } }
-        expect(Faraday::UploadIO).to receive(:new).with('app.zip', 'application/zip').and_return(nil)
+        expect(::Faraday::UploadIO).to receive(:new).with('app.zip', 'application/zip').and_return(nil)
 
         stub_request(:post, PREFIX + '/api/v2/apps/uploads.json')
           .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })

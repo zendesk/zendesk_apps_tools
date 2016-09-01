@@ -1,5 +1,5 @@
 require 'fileutils'
-require 'zip/zip'
+require 'zip'
 require 'English'
 
 When /^I move to the app directory$/ do
@@ -57,7 +57,7 @@ When /^I run the command "(.*?)" to (validate|package|clean) the app$/ do |cmd, 
 end
 
 Then /^the app file "(.*?)" is created with:$/ do |file, content|
-  File.read(file).chomp.gsub(' ', '').should == content.gsub(' ', '')
+  expect(File.read(file).chomp.gsub(' ', '')).to eq content.gsub(' ', '')
 end
 
 Then /^the app file "(.*?)" is created$/ do |filename|
@@ -97,7 +97,7 @@ Then /^"(.*?)" should be a symlink$/ do |path|
 end
 
 Then /^the zip file in "(.*?)" should not contain any symlinks$/ do |path|
-  Zip::ZipFile.foreach Dir[path + '/app-*.zip'][0] do |p|
+  Zip::File.foreach Dir[path + '/app-*.zip'][0] do |p|
     p.symlink?.should be_falsy
   end
 end

@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.3.6'
 
   s.add_runtime_dependency 'thor',        '~> 0.19.1'
-  s.add_runtime_dependency 'rubyzip',     '~> 0.9.1'
+  s.add_runtime_dependency 'rubyzip',     '~> 1.2.0'
   s.add_runtime_dependency 'sinatra',     '~> 1.4.6'
   s.add_runtime_dependency 'faraday',     '~> 0.9.2'
   s.add_runtime_dependency 'zendesk_apps_support', '~> 3.1.0'

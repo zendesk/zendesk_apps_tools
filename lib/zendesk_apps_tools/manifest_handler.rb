@@ -25,6 +25,7 @@ module ZendeskAppsTools
     end
 
     def load_manifest
+      require 'json'
       manifest_json = File.read(manifest_json_path)
       @manifest = JSON.load(manifest_json)
     rescue => e

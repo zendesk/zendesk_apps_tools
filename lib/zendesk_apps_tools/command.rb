@@ -1,11 +1,6 @@
 require 'thor'
-require 'zip/zip'
 require 'pathname'
-require 'net/http'
 require 'json'
-require 'faraday'
-require 'io/console'
-require 'zendesk_apps_support'
 
 require 'zendesk_apps_tools/version'
 require 'zendesk_apps_tools/command_helpers'
@@ -13,7 +8,6 @@ require 'zendesk_apps_tools/command_helpers'
 module ZendeskAppsTools
   class Command < Thor
     include Thor::Actions
-    include ZendeskAppsSupport
     include ZendeskAppsTools::CommandHelpers
 
     SHARED_OPTIONS = {
@@ -136,6 +130,7 @@ module ZendeskAppsTools
       setup_path(options[:path])
       manifest = app_package.manifest
 
+      require 'zendesk_apps_tools/settings'
       settings_helper = ZendeskAppsTools::Settings.new(self)
 
       settings = settings_helper.get_settings_from_file options[:config], manifest.original_parameters
@@ -167,7 +162,7 @@ module ZendeskAppsTools
         app_name = JSON.parse(File.read(File.join options[:path], 'manifest.json'))['name']
       end
       app_name ||= get_value_from_stdin('Enter app name:')
-      deploy_app(:post, '/api/v2/apps.json',  name: app_name)
+      deploy_app(:post, '/api/v2/apps.json', name: app_name)
     end
 
     desc 'update', 'Update app on the server'
