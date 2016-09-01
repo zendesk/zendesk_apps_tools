@@ -188,7 +188,7 @@ module ZendeskAppsTools
 
     desc "--version, -v", "print the version"
     def version
-      puts ZendeskAppsTools::VERSION
+      say ZendeskAppsTools::VERSION
     end
 
     protected
