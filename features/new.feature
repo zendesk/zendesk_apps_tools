@@ -115,3 +115,4 @@ Feature: create a template for a new zendesk app
  "frameworkVersion": "2.0"
 }
 """
+   And I reset the working directory

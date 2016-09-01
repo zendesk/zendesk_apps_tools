@@ -1,11 +1,6 @@
 require 'thor'
-require 'zip/zip'
 require 'pathname'
-require 'net/http'
 require 'json'
-require 'faraday'
-require 'io/console'
-require 'zendesk_apps_support'
 
 require 'zendesk_apps_tools/version'
 require 'zendesk_apps_tools/command_helpers'
@@ -13,7 +8,6 @@ require 'zendesk_apps_tools/command_helpers'
 module ZendeskAppsTools
   class Command < Thor
     include Thor::Actions
-    include ZendeskAppsSupport
     include ZendeskAppsTools::CommandHelpers
 
     SHARED_OPTIONS = {
@@ -21,7 +15,7 @@ module ZendeskAppsTools
       clean: false
     }
 
-    map %w[--version -v] => :version
+    map %w[-v] => :version
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 
@@ -54,8 +48,7 @@ module ZendeskAppsTools
       @iframe_location = if options[:'iframe-only']
                            iframe_uri_text = 'Enter your iFrame URI or leave it blank to use'\
                                              " a default local template page:\n"
-                           value = get_value_from_stdin(iframe_uri_text, allow_empty: true)
-                           value == '' ? 'assets/iframe.html' : value
+                           get_value_from_stdin(iframe_uri_text, allow_empty: true, default: 'assets/iframe.html')
                          else
                            '_legacy'
                          end
@@ -137,7 +130,8 @@ module ZendeskAppsTools
       setup_path(options[:path])
       manifest = app_package.manifest
 
-      settings_helper = ZendeskAppsTools::Settings.new
+      require 'zendesk_apps_tools/settings'
+      settings_helper = ZendeskAppsTools::Settings.new(self)
 
       settings = settings_helper.get_settings_from_file options[:config], manifest.original_parameters
 
@@ -147,12 +141,11 @@ module ZendeskAppsTools
 
       require 'zendesk_apps_tools/server'
       ZendeskAppsTools::Server.tap do |server|
+        server.set :settings_helper, settings_helper
         server.set :port, options[:port]
         server.set :root, options[:path]
         server.set :public_folder, File.join(options[:path], 'assets')
         server.set :parameters, settings
-        server.set :manifest, manifest.original_parameters
-        server.set :config, options[:config]
         server.set :app_id, options[:app_id]
         server.run!
       end
@@ -169,7 +162,7 @@ module ZendeskAppsTools
         app_name = JSON.parse(File.read(File.join options[:path], 'manifest.json'))['name']
       end
       app_name ||= get_value_from_stdin('Enter app name:')
-      deploy_app(:post, '/api/v2/apps.json',  name: app_name)
+      deploy_app(:post, '/api/v2/apps.json', name: app_name)
     end
 
     desc 'update', 'Update app on the server'
@@ -186,9 +179,9 @@ module ZendeskAppsTools
       deploy_app(:put, "/api/v2/apps/#{app_id}.json", {})
     end
 
-    desc "--version, -v", "print the version"
+    desc "version, -v", "Print the version"
     def version
-      puts ZendeskAppsTools::VERSION
+      say ZendeskAppsTools::VERSION
     end
 
     protected

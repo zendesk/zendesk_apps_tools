@@ -1,8 +1,9 @@
 require 'spec_helper'
 require 'command'
+require 'faraday'
 
 describe ZendeskAppsTools::Command do
-  PREFIX = 'https://username:password@subdomain.zendesk.com'
+  PREFIX = 'https://subdomain.zendesk.com'
 
   before do
     @command = ZendeskAppsTools::Command.new
@@ -25,6 +26,7 @@ describe ZendeskAppsTools::Command do
         allow(Faraday::UploadIO).to receive(:new)
 
         stub_request(:post, PREFIX + '/api/v2/apps/uploads.json')
+          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
           .to_return(body: '{ "id": 123 }')
 
         expect(@command.upload('nah')).to eq(123)
@@ -37,6 +39,7 @@ describe ZendeskAppsTools::Command do
         expect(Faraday::UploadIO).to receive(:new).with('app.zip', 'application/zip').and_return(nil)
 
         stub_request(:post, PREFIX + '/api/v2/apps/uploads.json')
+          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
           .to_return(body: '{ "id": 123 }')
 
         expect(@command.upload('nah')).to eq(123)
@@ -52,7 +55,8 @@ describe ZendeskAppsTools::Command do
         expect(File).to receive(:read) { '{ "name": "abc" }' }
 
         stub_request(:post, PREFIX + '/api/v2/apps.json')
-          .with(body: JSON.generate(name: 'abc', upload_id: '123'))
+          .with(body: JSON.generate(name: 'abc', upload_id: '123'),
+                headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
 
         @command.create
       end
@@ -67,7 +71,8 @@ describe ZendeskAppsTools::Command do
         expect(@command).to receive(:get_value_from_stdin) { 'abc' }
 
         stub_request(:post, PREFIX + '/api/v2/apps.json')
-          .with(body: JSON.generate(name: 'abc', upload_id: '123'))
+          .with(body: JSON.generate(name: 'abc', upload_id: '123'),
+                headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
 
         @command.create
       end
@@ -82,6 +87,7 @@ describe ZendeskAppsTools::Command do
         expect(@command).to receive(:fetch_cache).with('app_id').and_return(456)
 
         stub_request(:put, PREFIX + '/api/v2/apps/456.json')
+          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
 
         @command.update
       end
@@ -101,6 +107,7 @@ describe ZendeskAppsTools::Command do
         }
 
         stub_request(:get, PREFIX + '/api/v2/apps.json')
+          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
           .to_return(body: JSON.generate(apps))
 
         expect(@command.send(:find_app_id)).to eq(125)
@@ -117,7 +124,7 @@ describe ZendeskAppsTools::Command do
         old_v = Gem::Version.new '0.0.1'
         new_v = nil
 
-        expect(@command).to receive(:puts) { |arg| new_v = Gem::Version.new arg }
+        expect(@command).to receive(:say) { |arg| new_v = Gem::Version.new arg }
         @command.version
 
         expect(old_v).to be < new_v

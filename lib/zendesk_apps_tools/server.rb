@@ -5,21 +5,14 @@ require 'zendesk_apps_support/package'
 module ZendeskAppsTools
   class Server < Sinatra::Base
     set :protection, :except => :frame_options
-    last_mtime = Time.new(0)
     ZENDESK_DOMAINS_REGEX = /^http(?:s)?:\/\/[a-z0-9-]+\.(?:zendesk|zopim|zd-(?:dev|master|staging))\.com$/
 
     get '/app.js' do
       access_control_allow_origin
       content_type 'text/javascript'
 
-      if File.exist? settings.config
-        curr_mtime = File.stat(settings.config).mtime
-        if curr_mtime > last_mtime
-          settings_helper = ZendeskAppsTools::Settings.new
-          settings.parameters = settings_helper.get_settings_from_file(settings.config, settings.manifest)
-          last_mtime = curr_mtime
-        end
-      end
+      new_settings = settings.settings_helper.refresh!
+      settings.parameters = new_settings if new_settings
 
       package = ZendeskAppsSupport::Package.new(settings.root, false)
       app_name = ENV.fetch('ZAT_APP_NAME', 'Local App')
