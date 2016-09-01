@@ -22,12 +22,14 @@ module ZendeskAppsTools
         allow_empty: false
       }.merge(opts)
 
-      while input = ask(prompt)
-        return '' if input.empty? && options[:allow_empty]
-        if input =~ options[:valid_regex]
+      thor_options = { default: options[:default] }
+
+      while input = ask(prompt, thor_options)
+        return '' if options[:allow_empty] && input.empty?
+        if input.to_s =~ options[:valid_regex]
           break
         else
-          say(options[:error_msg], :red)
+          say_error options[:error_msg]
         end
       end
 
@@ -35,10 +37,8 @@ module ZendeskAppsTools
     end
 
     def get_password_from_stdin(prompt)
-      print "#{prompt} "
-      password = STDIN.noecho(&:gets).chomp
-      puts
-      password
+      ask(prompt, echo: false)
+      say ''
     end
   end
 end

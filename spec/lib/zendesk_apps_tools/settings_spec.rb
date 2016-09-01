@@ -7,7 +7,9 @@ describe ZendeskAppsTools::Settings do
     @user_input = Object.new
     @user_input.extend(ZendeskAppsTools::Common)
     @context = ZendeskAppsTools::Settings.new(@user_input)
-    allow(@user_input).to receive(:ask).and_return('') # this represents the default user input
+    allow(@user_input).to receive(:ask) do |_p, thor_opts| # this represents the default user input
+      thor_opts && thor_opts[:default] || ''
+    end
     allow(@user_input).to receive(:say)
   end
 
@@ -26,7 +28,6 @@ describe ZendeskAppsTools::Settings do
       }
 
       allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'backend':\n").and_return('https://example.com:3000')
-
       expect(@context.get_settings_from_user_input(parameters)).to eq(settings)
     end
 
@@ -43,8 +44,6 @@ describe ZendeskAppsTools::Settings do
       settings = {
         'isUrgent' => true
       }
-
-      allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'isUrgent':\n").and_return('')
 
       expect(@context.get_settings_from_user_input(parameters)).to eq(settings)
     end
@@ -79,9 +78,8 @@ describe ZendeskAppsTools::Settings do
         'not_required_with_default' => '789'
       }
 
-      allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'required':\n").and_return('xyz')
-      allow(@user_input).to receive(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n").and_return('456')
-
+      allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'required':\n", default: nil).and_return('xyz')
+      allow(@user_input).to receive(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n", default: nil).and_return('456')
       expect(@context.get_settings_from_user_input(parameters)).to eq(settings)
     end
   end
