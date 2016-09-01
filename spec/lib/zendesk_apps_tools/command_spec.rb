@@ -117,7 +117,7 @@ describe ZendeskAppsTools::Command do
         old_v = Gem::Version.new '0.0.1'
         new_v = nil
 
-        expect(@command).to receive(:puts) { |arg| new_v = Gem::Version.new arg }
+        expect(@command).to receive(:say) { |arg| new_v = Gem::Version.new arg }
         @command.version
 
         expect(old_v).to be < new_v

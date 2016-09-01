@@ -18,7 +18,7 @@ module ZendeskAppsTools
         if !File.exist?(@app_dir)
           break
         elsif !File.directory?(@app_dir)
-          puts 'Invalid dir, try again:'
+          say_error 'Invalid dir, try again:'
         else
           break
         end

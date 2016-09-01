@@ -44,8 +44,8 @@ module ZendeskAppsTools
           end
         end
       rescue => err
-        puts "Failed to load #{filepath}"
-        puts err.message
+        say_error "Failed to load #{filepath}"
+        say_error err.message
         return nil
       end
 
@@ -57,7 +57,7 @@ module ZendeskAppsTools
         end
 
         if !input && param['required']
-          puts "'#{param['name']}' is required but not specified in the config file.\n"
+          say_error "'#{param['name']}' is required but not specified in the config file.\n"
           return nil
         end
 

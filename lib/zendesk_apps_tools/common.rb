@@ -7,8 +7,12 @@ module ZendeskAppsTools
     end
 
     def say_error_and_exit(msg)
-      say msg, :red
+      say_error msg
       exit 1
+    end
+
+    def say_error(msg)
+      say msg, :red
     end
 
     def get_value_from_stdin(prompt, opts = {})
