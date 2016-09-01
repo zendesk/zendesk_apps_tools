@@ -9,10 +9,12 @@ describe ZendeskAppsTools::Translate do
       File.delete(target_yml) if File.exist?(target_yml)
       translate = ZendeskAppsTools::Translate.new
       translate.setup_path(root)
-      translate.to_yml
-
-      expect(File.read(target_yml)).to eq(File.read("#{root}/translations/expected.yml"))
-      File.delete(target_yml) if File.exist?(target_yml)
+      begin
+        translate.to_yml
+        expect(File.read(target_yml)).to eq(File.read("#{root}/translations/expected.yml"))
+      ensure
+        File.delete(target_yml) if File.exist?(target_yml)
+      end
     end
   end
 
@@ -23,10 +25,12 @@ describe ZendeskAppsTools::Translate do
       File.delete(target_json) if File.exist?(target_json)
       translate = ZendeskAppsTools::Translate.new
       translate.setup_path(root)
-      translate.to_json
-
-      expect(File.read(target_json)).to eq(File.read("#{root}/translations/expected.json"))
-      File.delete(target_json) if File.exist?(target_json)
+      begin
+        translate.to_json
+        expect(File.read(target_json)).to eq(File.read("#{root}/translations/expected.json"))
+      ensure
+        File.delete(target_json) if File.exist?(target_json)
+      end
     end
   end
 
@@ -81,7 +85,7 @@ describe ZendeskAppsTools::Translate do
     it 'fetches locales, translations and generates json files for each' do
       translate = ZendeskAppsTools::Translate.new
       allow(translate).to receive(:say)
-      allow(translate).to receive(:ask).with('What is the package name for this app? (without app_)').and_return('my_app')
+      allow(translate).to receive(:ask).with('What is the package name for this app? (without app_)', default: nil).and_return('my_app')
       allow(translate).to receive(:create_file)
 
       expect(translate).to receive(:nest_translations_hash).once.and_return({})
@@ -103,10 +107,13 @@ describe ZendeskAppsTools::Translate do
       File.delete(target_json) if File.exist?(target_json)
       translate = ZendeskAppsTools::Translate.new
       translate.setup_path(root)
-      translate.pseudotranslate
+      begin
+        translate.pseudotranslate
 
-      expect(File.read(target_json)).to eq(File.read("#{root}/translations/expected.json"))
-      File.delete(target_json) if File.exist?(target_json)
+        expect(File.read(target_json)).to eq(File.read("#{root}/translations/expected.json"))
+      ensure
+        File.delete(target_json) if File.exist?(target_json)
+      end
     end
   end
 end

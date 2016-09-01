@@ -12,6 +12,8 @@ module ZendeskAppsTools
     end
 
     def get_connection(encoding = :url_encoded)
+      require 'net/http'
+      require 'faraday'
       prepare_api_auth
       Faraday.new full_url do |f|
         f.request encoding

@@ -1,15 +1,14 @@
 module ZendeskAppsTools
-  require 'zendesk_apps_support'
 
   module PackageHelper
-    include ZendeskAppsSupport
-
     def app_package
-      @app_package ||= Package.new(app_dir.to_s)
+      require 'zendesk_apps_support'
+      @app_package ||= ZendeskAppsSupport::Package.new(app_dir.to_s)
     end
 
     def zip(archive_path)
-      Zip::ZipFile.open(archive_path, 'w') do |zipfile|
+      require 'zip'
+      Zip::File.open(archive_path, 'w') do |zipfile|
         app_package.files.each do |file|
           relative_path = file.relative_path
           path = relative_path
