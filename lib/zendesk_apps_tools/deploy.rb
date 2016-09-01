@@ -2,7 +2,6 @@ module ZendeskAppsTools
   module Deploy
     def deploy_app(connection_method, url, body)
       body[:upload_id] = upload(options[:path]).to_s
-
       connection = get_connection
 
       response = connection.send(connection_method) do |req|
