@@ -12,13 +12,8 @@ module ZendeskAppsTools
       access_control_allow_origin
       content_type 'text/javascript'
 
-      if File.exist? settings.config
-        curr_mtime = File.stat(settings.config).mtime
-        if curr_mtime > last_mtime
-          settings_helper = ZendeskAppsTools::Settings.new
-          settings.parameters = settings_helper.get_settings_from_file(settings.config, settings.manifest)
-          last_mtime = curr_mtime
-        end
+      if new_settings = settings.settings_helper.refresh!
+        settings.parameters = new_settings
       end
 
       package = ZendeskAppsSupport::Package.new(settings.root, false)

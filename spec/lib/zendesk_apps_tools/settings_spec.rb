@@ -4,10 +4,11 @@ require 'settings'
 
 describe ZendeskAppsTools::Settings do
   before(:each) do
-    @context = ZendeskAppsTools::Settings.new
     @user_input = Object.new
     @user_input.extend(ZendeskAppsTools::Common)
+    @context = ZendeskAppsTools::Settings.new(@user_input)
     allow(@user_input).to receive(:ask).and_return('') # this represents the default user input
+    allow(@user_input).to receive(:say)
   end
 
   describe '#get_settings_from_user_input' do
@@ -26,7 +27,7 @@ describe ZendeskAppsTools::Settings do
 
       allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'backend':\n").and_return('https://example.com:3000')
 
-      expect(@context.get_settings_from_user_input(@user_input, parameters)).to eq(settings)
+      expect(@context.get_settings_from_user_input(parameters)).to eq(settings)
     end
 
     it 'should use default boolean parameter' do
@@ -45,7 +46,7 @@ describe ZendeskAppsTools::Settings do
 
       allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'isUrgent':\n").and_return('')
 
-      expect(@context.get_settings_from_user_input(@user_input, parameters)).to eq(settings)
+      expect(@context.get_settings_from_user_input(parameters)).to eq(settings)
     end
 
     it 'prompts the user for settings' do
@@ -81,7 +82,7 @@ describe ZendeskAppsTools::Settings do
       allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'required':\n").and_return('xyz')
       allow(@user_input).to receive(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n").and_return('456')
 
-      expect(@context.get_settings_from_user_input(@user_input, parameters)).to eq(settings)
+      expect(@context.get_settings_from_user_input(parameters)).to eq(settings)
     end
   end
 

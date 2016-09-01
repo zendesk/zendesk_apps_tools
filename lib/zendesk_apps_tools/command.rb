@@ -137,7 +137,7 @@ module ZendeskAppsTools
       setup_path(options[:path])
       manifest = app_package.manifest
 
-      settings_helper = ZendeskAppsTools::Settings.new
+      settings_helper = ZendeskAppsTools::Settings.new(self)
 
       settings = settings_helper.get_settings_from_file options[:config], manifest.original_parameters
 
@@ -147,12 +147,11 @@ module ZendeskAppsTools
 
       require 'zendesk_apps_tools/server'
       ZendeskAppsTools::Server.tap do |server|
+        server.set :settings_helper, settings_helper
         server.set :port, options[:port]
         server.set :root, options[:path]
         server.set :public_folder, File.join(options[:path], 'assets')
         server.set :parameters, settings
-        server.set :manifest, manifest.original_parameters
-        server.set :config, options[:config]
         server.set :app_id, options[:app_id]
         server.run!
       end

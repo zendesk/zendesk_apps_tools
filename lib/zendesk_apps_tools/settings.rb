@@ -3,17 +3,21 @@ require 'yaml'
 
 module ZendeskAppsTools
   class Settings
-    def get_settings_from_user_input(user_input, parameters)
+    def initialize(cli)
+      @cli = cli
+    end
+
+    def get_settings_from_user_input(parameters)
       return {} if parameters.nil?
 
       parameters.inject({}) do |settings, param|
         if param['default']
-          input = user_input.get_value_from_stdin("Enter a value for parameter '#{param['name']}' or press 'Return' to use the default value '#{param['default']}':\n", allow_empty: true)
+          input = @cli.get_value_from_stdin("Enter a value for parameter '#{param['name']}' or press 'Return' to use the default value '#{param['default']}':\n", allow_empty: true)
           input = param['default'] if input.empty?
         elsif param['required']
-          input = user_input.get_value_from_stdin("Enter a value for required parameter '#{param['name']}':\n")
+          input = @cli.get_value_from_stdin("Enter a value for required parameter '#{param['name']}':\n")
         else
-          input = user_input.get_value_from_stdin("Enter a value for optional parameter '#{param['name']}' or press 'Return' to skip:\n", allow_empty: true)
+          input = @cli.get_value_from_stdin("Enter a value for optional parameter '#{param['name']}' or press 'Return' to skip:\n", allow_empty: true)
         end
 
         if param['type'] == 'checkbox'
@@ -25,11 +29,25 @@ module ZendeskAppsTools
       end
     end
 
+    def refresh!
+      if File.exist? @filepath
+        curr_mtime = File.stat(@filepath).mtime
+        if curr_mtime > @last_mtime
+          @last_mtime = curr_mtime
+          get_settings_from_file(@filepath, @parameters)
+        end
+      end
+    end
+
     def get_settings_from_file(filepath, parameters)
+      @filepath ||= filepath
+      @parameters ||= parameters
+
       return {} if parameters.nil?
       return nil unless File.exist? filepath
 
       begin
+        @last_mtime = File.stat(filepath).mtime
         settings_file = File.read(filepath)
 
         if filepath =~ /\.json$/ || settings_file =~ /\A\s*{/
@@ -44,8 +62,8 @@ module ZendeskAppsTools
           end
         end
       rescue => err
-        say_error "Failed to load #{filepath}"
-        say_error err.message
+        @cli.say_error "Failed to load #{filepath}"
+        @cli.say_error err.message
         return nil
       end
 
@@ -57,7 +75,7 @@ module ZendeskAppsTools
         end
 
         if !input && param['required']
-          say_error "'#{param['name']}' is required but not specified in the config file.\n"
+          @cli.say_error "'#{param['name']}' is required but not specified in the config file.\n"
           return nil
         end
 
