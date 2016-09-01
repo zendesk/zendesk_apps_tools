@@ -61,7 +61,7 @@ Then /^the app file "(.*?)" is created with:$/ do |file, content|
 end
 
 Then /^the app file "(.*?)" is created$/ do |filename|
-  File.exist?(filename).should be_truthy
+  expect(File.exist?(filename)).to be_truthy
 end
 
 Then /^the fixture "(.*?)" is used for "(.*?)"$/ do |fixture, app_file|

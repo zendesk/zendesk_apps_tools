@@ -81,7 +81,7 @@ describe ZendeskAppsTools::Translate do
     it 'fetches locales, translations and generates json files for each' do
       translate = ZendeskAppsTools::Translate.new
       allow(translate).to receive(:say)
-      allow(translate).to receive(:ask).with('What is the package name for this app? (without app_)').and_return('my_app')
+      allow(translate).to receive(:ask).with('What is the package name for this app? (without app_)', default: nil).and_return('my_app')
       allow(translate).to receive(:create_file)
 
       expect(translate).to receive(:nest_translations_hash).once.and_return({})
