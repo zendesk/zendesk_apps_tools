@@ -54,7 +54,7 @@ module ZendeskAppsTools
         return nil
       end
 
-      parameters.each_with_object({}) do |settings, param|
+      parameters.each_with_object({}) do |param, settings|
         input = settings_data[param['name']] || param['default']
 
         if !input && param['required']
