@@ -21,7 +21,7 @@ module ZendeskAppsTools
       clean: false
     }
 
-    map %w[--version -v] => :version
+    map %w[-v] => :version
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 
@@ -185,7 +185,7 @@ module ZendeskAppsTools
       deploy_app(:put, "/api/v2/apps/#{app_id}.json", {})
     end
 
-    desc "--version, -v", "print the version"
+    desc "version, -v", "Print the version"
     def version
       say ZendeskAppsTools::VERSION
     end
