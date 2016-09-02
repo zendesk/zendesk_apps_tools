@@ -31,8 +31,9 @@ module ZendeskAppsTools
     end
 
     def get_password_from_stdin(prompt)
-      ask(prompt, echo: false)
+      password = ask(prompt, echo: false)
       say ''
+      password
     end
   end
 end
