@@ -13,9 +13,9 @@ module ZendeskAppsTools
     SHARED_OPTIONS = {
       ['path', '-p'] => './',
       clean: false
-    }
+    }.freeze
 
-    map %w[-v] => :version
+    map %w(-v) => :version
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 
@@ -136,7 +136,7 @@ module ZendeskAppsTools
       settings = settings_helper.get_settings_from_file options[:config], manifest.original_parameters
 
       unless settings
-        settings = settings_helper.get_settings_from_user_input self, manifest.original_parameters
+        settings = settings_helper.get_settings_from_user_input manifest.original_parameters
       end
 
       require 'zendesk_apps_tools/server'
