@@ -72,7 +72,7 @@ Then /^the fixture "(.*?)" is used for "(.*?)"$/ do |fixture, app_file|
 end
 
 Then /^the zip file should exist in directory "(.*?)"$/ do |path|
-  Dir[path + '/app-*.zip'].size.should == 1
+  expect(Dir[path + '/app-*.zip'].size).to eq 1
 end
 
 Given /^I remove file "(.*?)"$/ do |file|
@@ -84,20 +84,20 @@ Then /^the zip file in "(.*?)" folder should not exist$/ do |path|
 end
 
 Then /^it should pass the validation$/ do
-  @output.last.should =~ /OK/
-  $CHILD_STATUS.should == 0
+  expect(@output.last).to match /OK/
+  expect($CHILD_STATUS).to eq 0
 end
 
 Then /^the command output should contain "(.*?)"$/ do |output|
-  @output.join.should =~ /#{output}/
+  expect(@output.join).to match /#{output}/
 end
 
 Then /^"(.*?)" should be a symlink$/ do |path|
-  File.symlink?(path).should be_truthy
+  expect(File.symlink?(path)).to be_truthy
 end
 
 Then /^the zip file in "(.*?)" should not contain any symlinks$/ do |path|
   Zip::File.foreach Dir[path + '/app-*.zip'][0] do |p|
-    p.symlink?.should be_falsy
+    expect(p.symlink?).to be_falsy
   end
 end
