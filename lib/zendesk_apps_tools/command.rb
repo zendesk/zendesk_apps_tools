@@ -13,7 +13,7 @@ module ZendeskAppsTools
     SHARED_OPTIONS = {
       ['path', '-p'] => './',
       clean: false
-    }
+    }.freeze
 
     map %w(-v) => :version
 
