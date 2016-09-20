@@ -19,7 +19,7 @@ module ZendeskAppsTools
     end
 
     def fetch(key, subdomain = nil)
-      # TODO: drop the default_proc and replace with Hash#dig if older Ruby versions are unsupported
+      # drop the default_proc and replace with Hash#dig if older Ruby versions are unsupported
       local_cache[key] || global_cache[subdomain][key] || global_cache['default'][key]
     end
 
