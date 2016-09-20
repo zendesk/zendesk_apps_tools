@@ -48,7 +48,7 @@ module ZendeskAppsTools
       say_error_and_exit('The app was not found. Please verify your credentials, subdomain, and app name are correct.') unless app_json
       app_id = app_json['id']
 
-      cache.save_cache 'app_id' => app_id
+      cache.save 'app_id' => app_id
       app_id
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
@@ -76,7 +76,7 @@ module ZendeskAppsTools
         if %w(completed failed).include? status
           case status
           when 'completed'
-            cache.save_cache 'app_id' => app_id
+            cache.save 'app_id' => app_id
             say_status @command, 'OK'
           when 'failed'
             say_status @command, message, :red
