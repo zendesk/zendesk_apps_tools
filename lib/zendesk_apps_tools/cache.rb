@@ -19,7 +19,8 @@ module ZendeskAppsTools
     end
 
     def fetch(key, subdomain = nil)
-      local_cache[key] || global_cache[subdomain][key]
+      # TODO: drop the default_proc and replace with Hash#dig if older Ruby versions are unsupported
+      local_cache[key] || global_cache[subdomain][key] || global_cache['default'][key]
     end
 
     def clear
@@ -35,7 +36,11 @@ module ZendeskAppsTools
     def global_cache
       @global_cache ||= begin
         if File.exist?(global_cache_path)
-          JSON.parse(File.read(global_cache_path))
+          JSON.parse(File.read(global_cache_path)).tap do |cache|
+            cache.default_proc = proc do |_hash, _key|
+              {}
+            end
+          end
         else
           Hash.new({})
         end
