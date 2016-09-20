@@ -3,8 +3,7 @@ require 'json'
 
 module ZendeskAppsTools
   class Cache
-    LOCAL_CACHE_FILE_NAME = '.zat'
-    GLOBAL_CACHE_FILE_NAME = File.join(Dir.home, '.zat').freeze
+    CACHE_FILE_NAME = '.zat'
 
     attr_reader :options
 
@@ -15,26 +14,40 @@ module ZendeskAppsTools
     def save(hash)
       return if options[:zipfile]
 
-      @cache = File.exist?(cache_path) ? JSON.parse(File.read(@cache_path)).update(hash) : hash
-      File.open(@cache_path, 'w') { |f| f.write JSON.pretty_generate(@cache) }
+      local_cache.update(hash)
+      File.open(local_cache_path, 'w') { |f| f.write JSON.pretty_generate(local_cache) }
     end
 
-    def fetch(key)
-      @cache ||= File.exist?(cache_path) ? JSON.parse(File.read(@cache_path)) : {}
-      @cache[key] if @cache
+    def fetch(key, subdomain = nil)
+      local_cache[key] || global_cache[subdomain][key]
     end
 
     def clear
-      File.delete cache_path if options[:clean] && File.exist?(cache_path)
+      File.delete local_cache_path if options[:clean] && File.exist?(local_cache_path)
     end
 
     private
 
-    def cache_path
-      @cache_path ||= begin
-        cache_file_name = LOCAL_CACHE_FILE_NAME
-        File.join options[:path], cache_file_name
+    def local_cache
+      @local_cache ||= File.exist?(local_cache_path) ? JSON.parse(File.read(local_cache_path)) : {}
+    end
+
+    def global_cache
+      @global_cache ||= begin
+        if File.exist?(global_cache_path)
+          JSON.parse(File.read(global_cache_path))
+        else
+          Hash.new({})
+        end
       end
+    end
+
+    def global_cache_path
+      @global_cache_path ||= File.join(Dir.home, CACHE_FILE_NAME)
+    end
+
+    def local_cache_path
+      @local_cache_path ||= File.join(options[:path], CACHE_FILE_NAME)
     end
   end
 end

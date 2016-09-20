@@ -5,8 +5,8 @@ module ZendeskAppsTools
 
     def prepare_api_auth
       @subdomain ||= cache.fetch('subdomain') || get_value_from_stdin('Enter your Zendesk subdomain or full Zendesk URL:')
-      @username  ||= cache.fetch('username') || get_value_from_stdin('Enter your username:')
-      @password  ||= cache.fetch('password') || get_password_from_stdin('Enter your password:')
+      @username  ||= cache.fetch('username', @subdomain) || get_value_from_stdin('Enter your username:')
+      @password  ||= cache.fetch('password', @subdomain) || get_password_from_stdin('Enter your password:')
 
       cache.save 'subdomain' => @subdomain, 'username' => @username
     end
