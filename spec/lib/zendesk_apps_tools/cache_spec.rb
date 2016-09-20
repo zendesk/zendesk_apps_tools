@@ -28,12 +28,16 @@ describe ZendeskAppsTools::Cache do
           fake_home = File.join(tmpdir, 'fake_home')
           FileUtils.mkdir_p(fake_home)
           allow(Dir).to receive(:home).and_return(fake_home)
-          global_content = JSON.dump(global_subdomain: { password: 'hunter2' })
+          global_content = JSON.dump(global_subdomain: { password: 'hunter2' }, default: { subdomain: 'default-domain', password: 'hunter3' })
           File.write(File.join(fake_home, '.zat'), global_content, mode: 'w')
         end
 
         it 'falls back to global cache' do
           expect(cache.fetch('password', 'global_subdomain')).to eq 'hunter2'
+        end
+
+        it 'falls back to global cache default' do
+          expect(cache.fetch('password')).to eq 'hunter3'
         end
       end
     end
