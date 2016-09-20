@@ -64,12 +64,15 @@ When testing your app, you might need to specify some [app settings](manifest#ap
 If `manifest.json` contains the following settings:
 
 ```json
-...
-"parameters": [
+{
+  ...
+  "parameters": [
   {
     "name": "mySetting"
   },
-...
+  ...
+]
+}
 ```
 
 Then you can specify the settings in a file as follows:
@@ -112,3 +115,14 @@ Removes the zip files in the <tt>tmp</tt> folder that's created when you package
 
     $ zat clean
 
+### Create
+
+Packages your app directory into a zip file, then uploads it into a Zendesk account. Also stores the new app's ID and other metadata in a zat file (this is `.zat`).
+
+You can point to the directory containing the app by using the path option. Example: `zat create --path=./MY_PATH`.
+
+You can use an existing zip file instead of an app directory by passing a `zipfile` option like `zat create --zipfile=~/zendesk_app/my_zipfile.zip`.
+
+### Update
+
+Much like create, use this command to update an app that you have previously create using `zat create`. This command uses the app ID and other metadata found in the `.zat` file.
