@@ -39,6 +39,11 @@ module ZendeskAppsTools
 
     enable :cross_origin
 
+    def send_file(*args)
+      access_control_allow_origin
+      super(*args)
+    end
+
     # This is for any preflight request
     # It reads 'Access-Control-Request-Headers' to set 'Access-Control-Allow-Headers'
     # And also sets 'Access-Control-Allow-Origin' header
