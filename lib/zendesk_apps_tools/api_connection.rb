@@ -4,11 +4,11 @@ module ZendeskAppsTools
     URL_TEMPLATE = 'https://%s.zendesk.com/'
 
     def prepare_api_auth
-      @subdomain ||= fetch_cache('subdomain') || get_value_from_stdin('Enter your Zendesk subdomain or full Zendesk URL:')
-      @username  ||= fetch_cache('username') || get_value_from_stdin('Enter your username:')
-      @password  ||= fetch_cache('password') || get_password_from_stdin('Enter your password:')
+      @subdomain ||= cache.fetch('subdomain') || get_value_from_stdin('Enter your Zendesk subdomain or full Zendesk URL:')
+      @username  ||= cache.fetch('username', @subdomain) || get_value_from_stdin('Enter your username:')
+      @password  ||= cache.fetch('password', @subdomain) || get_password_from_stdin('Enter your password:')
 
-      save_cache 'subdomain' => @subdomain, 'username' => @username
+      cache.save 'subdomain' => @subdomain, 'username' => @username
     end
 
     def get_connection(encoding = :url_encoded)

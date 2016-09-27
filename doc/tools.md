@@ -126,3 +126,20 @@ You can use an existing zip file instead of an app directory by passing a `zipfi
 ### Update
 
 Much like create, use this command to update an app that you have previously create using `zat create`. This command uses the app ID and other metadata found in the `.zat` file.
+
+### Configuration for multiple apps
+
+If you have multiple apps and you want to re-use the credentials and subdomain for `zat create` and `zat update` without typing them in for each app, create a file called `.zat` in your home directory (`C:\Users\YOUR_NAME\.zat` on Windows or `~/YOUR_NAME/.zat`). To manage many apps under the `mysubdomain` subdomain, populate the file with JSON like this:
+
+```json
+{
+  "default": {
+    "subdomain": "mysubdomain"
+  },
+  "mysubdomain": {
+    "username": "ME@EMAIL.COM"
+  }
+}
+```
+
+For apps that do not have a `.zat` file with a subdomain, the default value is used.

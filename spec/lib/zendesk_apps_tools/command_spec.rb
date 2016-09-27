@@ -12,9 +12,9 @@ describe ZendeskAppsTools::Command do
     @command.instance_variable_set(:@subdomain, 'subdomain')
     @command.instance_variable_set(:@app_id, '123')
 
-    allow(@command).to receive(:fetch_cache)
-    allow(@command).to receive(:save_cache)
-    allow(@command).to receive(:clear_cache)
+    allow(@command.cache).to receive(:fetch)
+    allow(@command.cache).to receive(:save)
+    allow(@command.cache).to receive(:clear)
     allow(@command).to receive(:options) { { clean: false, path: './' } }
   end
 
@@ -84,7 +84,7 @@ describe ZendeskAppsTools::Command do
       it 'uploads a file and puts build api' do
         expect(@command).to receive(:upload).and_return(123)
         allow(@command).to receive(:check_status)
-        expect(@command).to receive(:fetch_cache).with('app_id').and_return(456)
+        expect(@command.cache).to receive(:fetch).with('app_id').and_return(456)
 
         stub_request(:put, PREFIX + '/api/v2/apps/456.json')
           .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
