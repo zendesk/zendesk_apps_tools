@@ -32,13 +32,7 @@ module ZendeskAppsTools
                                   aliases: ['--v2']
     method_option :v1, type: :boolean, default: false, desc: 'Create a version 1 app template'
     def new
-      if options[:'iframe-only']
-        if options[:v1]
-          say_error_and_exit "Apps can't have both v1 and v2 set."
-        else
-          say_status 'warning', 'v2 is the default for new apps, the --v2 option has no effect.', :yellow
-        end
-      end
+      check_new_options
       enter = ->(variable) { "Enter this app author's #{variable}:\n" }
       invalid = ->(variable) { "Invalid #{variable}, try again:" }
       @author_name  = get_value_from_stdin(enter.call('name'),
@@ -193,6 +187,17 @@ module ZendeskAppsTools
     end
 
     protected
+
+    def check_new_options
+      if options[:'iframe-only']
+        if options[:v1]
+          say_error_and_exit "Apps can't be created with both --v1 and --v2 (or --iframe-only)."
+        else
+          warning = 'v2 is the default for new apps, the --v2 and --iframe-only options have no effect.'
+          say_status 'warning', warning, :yellow
+        end
+      end
+    end
 
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
