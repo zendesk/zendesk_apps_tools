@@ -17,14 +17,16 @@ Given /^an app directory "(.*?)" exists$/ do |app_dir|
   FileUtils.mkdir_p(@app_dir)
 end
 
-Given /^an app is created in directory "(.*?)"$/ do |app_dir|
+Given /^a(n|(?: v1)) app is created in directory "(.*?)"$/ do |version, app_dir|
+  v1 = !!version[/v1/]
   steps %(
     Given an app directory "#{app_dir}" exists
-    And I run "zat new" command with the following details:
+    And I run "zat new #{'--v1' if v1}" command with the following details:
       | author name  | John Citizen      |
       | author email | john@example.com  |
       | author url   | http://myapp.com  |
       | app name     | John Test App     |
+      #{'| iframe uri   | assets/iframe.html |' unless v1}
       | app dir      | #{app_dir}        |
     )
 end

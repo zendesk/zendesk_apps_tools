@@ -28,9 +28,11 @@ module ZendeskAppsTools
     desc 'new', 'Generate a new app'
     method_option :'iframe-only', type: :boolean,
                                   default: false,
-                                  desc: 'Create an iFrame Only app template',
-                                  aliases: ['-i', '--v2']
+                                  hide: true,
+                                  aliases: ['--v2']
+    method_option :v1, type: :boolean, default: false, desc: 'Create a version 1 app template'
     def new
+      check_new_options
       enter = ->(variable) { "Enter this app author's #{variable}:\n" }
       invalid = ->(variable) { "Invalid #{variable}, try again:" }
       @author_name  = get_value_from_stdin(enter.call('name'),
@@ -45,18 +47,18 @@ module ZendeskAppsTools
       @app_name     = get_value_from_stdin("Enter a name for this new app:\n",
                                            error_msg: invalid.call('app name'))
 
-      @iframe_location = if options[:'iframe-only']
+      @iframe_location = if options[:v1]
+                           '_legacy'
+                         else
                            iframe_uri_text = 'Enter your iFrame URI or leave it blank to use'\
                                              " a default local template page:\n"
                            get_value_from_stdin(iframe_uri_text, allow_empty: true, default: 'assets/iframe.html')
-                         else
-                           '_legacy'
                          end
 
       prompt_new_app_dir
 
-      skeleton = options[:'iframe-only'] ? 'app_template_iframe' : 'app_template'
-      is_custom_iframe = options[:'iframe-only'] && @iframe_location != 'assets/iframe.html'
+      skeleton = options[:v1] ? 'app_template' : 'app_template_iframe'
+      is_custom_iframe = !options[:v1] && @iframe_location != 'assets/iframe.html'
       directory_options = is_custom_iframe ? { exclude_pattern: /iframe.html/ } : {}
       directory(skeleton, @app_dir, directory_options)
     end
@@ -185,6 +187,17 @@ module ZendeskAppsTools
     end
 
     protected
+
+    def check_new_options
+      if options[:'iframe-only']
+        if options[:v1]
+          say_error_and_exit "Apps can't be created with both --v1 and --v2 (or --iframe-only)."
+        else
+          warning = 'v2 is the default for new apps, the --v2 and --iframe-only options have no effect.'
+          say_status 'warning', warning, :yellow
+        end
+      end
+    end
 
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
