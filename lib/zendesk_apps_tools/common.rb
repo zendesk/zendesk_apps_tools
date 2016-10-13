@@ -38,6 +38,7 @@ module ZendeskAppsTools
     end
 
     def get_value_from_stdin(prompt, opts = {})
+      error_if_unattended(prompt)
       options = {
         valid_regex: opts[:allow_empty] ? /^.*$/ : /\S+/,
         error_msg: 'Invalid, try again:',
@@ -56,9 +57,18 @@ module ZendeskAppsTools
     end
 
     def get_password_from_stdin(prompt)
+      error_if_unattended(prompt)
       password = ask(prompt, echo: false)
       say ''
       password
+    end
+
+    private
+
+    def error_if_unattended(prompt)
+      return unless options[:unattended]
+      say_error 'Would have prompted for a value interactively, but we are running unattended.'
+      say_error_and_exit prompt
     end
   end
 end
