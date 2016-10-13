@@ -1,3 +1,3 @@
 module ZendeskAppsTools
-  VERSION = "1.35.3"
+  VERSION = "1.35.4"
 end
