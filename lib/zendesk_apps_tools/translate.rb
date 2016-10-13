@@ -93,7 +93,7 @@ module ZendeskAppsTools
       end
 
       def write_json(filename, translations_hash)
-        create_file(filename, JSON.pretty_generate(translations_hash) + "\n")
+        create_file(filename, JSON.pretty_generate(translations_hash) + "\n", force: options[:unattended])
       end
 
       def nest_translations_hash(translations_hash, key_prefix)
