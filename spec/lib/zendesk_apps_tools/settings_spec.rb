@@ -5,12 +5,13 @@ require 'settings'
 describe ZendeskAppsTools::Settings do
   before(:each) do
     @user_input = Object.new
-    @user_input.extend(ZendeskAppsTools::Common)
-    @context = ZendeskAppsTools::Settings.new(@user_input)
     allow(@user_input).to receive(:ask) do |_p, thor_opts| # this represents the default user input
       thor_opts && thor_opts[:default] || ''
     end
     allow(@user_input).to receive(:say)
+    allow(@user_input).to receive(:options).and_return({})
+    @user_input.extend(ZendeskAppsTools::Common)
+    @context = ZendeskAppsTools::Settings.new(@user_input)
   end
 
   describe '#get_settings_from_user_input' do
