@@ -48,11 +48,8 @@ module ZendeskAppsTools
 
       while input = ask(prompt, thor_options)
         return '' if options[:allow_empty] && input.empty?
-        if input.to_s =~ options[:valid_regex]
-          break
-        else
-          say_error options[:error_msg]
-        end
+        break if input.to_s =~ options[:valid_regex]
+        say_error options[:error_msg]
       end
 
       input
