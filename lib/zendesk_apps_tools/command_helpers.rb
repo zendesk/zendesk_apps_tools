@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'zendesk_apps_tools/common'
 require 'zendesk_apps_tools/api_connection'
 require 'zendesk_apps_tools/deploy'

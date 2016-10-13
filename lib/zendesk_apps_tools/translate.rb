@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'thor'
 require 'json'
 require 'zendesk_apps_tools/common'
@@ -22,10 +23,7 @@ module ZendeskAppsTools
         app_name = get_value_from_stdin('What is the name of this app?', error_msg: 'Invalid name, try again:')
       end
 
-      en_json = JSON.parse(File.open("#{destination_root}/translations/en.json").read)
-
-      package = en_json['app']['package']
-      say('No package defined inside en.json! Abort.', :red) and exit 1 unless package
+      package = package_name_from_json(error_out: true)
       en_json['app'].delete('package')
 
       write_yml(en_json, app_name, package)
@@ -39,10 +37,10 @@ module ZendeskAppsTools
       en_yml = YAML.load_file("#{destination_root}/translations/en.yml")
       package = /^txt.apps.([^\.]+)/.match(en_yml['parts'][0]['translation']['key'])[1]
       translations = en_yml['parts'].map { |part| part['translation'] }
-      en_json = array_to_nested_hash(translations)['txt']['apps'][package]
-      en_json['app']['package'] = package
+      en_hash = array_to_nested_hash(translations)['txt']['apps'][package]
+      en_hash['app']['package'] = package
 
-      write_json('translations/en.json', en_json)
+      write_json('translations/en.json', en_hash)
     end
 
     desc 'update', 'Update translation files from Zendesk'
@@ -50,31 +48,20 @@ module ZendeskAppsTools
     method_option :package_name, type: :string
     def update
       setup_path(options[:path]) if options[:path]
-      app_package = get_value_from_stdin('What is the package name for this app? (without app_)', valid_regex: /^[a-z_]+$/, error_msg: 'Invalid package name, try again:')
-
-      key_prefix = "txt.apps.#{app_package}."
-
-      say('Fetching translations...')
-      require 'net/http'
-      require 'faraday'
-      locale_response = Faraday.get(LOCALE_ENDPOINT)
-
-      if locale_response.status == 200
-        locales = JSON.parse(locale_response.body)['locales']
-
-        locales = locales.map { |locale| fetch_locale_async locale, app_package}.map(&:value)
-
-        locales.each do |locale|
-          translations    = locale['translations']
+      app_package = package_name_for_update
+      locale_list
+        .map { |locale| fetch_locale_async locale, app_package }
+        .each do |locale_thread|
+          locale = locale_thread.value
+          translations = locale['translations']
 
           locale_name = ZendeskAppsTools::LocaleIdentifier.new(locale['locale']).locale_id
-          write_json("#{destination_root}/translations/#{locale_name}.json", nest_translations_hash(translations, key_prefix))
+          write_json(
+            "#{destination_root}/translations/#{locale_name}.json",
+            nest_translations_hash(translations, "txt.apps.#{app_package}.")
+          )
         end
-        say('Translations updated', :green)
-
-      elsif locale_response.status == 401
-        say('Authentication failed', :red)
-      end
+      say('Translations updated', :green)
     end
 
     desc 'pseudotranslate', 'Generate a Pseudo-translation to use for testing. This will pretend to be French.'
@@ -82,13 +69,10 @@ module ZendeskAppsTools
     def pseudotranslate
       setup_path(options[:path]) if options[:path]
 
-      en_json = JSON.parse(File.open("#{destination_root}/translations/en.json").read)
-
-      package = en_json['app']['package']
-      say('No package defined inside en.json! Abort.', :red) and exit 1 unless package
+      package = package_name_from_json(error_out: true)
 
       pseudo = build_pseudotranslation(en_json, package)
-      write_json("translations/fr.json", pseudo)
+      write_json('translations/fr.json', pseudo)
     end
 
     def self.source_root
@@ -135,7 +119,9 @@ module ZendeskAppsTools
       def write_yml(en_json, app_name, package_name)
         titles        = to_flattened_namespaced_hash(en_json, :title)
         values        = to_flattened_namespaced_hash(en_json, :value)
-        @translations = titles.each { |k, v| titles[k] = { 'title' => v, 'value' => escape_special_characters(values[k]) } }
+        @translations = titles.each do |k, v|
+          titles[k] = { 'title' => v, 'value' => escape_special_characters(values[k]) }
+        end
         @app_name     = app_name
         @package_name = package_name
         template(File.join(Translate.source_root, 'templates/translation.erb.tt'), 'translations/en.yml')
@@ -159,7 +145,7 @@ module ZendeskAppsTools
       end
 
       def array_to_nested_hash(array)
-        array.inject({}) do |result, item|
+        array.each_with_object({}) do |item, result|
           keys = item['key'].split('.')
           current = result
           keys[0..-2].each do |key|
@@ -176,6 +162,41 @@ module ZendeskAppsTools
         translations = titles.each { |k, v| titles[k] = { 'title' => v, 'value' => "[日本#{values[k]}éñđ]" } }
         translations['app.package'] = package_name # don't pseudo translate the package name
         nest_translations_hash(translations, '')
+      end
+
+      def locale_list
+        say('Fetching translations...')
+        require 'net/http'
+        require 'faraday'
+        locale_response = Faraday.get(LOCALE_ENDPOINT)
+
+        return JSON.parse(locale_response.body)['locales'] if locale_response.status == 200
+        if locale_response.status == 401
+          say_error_and_exit 'Authentication failed'
+        else
+          say_error_and_exit "Failed to download locales, got HTTP status #{locale_response.status}"
+        end
+      end
+
+      def package_name_for_update
+        options[:package_name] ||
+          package_name_from_json(error_out: options[:unattended]) ||
+          get_value_from_stdin('What is the package name for this app? (without leading app_)',
+                               valid_regex: /^[a-z_]+$/,
+                               error_msg: 'Invalid package name, try again:')
+      end
+
+      def en_json
+        @en_json ||= begin
+          path = "#{destination_root}/translations/en.json"
+          JSON.parse(File.open(path).read) if File.exist? path
+        end
+      end
+
+      def package_name_from_json(error_out: false)
+        package = en_json && en_json['app']['package']
+        return package if package
+        say_error_and_exit 'No package defined inside en.json!' if error_out
       end
     end
   end
