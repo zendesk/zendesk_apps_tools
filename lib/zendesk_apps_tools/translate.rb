@@ -12,7 +12,7 @@ module ZendeskAppsTools
     LOCALE_ENDPOINT = 'https://support.zendesk.com/api/v2/locales/agent.json'
 
     desc 'to_yml', 'Create Zendesk translation file from en.json'
-    method_option :path, default: './', required: false
+    shared_options(except: [:clean])
     def to_yml
       setup_path(options[:path]) if options[:path]
       manifest = JSON.parse(File.open("#{destination_root}/manifest.json").read)
@@ -32,7 +32,7 @@ module ZendeskAppsTools
     end
 
     desc 'to_json', 'Convert Zendesk translation yml to I18n formatted json'
-    method_option :path, default: './', required: false
+    shared_options(except: [:clean])
     def to_json
       require 'yaml'
       setup_path(options[:path]) if options[:path]
@@ -46,8 +46,9 @@ module ZendeskAppsTools
     end
 
     desc 'update', 'Update translation files from Zendesk'
-    method_option :path, default: './', required: false
-    def update()
+    shared_options(except: [:clean])
+    method_option :package_name, type: :string
+    def update
       setup_path(options[:path]) if options[:path]
       app_package = get_value_from_stdin('What is the package name for this app? (without app_)', valid_regex: /^[a-z_]+$/, error_msg: 'Invalid package name, try again:')
 
@@ -77,7 +78,7 @@ module ZendeskAppsTools
     end
 
     desc 'pseudotranslate', 'Generate a Pseudo-translation to use for testing. This will pretend to be French.'
-    method_option :path, default: './', required: false
+    shared_options(except: [:clean])
     def pseudotranslate
       setup_path(options[:path]) if options[:path]
 

@@ -14,6 +14,10 @@ module ZendeskAppsTools
     include ZendeskAppsTools::Directory
     include ZendeskAppsTools::PackageHelper
 
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
+
     def cache
       @cache ||= begin
         require 'zendesk_apps_tools/cache'

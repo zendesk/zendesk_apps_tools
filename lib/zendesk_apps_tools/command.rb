@@ -10,11 +10,6 @@ module ZendeskAppsTools
     include Thor::Actions
     include ZendeskAppsTools::CommandHelpers
 
-    SHARED_OPTIONS = {
-      ['path', '-p'] => './',
-      clean: false
-    }.freeze
-
     map %w(-v) => :version
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
@@ -64,7 +59,7 @@ module ZendeskAppsTools
     end
 
     desc 'validate', 'Validate your app'
-    method_options SHARED_OPTIONS
+    shared_options(except: [:unattended])
     def validate
       setup_path(options[:path])
       begin
@@ -93,7 +88,7 @@ module ZendeskAppsTools
     end
 
     desc 'package', 'Package your app'
-    method_options SHARED_OPTIONS
+    shared_options(except: [:unattended])
     def package
       return false unless invoke(:validate, [])
 
@@ -154,7 +149,7 @@ module ZendeskAppsTools
     end
 
     desc 'create', 'Create app on your account'
-    method_options SHARED_OPTIONS
+    shared_options
     method_option :zipfile, default: nil, required: false, type: :string
     def create
       cache.clear
@@ -168,7 +163,7 @@ module ZendeskAppsTools
     end
 
     desc 'update', 'Update app on the server'
-    method_options SHARED_OPTIONS
+    shared_options
     method_option :zipfile, default: nil, required: false, type: :string
     def update
       cache.clear
