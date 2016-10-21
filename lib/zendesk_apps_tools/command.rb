@@ -123,6 +123,7 @@ module ZendeskAppsTools
     method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
     method_option :port, default: DEFAULT_SERVER_PORT, required: false
     method_option :app_id, default: DEFAULT_APP_ID, required: false
+    method_option :bind, default: "127.0.0.1", required: false
     def server
       setup_path(options[:path])
       manifest = app_package.manifest
@@ -139,6 +140,7 @@ module ZendeskAppsTools
       require 'zendesk_apps_tools/server'
       ZendeskAppsTools::Server.tap do |server|
         server.set :settings_helper, settings_helper
+        server.set :bind, options[:bind]
         server.set :port, options[:port]
         server.set :root, options[:path]
         server.set :public_folder, File.join(options[:path], 'assets')
