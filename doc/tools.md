@@ -12,7 +12,7 @@ The tools consist of the following commands.
 
 Creates all the files necessary to start building a Zendesk app.
 
-    $ zat new
+    $ zat new --v1
 
 Example:
 
