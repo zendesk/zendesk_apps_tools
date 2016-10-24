@@ -78,7 +78,7 @@ module ZendeskAppsTools
         say_status 'validate', 'OK'
       else
         errors.each do |e|
-          say_status 'validate', e.to_s
+          say_status 'validate', e.to_s, :red
         end
       end
 
