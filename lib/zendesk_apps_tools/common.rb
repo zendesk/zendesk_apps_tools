@@ -63,6 +63,13 @@ module ZendeskAppsTools
       password
     end
 
+    def json_or_die(value)
+      require 'json'
+      JSON.parse(value)
+    rescue JSON::ParserError
+      say_error_and_exit value
+    end
+
     private
 
     def error_if_unattended(prompt)

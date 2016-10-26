@@ -84,7 +84,7 @@ module ZendeskAppsTools
         Thread.new do
           say("Fetching #{locale['locale']}")
           json = Faraday.get("#{locale['url']}?include=translations&packages=app_#{app_package}").body
-          JSON.parse(json)['locale']
+          json_or_die(json)['locale']
         end
       end
 
@@ -170,7 +170,7 @@ module ZendeskAppsTools
         require 'faraday'
         locale_response = Faraday.get(LOCALE_ENDPOINT)
 
-        return JSON.parse(locale_response.body)['locales'] if locale_response.status == 200
+        return json_or_die(locale_response.body)['locales'] if locale_response.status == 200
         if locale_response.status == 401
           say_error_and_exit 'Authentication failed'
         else
