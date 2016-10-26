@@ -30,9 +30,9 @@ module ZendeskAppsTools
       payload = { uploaded_data: Faraday::UploadIO.new(package_path, 'application/zip') }
 
       response = connection.post('/api/v2/apps/uploads.json', payload)
-      JSON.parse(response.body)['id']
+      json_or_die(response.body)['id']
 
-    rescue Faraday::Error::ClientError, JSON::ParserError => e
+    rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
     end
 
@@ -44,7 +44,7 @@ module ZendeskAppsTools
 
       all_apps = connection.get('/api/v2/apps.json').body
 
-      app_json = JSON.parse(all_apps)['apps'].find { |app| app['name'] == name }
+      app_json = json_or_die(all_apps)['apps'].find { |app| app['name'] == name }
       say_error_and_exit('The app was not found. Please verify your credentials, subdomain, and app name are correct.') unless app_json
       app_id = app_json['id']
 
@@ -56,7 +56,7 @@ module ZendeskAppsTools
 
     def check_status(response)
       job = response.body
-      job_response = JSON.parse(job)
+      job_response = json_or_die(job)
       say_error_and_exit job_response['error'] if job_response['error']
 
       job_id = job_response['job_id']
@@ -68,7 +68,7 @@ module ZendeskAppsTools
 
       loop do
         response = connection.get("/api/v2/apps/job_statuses/#{job_id}")
-        info     = JSON.parse(response.body)
+        info     = json_or_die(response.body)
         status   = info['status']
         message  = info['message']
         app_id   = info['app_id']
