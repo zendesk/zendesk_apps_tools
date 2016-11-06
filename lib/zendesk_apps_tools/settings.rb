@@ -53,7 +53,7 @@ module ZendeskAppsTools
       end
 
       parameters.each_with_object({}) do |param, settings|
-        input = settings_data[param['name']] || param['default']
+        input = settings_data.fetch(param['name'], param['default'])
 
         if !input && param['required']
           @cli.say_error "'#{param['name']}' is required but not specified in the config file.\n"
