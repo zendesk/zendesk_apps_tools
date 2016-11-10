@@ -66,7 +66,9 @@ module ZendeskAppsTools
         errors = app_package.validate(marketplace: false)
       rescue ExecJS::RuntimeError
         error = "There was an error trying to validate this app.\n"
-        if ExecJS.runtime.name == 'JScript'
+        if ExecJS.runtime.nil?
+          error += 'Validation relies on a JavaScript runtime. See https://github.com/rails/execjs for a list of available runtimes.'
+        elsif ExecJS.runtime.name == 'JScript'
           error += 'To validate on Windows, please install node from https://nodejs.org/'
         end
         say_error_and_exit error
