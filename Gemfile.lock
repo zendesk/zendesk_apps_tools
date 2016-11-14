@@ -7,7 +7,7 @@ PATH
       sinatra (~> 1.4.6)
       sinatra-cross_origin (~> 0.3.1)
       thor (~> 0.19.1)
-      zendesk_apps_support (~> 3.1.4)
+      zendesk_apps_support (~> 3.1.5)
 
 GEM
   remote: https://rubygems.org/
@@ -57,7 +57,7 @@ GEM
     multi_json (1.12.1)
     multi_test (0.1.2)
     multipart-post (2.0.0)
-    rack (1.6.4)
+    rack (1.6.5)
     rack-protection (1.5.3)
       rack
     rake (11.3.0)
@@ -88,7 +88,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    zendesk_apps_support (3.1.4)
+    zendesk_apps_support (3.1.5)
       erubis
       i18n
       image_size
