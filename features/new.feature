@@ -109,7 +109,7 @@ Feature: create a template for a new zendesk app
  },
  "defaultLocale": "en",
  "private": true,
- "location": { "zendesk":
+ "location": { "support":
    { "ticket_sidebar": "assets/iframe.html" }
  },
  "version": "1.0",
