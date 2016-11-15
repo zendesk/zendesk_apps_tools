@@ -7,7 +7,7 @@
   },
   "defaultLocale": "en",
   "private": true,
-  "location": { "zendesk":
+  "location": { "support":
     { "ticket_sidebar": "<%= @iframe_location %>" }
   },
   "version": "1.0",
