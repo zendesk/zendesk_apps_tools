@@ -38,29 +38,31 @@ module ZendeskAppsTools
     end
 
     def get_value_from_stdin(prompt, opts = {})
-      error_if_unattended(prompt)
-      options = {
-        valid_regex: opts[:allow_empty] ? /^.*$/ : /\S+/,
-        error_msg: 'Invalid, try again:',
-        allow_empty: false
-      }.merge(opts)
+      error_or_default_if_unattended(prompt, opts) do
+        options = {
+          valid_regex: opts[:allow_empty] ? /^.*$/ : /\S+/,
+          error_msg: 'Invalid, try again:',
+          allow_empty: false
+        }.merge(opts)
 
-      thor_options = { default: options[:default] }
+        thor_options = { default: options[:default] }
 
-      while input = ask(prompt, thor_options)
-        return '' if options[:allow_empty] && input.empty?
-        break if input.to_s =~ options[:valid_regex]
-        say_error options[:error_msg]
+        while input = ask(prompt, thor_options)
+          return '' if options[:allow_empty] && input.empty?
+          break if input.to_s =~ options[:valid_regex]
+          say_error options[:error_msg]
+        end
+
+        input
       end
-
-      input
     end
 
     def get_password_from_stdin(prompt)
-      error_if_unattended(prompt)
-      password = ask(prompt, echo: false)
-      say ''
-      password
+      error_or_default_if_unattended(prompt, opts) do
+        password = ask(prompt, echo: false)
+        say ''
+        password
+      end
     end
 
     def json_or_die(value)
@@ -72,10 +74,14 @@ module ZendeskAppsTools
 
     private
 
-    def error_if_unattended(prompt)
-      return unless options[:unattended]
-      say_error 'Would have prompted for a value interactively, but we are running unattended.'
-      say_error_and_exit prompt
+    def error_or_default_if_unattended(prompt, opts)
+      if options[:unattended]
+        return opts[:default] if opts[:default]
+        say_error 'Would have prompted for a value interactively, but zat is not listening to keyboard input.'
+        say_error_and_exit prompt
+      else
+        yield
+      end
     end
   end
 end
