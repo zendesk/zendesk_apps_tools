@@ -76,7 +76,7 @@ module ZendeskAppsTools
 
     def error_or_default_if_unattended(prompt, opts = {})
       if options[:unattended]
-        return opts[:default] if opts[:default]
+        return opts[:default] if opts.key? :default
         say_error 'Would have prompted for a value interactively, but zat is not listening to keyboard input.'
         say_error_and_exit prompt
       else

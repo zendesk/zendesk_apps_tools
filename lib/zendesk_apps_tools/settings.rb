@@ -10,7 +10,7 @@ module ZendeskAppsTools
       return {} if parameters.nil?
 
       parameters.inject({}) do |settings, param|
-        if param['default']
+        if param.key? 'default'
           input = @cli.get_value_from_stdin("Enter a value for parameter '#{param['name']}':\n", default: param['default'])
         elsif param['required']
           input = @cli.get_value_from_stdin("Enter a value for required parameter '#{param['name']}':\n")
