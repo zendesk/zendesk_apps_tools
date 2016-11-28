@@ -58,7 +58,7 @@ module ZendeskAppsTools
     end
 
     def get_password_from_stdin(prompt)
-      error_or_default_if_unattended(prompt, opts) do
+      error_or_default_if_unattended(prompt) do
         password = ask(prompt, echo: false)
         say ''
         password
@@ -74,7 +74,7 @@ module ZendeskAppsTools
 
     private
 
-    def error_or_default_if_unattended(prompt, opts)
+    def error_or_default_if_unattended(prompt, opts = {})
       if options[:unattended]
         return opts[:default] if opts[:default]
         say_error 'Would have prompted for a value interactively, but zat is not listening to keyboard input.'
