@@ -121,7 +121,7 @@ module ZendeskAppsTools
     DEFAULT_APP_ID = 0
 
     desc 'server', 'Run a http server to serve the local app'
-    method_option :path, default: DEFAULT_SERVER_PATH, required: false, aliases: '-p'
+    shared_options(except: [:clean])
     method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
     method_option :port, default: DEFAULT_SERVER_PORT, required: false
     method_option :app_id, default: DEFAULT_APP_ID, required: false
