@@ -94,6 +94,8 @@ module ZendeskAppsTools
     def package
       return false unless invoke(:validate, [])
 
+      say_status 'warning', 'Please note that the name key of manifest.json is currently only used in development.', :yellow if app_package.manifest.name
+
       setup_path(options[:path])
       archive_path = File.join(tmp_dir, "app-#{Time.now.strftime('%Y%m%d%H%M%S')}.zip")
 
