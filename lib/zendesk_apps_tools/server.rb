@@ -15,7 +15,7 @@ module ZendeskAppsTools
       settings.parameters = new_settings if new_settings
 
       package = ZendeskAppsSupport::Package.new(settings.root, false)
-      app_name = ENV.fetch('ZAT_APP_NAME', 'Local App')
+      app_name = package.manifest.name || 'Local App'
       installation = ZendeskAppsSupport::Installation.new(
         id: settings.app_id,
         app_id: settings.app_id,
