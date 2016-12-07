@@ -57,7 +57,7 @@ module ZendeskAppsTools
 
           locale_name = ZendeskAppsTools::LocaleIdentifier.new(locale['locale']).locale_id
           write_json(
-            "#{destination_root}/translations/#{locale_name}.json",
+            "translations/#{locale_name}.json",
             nest_translations_hash(translations, "txt.apps.#{app_package}.")
           )
         end
