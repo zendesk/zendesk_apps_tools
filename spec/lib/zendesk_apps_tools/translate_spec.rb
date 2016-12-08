@@ -89,6 +89,7 @@ describe ZendeskAppsTools::Translate do
       allow(translate).to receive(:create_file)
 
       expect(translate).to receive(:nest_translations_hash).once.and_return({})
+      expect(translate).to receive(:write_json).once.with("translations/en.json", {})
 
       stub_request(:get, "https://support.zendesk.com/api/v2/locales/agent.json").
          to_return(:status => 200, :body => JSON.dump('locales' => [{ 'url' => 'https://support.zendesk.com/api/v2/rosetta/locales/1.json', 'locale' => 'en' }]))
