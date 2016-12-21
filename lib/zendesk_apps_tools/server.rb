@@ -27,14 +27,14 @@ module ZendeskAppsTools
         created_at: Time.now.iso8601
       )
 
-      app_js = package.compile_js(
+      app_js = package.compile(
         app_id: settings.app_id,
         app_name: app_name,
         assets_dir: "http://localhost:#{settings.port}/",
         locale: params['locale']
       )
 
-      ZendeskAppsSupport::Installed.new([app_js], [installation]).compile_js
+      ZendeskAppsSupport::Installed.new([app_js], [installation]).compile
     end
 
     enable :cross_origin
