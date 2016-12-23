@@ -28,12 +28,11 @@ module ZendeskAppsTools
     end
 
     def refresh!
-      if File.exist? @filepath
-        curr_mtime = File.stat(@filepath).mtime
-        if curr_mtime > @last_mtime
-          @last_mtime = curr_mtime
-          get_settings_from_file(@filepath, @parameters)
-        end
+      return unless File.file? @filepath
+      curr_mtime = File.stat(@filepath).mtime
+      if curr_mtime > @last_mtime
+        @last_mtime = curr_mtime
+        get_settings_from_file(@filepath, @parameters)
       end
     end
 
