@@ -30,7 +30,7 @@ module ZendeskAppsTools
     def refresh!
       return unless File.file? @filepath
       curr_mtime = File.stat(@filepath).mtime
-      if curr_mtime > @last_mtime
+      if @last_mtime.nil? || curr_mtime > @last_mtime
         @last_mtime = curr_mtime
         get_settings_from_file(@filepath, @parameters)
       end
