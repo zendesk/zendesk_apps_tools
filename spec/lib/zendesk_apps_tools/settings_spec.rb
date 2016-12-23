@@ -207,4 +207,25 @@ describe ZendeskAppsTools::Settings do
       end
     end
   end
+
+  describe '#refresh!' do
+    before do
+      @context.get_settings_from_file('test path', [])
+    end
+    it 'does not crash' do
+      @context.refresh!
+    end
+
+    context 'when the file exists' do
+      before do
+        allow(File).to receive(:file?).and_return(true)
+        allow(File).to receive(:stat).and_return(double('File::Stat', mtime: Time.now))
+      end
+
+      it 'works' do
+        expect(@context).to receive :get_settings_from_file
+        @context.refresh!
+      end
+    end
+  end
 end
