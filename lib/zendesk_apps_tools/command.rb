@@ -121,13 +121,13 @@ module ZendeskAppsTools
     DEFAULT_SERVER_PATH = './'
     DEFAULT_CONFIG_PATH = './settings.yml'
     DEFAULT_SERVER_PORT = '4567'
-    DEFAULT_APP_ID = '0'
+    DEFAULT_APP_ID = 0
 
     desc 'server', 'Run a http server to serve the local app'
     shared_options(except: [:clean])
     method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
     method_option :port, default: DEFAULT_SERVER_PORT, required: false
-    method_option :app_id, default: DEFAULT_APP_ID, required: false
+    method_option :app_id, default: DEFAULT_APP_ID, required: false, type: :numeric
     method_option :bind, required: false
     def server
       setup_path(options[:path])
