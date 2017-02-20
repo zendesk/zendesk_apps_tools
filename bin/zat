@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+default_ext = Encoding.default_external
+unless default_ext == Encoding::UTF_8
+  Encoding.default_external = Encoding::UTF_8
+  puts "Warning: unexpected string encoding: #{default_ext}, zat runs best in UTF-8."
+  puts 'Please set the RUBYOPT environment variable to "-E utf-8".'
+end
 lib_dir = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift lib_dir unless $LOAD_PATH.include?(lib_dir)
 ENV['THOR_SHELL'] = 'Color'
