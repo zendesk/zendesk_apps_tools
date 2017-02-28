@@ -153,7 +153,7 @@ module ZendeskAppsTools
         server.set :public_folder, File.join(options[:path], 'assets')
         server.set :parameters, settings
         server.set :app_id, options[:app_id]
-        server.set :install_id, options[:install_id]
+        server.set :install_id, options[:install_id] || options[:app_id] # backwards compatible
         server.run!
       end
     end
