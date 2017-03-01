@@ -17,7 +17,7 @@ module ZendeskAppsTools
       package = ZendeskAppsSupport::Package.new(settings.root, false)
       app_name = package.manifest.name || 'Local App'
       installation = ZendeskAppsSupport::Installation.new(
-        id: settings.app_id,
+        id: settings.install_id,
         app_id: settings.app_id,
         app_name: app_name,
         enabled: true,
