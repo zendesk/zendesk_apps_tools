@@ -3,7 +3,7 @@ PATH
   specs:
     zendesk_apps_tools (1.37.4)
       faraday (~> 0.9.2)
-      rubyzip (~> 1.2.0)
+      rubyzip (~> 1.2.1)
       sinatra (~> 1.4.6)
       sinatra-cross_origin (~> 0.3.1)
       thor (~> 0.19.4)
@@ -74,7 +74,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    rubyzip (1.2.0)
+    rubyzip (1.2.1)
     safe_yaml (1.0.4)
     sass (3.4.23)
     sassc (1.11.2)
