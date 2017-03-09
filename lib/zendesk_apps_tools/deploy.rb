@@ -88,7 +88,7 @@ module ZendeskAppsTools
         if %w(completed failed).include? status
           case status
           when 'completed'
-            cache.save 'app_id' => app_id
+            cache.save 'app_id' => app_id if app_id
             say_status @command, 'OK'
           when 'failed'
             say_status @command, message, :red

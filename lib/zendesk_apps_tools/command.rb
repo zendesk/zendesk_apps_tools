@@ -161,7 +161,6 @@ module ZendeskAppsTools
       has_requirements = File.exist?(File.join(options[:path], 'requirements.json'))
       say_status 'Install', 'installing'
       install_app(has_requirements, app_id: cache.fetch('app_id'), settings: settings.merge(name: app_name))
-      say_status 'Install', 'OK'
     end
 
     desc 'update', 'Update app on the server'
