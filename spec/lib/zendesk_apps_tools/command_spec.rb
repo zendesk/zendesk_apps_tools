@@ -52,11 +52,17 @@ describe ZendeskAppsTools::Command do
       it 'uploads a file and posts build api' do
         expect(@command).to receive(:upload).and_return(123)
         allow(@command).to receive(:check_status)
-        expect(File).to receive(:read) { '{ "name": "abc" }' }
+        expect(@command).to receive(:manifest).and_return(double('manifest', name: 'abc', original_parameters: [])).at_least(:once)
+        allow(@command).to receive(:options) { { clean: false, path: './', config: './settings.json' } }
 
         stub_request(:post, PREFIX + '/api/v2/apps.json')
           .with(body: JSON.generate(name: 'abc', upload_id: '123'),
                 headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+
+        stub_request(:post, PREFIX + '/api/v2/apps/installations.json')
+          .with(body: JSON.generate(app_id: nil, settings: { name: 'abc' }),
+                headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=', 'Content-Type' => 'application/json' })
+
 
         @command.create
       end
@@ -66,13 +72,18 @@ describe ZendeskAppsTools::Command do
       it 'uploads the zipfile and posts build api' do
         expect(@command).to receive(:upload).and_return(123)
         allow(@command).to receive(:check_status)
-        allow(@command).to receive(:options) { { clean: false, path: './', zipfile: 'abc.zip' } }
+        allow(@command).to receive(:options) { { clean: false, path: './', zipfile: 'abc.zip', config: './settings.json' } }
+        expect(@command).to receive(:manifest).and_return(double('manifest', name: 'abc', original_parameters: [])).at_least(:once)
 
         expect(@command).to receive(:get_value_from_stdin) { 'abc' }
 
         stub_request(:post, PREFIX + '/api/v2/apps.json')
           .with(body: JSON.generate(name: 'abc', upload_id: '123'),
                 headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+
+        stub_request(:post, PREFIX + '/api/v2/apps/installations.json')
+          .with(body: JSON.generate(app_id: nil, settings: { name: 'abc' }),
+                headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=', 'Content-Type' => 'application/json' })
 
         @command.create
       end
