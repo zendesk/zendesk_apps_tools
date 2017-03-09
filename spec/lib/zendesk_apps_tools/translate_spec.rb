@@ -101,6 +101,39 @@ describe ZendeskAppsTools::Translate do
     end
   end
 
+  describe '#create_file' do
+    let(:translate) { ZendeskAppsTools::Translate.new }
+    let(:test_file_path) { '/tmp/test.json' }
+
+    before do
+      allow(translate).to receive(:options) { { unattended: true } }
+    end
+
+    after do
+      File.delete(test_file_path)
+    end
+
+    it 'works for identical ascii' do
+      translate.create_file(test_file_path, JSON.pretty_generate({ node: "test abc" }) + "\n", force: true)
+      expect { translate.write_json(test_file_path, { node: "test abc" }) }.to output("   identical  #{test_file_path}\n").to_stdout
+    end
+
+    it 'works for identical ascii' do
+      translate.create_file(test_file_path, JSON.pretty_generate({ node: "test abc" }) + "\n", force: true)
+      expect { translate.write_json(test_file_path, { node: "test xyz" }) }.to output("       force  #{test_file_path}\n").to_stdout
+    end
+
+    it 'works for identical utf8' do
+      translate.create_file(test_file_path, JSON.pretty_generate({ node: "حدثت أخطاء أثناء التحقق من قائمة عملائك" }) + "\n", force: true)
+      expect { translate.write_json(test_file_path, { node: "حدثت أخطاء أثناء التحقق من قائمة عملائك" }) }.to output("   identical  #{test_file_path}\n").to_stdout
+    end
+
+    it 'works for identical ascii' do
+      translate.create_file(test_file_path, JSON.pretty_generate({ node: "حدثت أخطاء أثناء التحقق من قائمة عملائك" }) + "\n", force: true)
+      expect { translate.write_json(test_file_path, { node: "自动回复机器" }) }.to output("       force  #{test_file_path}\n").to_stdout
+    end
+  end
+
   describe "#pseudotranslate" do
     it 'generates a json file for the specified locale' do
       root = 'spec/fixture/i18n_app_pseudotranslate'
