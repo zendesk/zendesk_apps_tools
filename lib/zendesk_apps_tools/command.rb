@@ -131,16 +131,6 @@ module ZendeskAppsTools
     method_option :bind, required: false
     def server
       setup_path(options[:path])
-      manifest = app_package.manifest
-
-      require 'zendesk_apps_tools/settings'
-      settings_helper = ZendeskAppsTools::Settings.new(self)
-
-      settings = settings_helper.get_settings_from_file options[:config], manifest.original_parameters
-
-      unless settings
-        settings = settings_helper.get_settings_from_user_input manifest.original_parameters
-      end
 
       require 'zendesk_apps_tools/server'
       ZendeskAppsTools::Server.tap do |server|
@@ -167,6 +157,10 @@ module ZendeskAppsTools
       end
       app_name ||= get_value_from_stdin('Enter app name:')
       deploy_app(:post, '/api/v2/apps.json', name: app_name)
+      has_requirements = File.exist?(File.join(options[:path], 'requirements.json'))
+      say_status 'Install', 'installing'
+      install_app(has_requirements, app_id: cache.fetch('app_id'), settings: settings.merge(name: app_name))
+      say_status 'Install', 'OK'
     end
 
     desc 'update', 'Update app on the server'
@@ -203,6 +197,18 @@ module ZendeskAppsTools
 
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
+    end
+
+    def settings
+      settings_helper.get_settings_from_file(options[:config], manifest.original_parameters) ||
+        settings_helper.get_settings_from_user_input(manifest.original_parameters)
+    end
+
+    def settings_helper
+      @settings_helper ||= begin
+        require 'zendesk_apps_tools/settings'
+        ZendeskAppsTools::Settings.new(self)
+      end
     end
   end
 end
