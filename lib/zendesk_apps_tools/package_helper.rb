@@ -7,7 +7,7 @@ module ZendeskAppsTools
     end
 
     def manifest
-      app_package.manifest
+      @manifest ||= app_package.manifest
     end
 
     def zip(archive_path)

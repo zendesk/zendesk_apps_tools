@@ -148,12 +148,13 @@ module ZendeskAppsTools
     desc 'create', 'Create app on your account'
     shared_options
     method_option :zipfile, default: nil, required: false, type: :string
+    method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
     def create
       cache.clear
       @command = 'Create'
 
       unless options[:zipfile]
-        app_name = JSON.parse(File.read(File.join options[:path], 'manifest.json'))['name']
+        app_name = manifest.name
       end
       app_name ||= get_value_from_stdin('Enter app name:')
       deploy_app(:post, '/api/v2/apps.json', name: app_name)
