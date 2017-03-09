@@ -70,7 +70,7 @@ module ZendeskAppsTools
       say_error_and_exit job_response['error'] if job_response['error']
 
       if poll_job
-        job_id = job_response['job_id']
+        job_id = job_response['job_id'] || job_response['pending_job_id']
         check_job job_id
       end
     end
