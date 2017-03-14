@@ -16,6 +16,16 @@ module ZendeskAppsTools
       say_error_and_exit e.message
     end
 
+    def install_app(poll_job, installation)
+      connection = get_connection
+      response = connection.post do |req|
+        req.url 'api/v2/apps/installations.json'
+        req.headers[:content_type] = 'application/json'
+        req.body = JSON.generate(installation)
+      end
+      check_status(response, poll_job)
+    end
+
     def upload(path)
       connection = get_connection :multipart
       zipfile_path = options[:zipfile]
@@ -54,13 +64,15 @@ module ZendeskAppsTools
       say_error_and_exit e.message
     end
 
-    def check_status(response)
+    def check_status(response, poll_job = true)
       job = response.body
       job_response = json_or_die(job)
       say_error_and_exit job_response['error'] if job_response['error']
 
-      job_id = job_response['job_id']
-      check_job job_id
+      if poll_job
+        job_id = job_response['job_id'] || job_response['pending_job_id']
+        check_job job_id
+      end
     end
 
     def check_job(job_id)
@@ -76,7 +88,7 @@ module ZendeskAppsTools
         if %w(completed failed).include? status
           case status
           when 'completed'
-            cache.save 'app_id' => app_id
+            cache.save 'app_id' => app_id if app_id
             say_status @command, 'OK'
           when 'failed'
             say_status @command, message, :red

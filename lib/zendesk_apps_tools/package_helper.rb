@@ -6,6 +6,10 @@ module ZendeskAppsTools
       @app_package ||= ZendeskAppsSupport::Package.new(app_dir.to_s)
     end
 
+    def manifest
+      @manifest ||= app_package.manifest
+    end
+
     def zip(archive_path)
       require 'zip'
       Zip::File.open(archive_path, 'w') do |zipfile|
