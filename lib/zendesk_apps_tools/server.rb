@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/cross_origin'
+require 'zendesk_apps_support' # dependency of zendesk_apps_support/package
 require 'zendesk_apps_support/package'
 
 module ZendeskAppsTools
