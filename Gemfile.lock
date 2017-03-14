@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zendesk_apps_tools (1.37.5)
+    zendesk_apps_tools (2.0.0)
       faraday (~> 0.9.2)
       rubyzip (~> 1.2.1)
       sinatra (~> 1.4.6)
@@ -92,14 +92,14 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    zendesk_apps_support (3.3.7)
+    zendesk_apps_support (3.3.9)
       erubis
       i18n
       image_size
       jshintrb (~> 0.3.0)
       json
       sass
-      sassc (~> 1.11.0)
+      sassc (~> 1.11.2)
 
 PLATFORMS
   ruby
