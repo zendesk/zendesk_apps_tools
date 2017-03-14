@@ -145,7 +145,7 @@ module ZendeskAppsTools
       end
     end
 
-    desc 'create', 'Create app on your account'
+    desc 'create', 'Create and install app on your account'
     shared_options
     method_option :zipfile, default: nil, required: false, type: :string
     method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
