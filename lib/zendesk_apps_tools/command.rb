@@ -149,6 +149,7 @@ module ZendeskAppsTools
     shared_options
     method_option :zipfile, default: nil, required: false, type: :string
     method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
+    method_option :install, default: true, type: :boolean, desc: 'Also create an installation with some settings immediately after uploading.'
     def create
       cache.clear
       @command = 'Create'
@@ -159,6 +160,7 @@ module ZendeskAppsTools
       app_name ||= get_value_from_stdin('Enter app name:')
       deploy_app(:post, '/api/v2/apps.json', name: app_name)
       has_requirements = File.exist?(File.join(options[:path], 'requirements.json'))
+      return unless options[:install]
       say_status 'Install', 'installing'
       install_app(has_requirements, app_id: cache.fetch('app_id'), settings: settings.merge(name: app_name))
     end
