@@ -92,7 +92,7 @@ module ZendeskAppsTools
     desc 'package', 'Package your app'
     shared_options(except: [:unattended])
     def package
-      return false unless invoke(:validate, [])
+      return false unless validate
 
       setup_path(options[:path])
 
