@@ -92,7 +92,7 @@ module ZendeskAppsTools
     desc 'package', 'Package your app'
     shared_options(except: [:unattended])
     def package
-      return false unless invoke(:validate, [])
+      return false unless validate
 
       setup_path(options[:path])
 
@@ -152,6 +152,7 @@ module ZendeskAppsTools
     method_option :install, default: true, type: :boolean, desc: 'Also create an installation with some settings immediately after uploading.'
     def create
       cache.clear
+      setup_path(options[:path])
       @command = 'Create'
 
       unless options[:zipfile]
@@ -170,6 +171,7 @@ module ZendeskAppsTools
     method_option :zipfile, default: nil, required: false, type: :string
     def update
       cache.clear
+      setup_path(options[:path])
       @command = 'Update'
 
       app_id = cache.fetch('app_id') || find_app_id

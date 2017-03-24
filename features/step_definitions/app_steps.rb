@@ -31,6 +31,12 @@ Given /^a(n|(?: v1)) app is created in directory "(.*?)"$/ do |version, app_dir|
     )
 end
 
+Given /^a \.zat file in "(.*?)"/ do |app_dir|
+  f = File.new(File.join(app_dir, '.zat'), 'w')
+  f.write(JSON.dump(username: 'test@user.com', password: 'hunter2', subdomain: 'app-account'))
+  f.close
+end
+
 When /^I run "(.*?)" command with the following details:$/ do |cmd, table|
   IO.popen(cmd, 'w+') do |pipe|
     # [ ['parameter name', 'value'] ]
@@ -49,8 +55,9 @@ When /^I create a symlink from "(.*?)" to "(.*?)"$/ do |src, dest|
   FileUtils.ln_s(src, dest)
 end
 
-When /^I run the command "(.*?)" to (validate|package|clean) the app$/ do |cmd, _action|
-  IO.popen(cmd, 'w+') do |pipe|
+When /^I run the command "(.*?)" to (validate|package|clean|create) the app$/ do |cmd, _action|
+  env_hash = prepare_env_hash_for(cmd)
+  IO.popen(env_hash, cmd, 'w+') do |pipe|
     pipe.puts "\n"
     pipe.close_write
     @output = pipe.readlines
