@@ -56,12 +56,7 @@ When /^I create a symlink from "(.*?)" to "(.*?)"$/ do |src, dest|
 end
 
 When /^I run the command "(.*?)" to (validate|package|clean|create) the app$/ do |cmd, _action|
-  if cmd.start_with? 'zat create'
-    path = File.expand_path('../../support/webmock', __FILE__)
-    env_hash = { 'RUBYOPT' => "-r #{path}" }
-  else
-    env_hash = {}
-  end
+  env_hash = prepare_env_hash_for(cmd)
   cmd.sub!(/^zat/, File.expand_path('../../../bin/zat', __FILE__))
   IO.popen(env_hash, cmd, 'w+') do |pipe|
     pipe.puts "\n"
