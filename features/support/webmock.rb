@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+
+# we only want this file to monkey-patch zat when we shell out to it, but cucumber automatically requires it as well.
 unless defined?(Cucumber)
 
   require 'webmock'
