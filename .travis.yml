@@ -1,5 +1,6 @@
 ---
 language: ruby
+dist: trusty
 rvm:
   - 2.0
   - 2.1

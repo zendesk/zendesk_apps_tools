@@ -57,7 +57,6 @@ end
 
 When /^I run the command "(.*?)" to (validate|package|clean|create) the app$/ do |cmd, _action|
   env_hash = prepare_env_hash_for(cmd)
-  cmd.sub!(/^zat/, File.expand_path('../../../bin/zat', __FILE__)) unless ENV['TRAVIS']
   IO.popen(env_hash, cmd, 'w+') do |pipe|
     pipe.puts "\n"
     pipe.close_write
