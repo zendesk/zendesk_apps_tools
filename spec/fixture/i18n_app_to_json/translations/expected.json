@@ -15,6 +15,10 @@
       "b1": {
         "title": "description for b1 field",
         "value": "value of b1"
+      },
+      "b2": {
+        "title": "description for b2 field",
+        "value": "value of b2"
       }
     }
   }

@@ -37,6 +37,11 @@ module ZendeskAppsTools
       en_yml = YAML.load_file("#{destination_root}/translations/en.yml")
       package = /^txt.apps.([^\.]+)/.match(en_yml['parts'][0]['translation']['key'])[1]
       translations = en_yml['parts'].map { |part| part['translation'] }
+      translations.select! do |translation|
+        obsolete = translation['obsolete']
+        next true unless obsolete
+        Date.parse(obsolete.to_s) > Date.today
+      end
       en_hash = array_to_nested_hash(translations)['txt']['apps'][package]
       en_hash['app']['package'] = package
 

@@ -17,3 +17,19 @@ parts:
       key: "txt.apps.my_app.a.b.b1"
       title: "description for b1 field"
       value: "value of b1"
+      obsolete: 2200-01-01
+  - translation:
+      key: "txt.apps.my_app.a.b.b2"
+      title: "description for b2 field"
+      value: "value of b2"
+      obsolete: "2200-01-01"
+  - translation:
+      key: "txt.apps.my_app.a.b.b3"
+      title: "description for b3 field"
+      value: "value of b3"
+      obsolete: 2017-01-01
+  - translation:
+      key: "txt.apps.my_app.a.b.b4"
+      title: "description for b4 field"
+      value: "value of b4"
+      obsolete: "2017-01-01"
