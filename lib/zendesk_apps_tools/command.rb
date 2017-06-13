@@ -130,6 +130,9 @@ module ZendeskAppsTools
     method_option :app_id, default: DEFAULT_APP_ID, required: false, type: :numeric
     method_option :bind, required: false
     def server
+      if app_package.has_file?('assets/app.js')
+        say 'Warning: creating assets/app.js causes zat server to behave badly.', :yellow
+      end
       setup_path(options[:path])
 
       require 'zendesk_apps_tools/server'
