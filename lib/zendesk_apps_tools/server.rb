@@ -45,6 +45,9 @@ module ZendeskAppsTools
     end
 
     def send_file(*args)
+      # does the request look like a request from the host product for the generated
+      # installed.js file? If so, send that. Otherwise send the static file in the
+      # app's public_folder (./assets).
       if request.env['PATH_INFO'] == '/app.js' && params.key?('locale') && params.key?('subdomain')
         serve_installed_js
       else
