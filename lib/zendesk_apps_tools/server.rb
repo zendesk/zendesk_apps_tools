@@ -9,6 +9,12 @@ module ZendeskAppsTools
     ZENDESK_DOMAINS_REGEX = %r{^http(?:s)?://[a-z0-9-]+\.(?:zendesk|zopim|zd-(?:dev|master|staging))\.com$}
 
     get '/app.js' do
+      serve_installed_js
+    end
+
+    enable :cross_origin
+
+    def serve_installed_js
       access_control_allow_origin
       content_type 'text/javascript'
 
@@ -38,11 +44,16 @@ module ZendeskAppsTools
       ZendeskAppsSupport::Installed.new([app_js], [installation]).compile
     end
 
-    enable :cross_origin
-
     def send_file(*args)
-      access_control_allow_origin
-      super(*args)
+      # does the request look like a request from the host product for the generated
+      # installed.js file? If so, send that. Otherwise send the static file in the
+      # app's public_folder (./assets).
+      if request.env['PATH_INFO'] == '/app.js' && params.key?('locale') && params.key?('subdomain')
+        serve_installed_js
+      else
+        access_control_allow_origin
+        super(*args)
+      end
     end
 
     def request_from_zendesk?
