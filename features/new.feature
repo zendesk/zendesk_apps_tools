@@ -71,8 +71,9 @@ Feature: create a template for a new zendesk app
     """
  {
    "app": {
-     "description": "Play the famous zen tunes in your help desk.",
-     "name": "Buddha Machine"
+      "short_description": "Play the famous zen tunes in your help desk.",
+      "long_description": "Play the famous zen tunes in your help desk and \n listen to the beats it has to offer.",
+      "installation_instructions": "Simply click install."
    },
    "loading": "Welcome to this Sample App",
    "fetch": {
