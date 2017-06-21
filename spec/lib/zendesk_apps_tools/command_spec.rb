@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'command'
+require 'server'
 require 'faraday'
 
 describe ZendeskAppsTools::Command do
@@ -140,6 +141,16 @@ describe ZendeskAppsTools::Command do
 
         expect(old_v).to be < new_v
       end
+    end
+  end
+
+  describe '#server' do
+    it 'runs the server' do
+      path = './tmp/tmp_app'
+      allow(@command).to receive(:options) { { path: path } }
+      expect(ZendeskAppsTools::Server).to receive(:run!)
+      @command.directory('app_template_iframe', path, {})
+      @command.server
     end
   end
 end
