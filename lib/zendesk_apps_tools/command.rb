@@ -27,9 +27,7 @@ module ZendeskAppsTools
                                   aliases: ['--v2']
     method_option :v1, type: :boolean, default: false, desc: 'Create a version 1 app template'
     def new
-      if options[:v1]
-        deprecated_message 'error', '1.0'
-      end
+      deprecated_message('error', '1.0') if options[:v1]
 
       enter = ->(variable) { "Enter this app author's #{variable}:\n" }
       invalid = ->(variable) { "Invalid #{variable}, try again:" }
@@ -55,10 +53,8 @@ module ZendeskAppsTools
 
       prompt_new_app_dir
 
-      skeleton = 'app_template_iframe'
-      is_custom_iframe = @iframe_location != 'assets/iframe.html'
-      directory_options = is_custom_iframe ? { exclude_pattern: /iframe.html/ } : {}
-      directory(skeleton, @app_dir, directory_options)
+      directory_options = @iframe_location != 'assets/iframe.html' ? { exclude_pattern: /iframe.html/ } : {}
+      directory('app_template_iframe', @app_dir, directory_options)
     end
 
     desc 'validate', 'Validate your app'
@@ -213,26 +209,17 @@ module ZendeskAppsTools
 
     def deprecated_message(type = 'warning', target_version = nil)
       target_version ||= manifest.framework_version
-      submission_types = 'submissions'
 
       require 'zendesk_apps_support/app_version'
-      @zas ||= ZendeskAppsSupport::AppVersion.new(target_version)
+      zas = ZendeskAppsSupport::AppVersion.new(target_version)
 
-      if @zas.sunsetting?
-        version_status ||= 'being sunset'
-        cutoff_date = ' from August 1st, 2017'
-      elsif @zas.deprecated?
-        version_status ||= 'deprecated'
-        submission_types += ' or updates'
-      end
+      version_status = zas.sunsetting? ? 'being sunset' : 'deprecated'
+      deprecated_message = zas.sunsetting? ? "No new v#{target_version} app framework submissions will be accepted from August 1st, 2017" : "No new v#{target_version} app framework submissions or updates will be accepted"
+      message = "You are targeting the v#{target_version} app framework, which is #{version_status}. #{deprecated_message}. Consider migrating to the v#{zas.current} framework. For more information: http://goto.zendesk.com/zaf-sunset"
 
-      if @zas.servable?
-        message = "You are targeting the v#{target_version} app framework, which is #{version_status}. No new v#{target_version} app framework #{submission_types} will be accepted#{cutoff_date}. Consider migrating to the v#{@zas.current} framework. For more information: http://goto.zendesk.com/zaf-sunset"
-      end
-
-      if @zas.deprecated? || type == 'error'
+      if zas.deprecated? || type == 'error'
         say_error_and_exit message
-      elsif @zas.sunsetting?
+      elsif zas.sunsetting?
         say_status 'warning', message, :yellow
       end
     end
