@@ -207,9 +207,7 @@ module ZendeskAppsTools
       end
     end
 
-    def deprecated_message(type = 'warning', target_version = nil)
-      target_version ||= manifest.framework_version
-
+    def deprecated_message(type = 'warning', target_version = manifest.framework_version)
       require 'zendesk_apps_support/app_version'
       zas = ZendeskAppsSupport::AppVersion.new(target_version)
 
