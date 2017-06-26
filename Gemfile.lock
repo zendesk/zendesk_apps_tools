@@ -94,7 +94,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    zendesk_apps_support (3.4.3)
+    zendesk_apps_support (3.4.4)
       erubis
       i18n
       image_size
