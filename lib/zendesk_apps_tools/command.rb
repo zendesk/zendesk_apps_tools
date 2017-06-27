@@ -27,7 +27,8 @@ module ZendeskAppsTools
                                   aliases: ['--v2']
     method_option :v1, type: :boolean, default: false, desc: 'Create a version 1 app template'
     def new
-      check_new_options
+      deprecated_message('error', '1.0') if options[:v1]
+
       enter = ->(variable) { "Enter this app author's #{variable}:\n" }
       invalid = ->(variable) { "Invalid #{variable}, try again:" }
       @author_name  = get_value_from_stdin(enter.call('name'),
@@ -52,10 +53,8 @@ module ZendeskAppsTools
 
       prompt_new_app_dir
 
-      skeleton = options[:v1] ? 'app_template' : 'app_template_iframe'
-      is_custom_iframe = !options[:v1] && @iframe_location != 'assets/iframe.html'
-      directory_options = is_custom_iframe ? { exclude_pattern: /iframe.html/ } : {}
-      directory(skeleton, @app_dir, directory_options)
+      directory_options = @iframe_location != 'assets/iframe.html' ? { exclude_pattern: /iframe.html/ } : {}
+      directory('app_template_iframe', @app_dir, directory_options)
     end
 
     desc 'validate', 'Validate your app'
@@ -77,6 +76,7 @@ module ZendeskAppsTools
 
       if valid
         app_package.warnings.each { |w| say w.to_s, :yellow }
+        deprecated_message
         say_status 'validate', 'OK'
       else
         errors.each do |e|
@@ -191,17 +191,6 @@ module ZendeskAppsTools
 
     protected
 
-    def check_new_options
-      if options[:'iframe-only']
-        if options[:v1]
-          say_error_and_exit "Apps can't be created with both --v1 and --v2 (or --iframe-only)."
-        else
-          warning = 'v2 is the default for new apps, the --v2 and --iframe-only options have no effect.'
-          say_status 'warning', warning, :yellow
-        end
-      end
-    end
-
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
     end
@@ -215,6 +204,21 @@ module ZendeskAppsTools
       @settings_helper ||= begin
         require 'zendesk_apps_tools/settings'
         ZendeskAppsTools::Settings.new(self)
+      end
+    end
+
+    def deprecated_message(type = 'warning', target_version = manifest.framework_version)
+      require 'zendesk_apps_support/app_version'
+      zas = ZendeskAppsSupport::AppVersion.new(target_version)
+
+      version_status = zas.sunsetting? ? 'being sunset' : 'deprecated'
+      deprecated_message = zas.sunsetting? ? "No new v#{target_version} app framework submissions will be accepted from August 1st, 2017" : "No new v#{target_version} app framework submissions or updates will be accepted"
+      message = "You are targeting the v#{target_version} app framework, which is #{version_status}. #{deprecated_message}. Consider migrating to the v#{zas.current} framework. For more information: http://goto.zendesk.com/zaf-sunset"
+
+      if zas.deprecated? || type == 'error'
+        say_error_and_exit message
+      elsif zas.sunsetting?
+        say_status 'warning', message, :yellow
       end
     end
   end
