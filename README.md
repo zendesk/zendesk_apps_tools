@@ -24,7 +24,7 @@ Improvements are always welcome. To contribute, please:
 * CC and get two +1 from @zendesk/vegemite.
 
 ## Bugs
-Bugs can be reported as an issue here on github, or submitted to support@zendesk.com. By mentioning this project it will assigned to the right team.
+Bugs can be reported as an issue here on GitHub, or submitted to support@zendesk.com. By mentioning this project it will assigned to the right team.
 
 # Copyright and license
 Copyright 2013 Zendesk
