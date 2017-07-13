@@ -162,11 +162,14 @@ module ZendeskAppsTools
         app_name = manifest.name
       end
       app_name ||= get_value_from_stdin('Enter app name:')
-      deploy_app(:post, '/api/v2/apps.json', name: app_name)
+      deploy_app(:post, '/api/apps.json', name: app_name)
       has_requirements = File.exist?(File.join(options[:path], 'requirements.json'))
       return unless options[:install]
-      say_status 'Install', 'installing'
-      install_app(has_requirements, app_id: cache.fetch('app_id'), settings: settings.merge(name: app_name))
+      product_names = manifest.location_options.collect{ |option| option.location.product_code }.collect{ |code| ZendeskAppsSupport::Product.find_by( code: code ) }.collect(&:name)
+      product_names.each do |product_name|
+        say_status 'Install', "installing in #{product_name}"
+        install_app(has_requirements, product_name, app_id: cache.fetch('app_id'), settings: settings.merge(name: app_name))
+      end
     end
 
     desc 'update', 'Update app on the server'

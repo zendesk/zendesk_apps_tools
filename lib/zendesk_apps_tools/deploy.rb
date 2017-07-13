@@ -16,10 +16,10 @@ module ZendeskAppsTools
       say_error_and_exit e.message
     end
 
-    def install_app(poll_job, installation)
+    def install_app(poll_job, product_name, installation)
       connection = get_connection
       response = connection.post do |req|
-        req.url 'api/v2/apps/installations.json'
+        req.url "api/#{product_name}/apps/installations.json"
         req.headers[:content_type] = 'application/json'
         req.body = JSON.generate(installation)
       end
