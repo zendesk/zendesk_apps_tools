@@ -165,8 +165,7 @@ module ZendeskAppsTools
       deploy_app(:post, '/api/apps.json', name: app_name)
       has_requirements = File.exist?(File.join(options[:path], 'requirements.json'))
       return unless options[:install]
-      product_names = manifest.location_options.collect{ |option| option.location.product_code }.collect{ |code| ZendeskAppsSupport::Product.find_by( code: code ) }.collect(&:name)
-      product_names.each do |product_name|
+      product_names(manifest).each do |product_name|
         say_status 'Install', "installing in #{product_name}"
         install_app(has_requirements, product_name, app_id: cache.fetch('app_id'), settings: settings.merge(name: app_name))
       end
@@ -193,6 +192,14 @@ module ZendeskAppsTools
     end
 
     protected
+
+    def product_names(manifest)
+      product_codes(manifest).collect{ |code| ZendeskAppsSupport::Product.find_by( code: code ) }.collect(&:name)
+    end
+
+    def product_codes(manifest)
+      manifest.location_options.collect{ |option| option.location.product_code } 
+    end
 
     def setup_path(path)
       @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path

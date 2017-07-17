@@ -52,7 +52,7 @@ module ZendeskAppsTools
 
       connection = get_connection
 
-      all_apps = connection.get('/api/v2/apps.json').body
+      all_apps = connection.get('/api/apps.json').body
 
       app_json = json_or_die(all_apps)['apps'].find { |app| app['name'] == name }
       say_error_and_exit('The app was not found. Please verify your credentials, subdomain, and app name are correct.') unless app_json
