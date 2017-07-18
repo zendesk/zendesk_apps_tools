@@ -17,6 +17,7 @@ describe ZendeskAppsTools::Command do
     allow(@command.cache).to receive(:save)
     allow(@command.cache).to receive(:clear)
     allow(@command).to receive(:options) { { clean: false, path: './' } }
+    allow(@command).to receive(:product_names).and_return(['support'])
   end
 
   describe '#upload' do
@@ -57,11 +58,11 @@ describe ZendeskAppsTools::Command do
         allow(@command).to receive(:options).and_return(clean: false, path: './', config: './settings.json', install: true)
         allow(@command.cache).to receive(:fetch).with('app_id').and_return('987')
 
-        stub_request(:post, PREFIX + '/api/v2/apps.json')
+        stub_request(:post, PREFIX + '/api/apps.json')
           .with(body: JSON.generate(name: 'abc', upload_id: '123'),
                 headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
 
-        stub_request(:post, PREFIX + '/api/v2/apps/installations.json')
+        stub_request(:post, PREFIX + '/api/support/apps/installations.json')
           .with(body: JSON.generate(app_id: '987', settings: { name: 'abc' }),
                 headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=', 'Content-Type' => 'application/json' })
 
@@ -78,11 +79,11 @@ describe ZendeskAppsTools::Command do
 
         expect(@command).to receive(:get_value_from_stdin) { 'abc' }
 
-        stub_request(:post, PREFIX + '/api/v2/apps.json')
+        stub_request(:post, PREFIX + '/api/apps.json')
           .with(body: JSON.generate(name: 'abc', upload_id: '123'),
                 headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
 
-        stub_request(:post, PREFIX + '/api/v2/apps/installations.json')
+        stub_request(:post, PREFIX + '/api/support/apps/installations.json')
           .with(body: JSON.generate(app_id: nil, settings: { name: 'abc' }),
                 headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=', 'Content-Type' => 'application/json' })
 
@@ -118,7 +119,7 @@ describe ZendeskAppsTools::Command do
           ]
         }
 
-        stub_request(:get, PREFIX + '/api/v2/apps.json')
+        stub_request(:get, PREFIX + '/api/apps.json')
           .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
           .to_return(body: JSON.generate(apps))
 
