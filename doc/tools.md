@@ -18,7 +18,7 @@ Example:
 
 ![image](https://zen-marketing-documentation.s3.amazonaws.com/docs/en/zat_mac_cmd_new.png)
 
-<span class="alert alert-block alert-warning">Zendesk has announced the sunsetting of this version of the Zendesk Apps framework (ZAF v1). Creating a new app targeting the v1 framework was deprecated in June 2017. For more information, see https://support.zendesk.com/hc/en-us/articles/115004453028. To get started with the newer version of the framework, see the [App Framework v2](https://developer.zendesk.com/apps/docs/apps-v2/getting_started) docs.</span>
+<span class="alert alert-block alert-warning">Zendesk has announced the sunsetting of this version of the Zendesk Apps framework (ZAF v1). Creating a new app targeting the v1 framework was deprecated in June 2017. For more information, see [the announcement](https://support.zendesk.com/hc/articles/115004453028). To get started with the newer version of the framework, see the [App Framework v2](https://developer.zendesk.com/apps/docs/apps-v2/getting_started) docs.</span>
 
 ### Validate
 
