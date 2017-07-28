@@ -25,7 +25,10 @@ module ZendeskAppsTools
                                   default: false,
                                   hide: true,
                                   aliases: ['--v2']
-    method_option :v1, type: :boolean, default: false, desc: 'Create a version 1 app template'
+    method_option :v1, type: :boolean,
+                       default: false,
+                       hide: true,
+                       desc: 'Create a version 1 app template (Deprecated)'
     def new
       deprecated_message('error', '1.0') if options[:v1]
 
