@@ -7,7 +7,11 @@ module ZendeskAppsTools
     end
 
     def manifest
-      @manifest ||= app_package.manifest
+      begin
+        @manifest ||= app_package.manifest
+      rescue
+        say_status "error", "Manifest file cannot be found in the given path. Check you are pointing to the path that contains your manifest.json", :red and exit 1
+      end
     end
 
     def zip(archive_path)
