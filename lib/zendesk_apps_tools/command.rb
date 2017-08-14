@@ -63,6 +63,7 @@ module ZendeskAppsTools
     desc 'validate', 'Validate your app'
     shared_options(except: [:unattended])
     def validate
+      check_for_updates
       setup_path(options[:path])
       begin
         errors = app_package.validate(marketplace: false)
@@ -201,7 +202,7 @@ module ZendeskAppsTools
     end
 
     def product_codes(manifest)
-      manifest.location_options.collect{ |option| option.location.product_code } 
+      manifest.location_options.collect{ |option| option.location.product_code }
     end
 
     def setup_path(path)
