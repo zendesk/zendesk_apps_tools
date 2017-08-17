@@ -145,6 +145,44 @@ describe ZendeskAppsTools::Command do
     end
   end
 
+  describe '#check_for_update' do
+    context 'more than one week since the last check' do
+      it 'checks for updates' do
+        allow(@command.cache).to receive(:fetch).with('zat_update_check').and_return('1970-01-01')
+
+        stub_request(:get, "https://rubygems.org/api/v1/gems/zendesk_apps_tools.json")
+          .to_return(:body => JSON.dump(version: ZendeskAppsTools::VERSION))
+
+        expect(@command).to receive(:say_status).with('info', 'Checking for new version of zendesk_apps_tools')
+        @command.send(:check_for_update)
+      end
+
+      context 'the version is outdated' do
+        it 'display message to update' do
+          new_v = Gem::Version.new(ZendeskAppsTools::VERSION).bump
+
+          allow(@command.cache).to receive(:fetch).with('zat_update_check').and_return('1970-01-01')
+
+          stub_request(:get, "https://rubygems.org/api/v1/gems/zendesk_apps_tools.json")
+            .to_return(:body => JSON.dump(version: new_v.to_s))
+
+          expect(@command).to receive(:say_status).with('info', 'Checking for new version of zendesk_apps_tools')
+          expect(@command).to receive(:say_status).with('warning', 'Your version of Zendesk Apps Tools is outdated. Update by running: gem update zendesk_apps_tools', :yellow)
+          @command.send(:check_for_update)
+        end
+      end
+    end
+
+    context 'less than one week since the last check' do
+      it 'does not check for updates' do
+        allow(@command.cache).to receive(:fetch).with('zat_update_check').and_return(Date.today.to_s)
+
+        expect(@command).not_to receive(:say_status).with('info', 'Checking for new version of zendesk_apps_tools')
+        @command.send(:check_for_update)
+      end
+    end
+  end
+
   describe '#server' do
     it 'runs the server' do
       path = './tmp/tmp_app'
