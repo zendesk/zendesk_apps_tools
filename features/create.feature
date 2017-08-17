@@ -5,6 +5,7 @@ Feature: upload an app to the apps marketplace
     Given an app is created in directory "tmp/aruba"
     Given a .zat file in "tmp/aruba"
     When I run the command "zat create --path tmp/aruba --no-install" to create the app
+    And the command output should contain "info  Checking for new version of zendesk_apps_tools"
     And the command output should contain "validate  OK"
     And the command output should contain "package  created"
     And the command output should contain "Status  working"
