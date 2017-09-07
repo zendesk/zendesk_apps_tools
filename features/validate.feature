@@ -13,3 +13,8 @@ Feature: validate a zendesk app
     Given I remove file "tmp/aruba/manifest.json"
     When I run the command "zat validate --path tmp/aruba" to validate the app
     Then the command output should contain "Could not find manifest.json"
+
+  Scenario: invalid manifest.json - duplicate keys
+    When I edit file "tmp/aruba/manifest.json" and add duplicate keys
+    When I run the command "zat validate --path tmp/aruba" to validate the app
+    Then the command output should contain "Duplicate reference in manifest:"

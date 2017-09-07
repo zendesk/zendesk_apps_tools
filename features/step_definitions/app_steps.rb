@@ -65,6 +65,12 @@ When /^I run the command "(.*?)" to (validate|package|clean|create) the app$/ do
   end
 end
 
+When /^I edit file "(.*?)" and add duplicate keys$/ do |file|
+  f = File.open(file, 'w')
+  f.write("{\n  \"name\": \"John Test App\",\n  \"name\": \"John Test App\",\n \"author\": {\n    \"name\": \"John Citizen\",\n    \"email\": \"john@example.com\",\n    \"url\": \"http://myapp.com\"\n  },\n  \"defaultLocale\": \"en\",\n  \"private\": true,\n  \"location\": {\n    \"support\": {\n      \"ticket_sidebar\": \"assets/iframe.html\"\n    }\n  },\n  \"version\": \"1.0\",\n  \"frameworkVersion\": \"2.0\"\n}\n")
+  f.close
+end
+
 Then /^the app file "(.*?)" is created with:$/ do |file, content|
   expect(File.read(file).chomp.gsub(' ', '')).to eq content.gsub(' ', '')
 end
