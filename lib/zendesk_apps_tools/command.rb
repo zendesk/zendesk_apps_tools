@@ -63,6 +63,7 @@ module ZendeskAppsTools
     desc 'validate', 'Validate your app'
     shared_options(except: [:unattended])
     def validate
+      require 'execjs'
       check_for_update
       setup_path(options[:path])
       begin
