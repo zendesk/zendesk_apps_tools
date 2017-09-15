@@ -191,12 +191,51 @@ module ZendeskAppsTools
       deploy_app(:put, "/api/v2/apps/#{app_id}.json", {})
     end
 
+    desc 'migrate', 'Help get started with migrating an app from v1 to v2'
+    shared_options(except: [:unattended, :clean])
+    method_option :auto, default: false, required: false, type: :boolean, aliases: '-a'
+    def migrate
+      cache.clear
+      setup_path(options[:path])
+      @command = 'Migrate'
+      unless migration_helper_installed
+        try_install = get_value_from_stdin("The Zendesk App Migration Helper isn't installed. Would you like to try installing now?", limited_to: ['y', 'n'], default: 'y' )
+        say_error_and_exit("Please install the Zendesk App Migration Helper before running this command") unless try_install == "y"
+        install_migration_helper
+        say_error_and_exit("Unable to install the Zendesk App Migration Helper \
+                            Please follow the installation instructions at \
+                            https://github.com/zendesk/zendesk_app_migrator \
+                            before running this command again") unless migration_helper_installed
+      end
+      migrate_app(options)
+    end
+
     desc "version, -v", "Print the version"
     def version
       say ZendeskAppsTools::VERSION
     end
 
     protected
+
+    def migration_helper_installed
+      (/^(\d+\.)?(\d+\.)?(\*|\d+)$/ =~ migration_helper_version) >= 0
+    end
+
+    def migration_helper_version
+      v = `app_migrator --version`
+      return '' if v.nil?
+      v.gsub(/\n/, '')
+    end
+
+    def install_migration_helper
+      system("npm install -g zendesk_app_migrator")
+    end
+
+    def migrate_app(options = {})
+      cmds = ["app_migrator", "migrate", "--path=#{options[:path]}"]
+      cmds << "--auto=#{options[:auto]}" if options[:auto]
+      system(*cmds)
+    end
 
     def product_names(manifest)
       product_codes(manifest).collect{ |code| ZendeskAppsSupport::Product.find_by( code: code ) }.collect(&:name)
