@@ -199,8 +199,8 @@ module ZendeskAppsTools
       setup_path(options[:path])
       @command = 'Migrate'
       unless migration_helper_installed
-        try_install = get_value_from_stdin("The Zendesk App Migration Helper isn't installed. Would you like to try installing now?", limited_to: ['y', 'n'], default: 'y' )
-        say_error_and_exit("Please install the Zendesk App Migration Helper before running this command") unless try_install == "y"
+        try_install = get_value_from_stdin("The Zendesk App Migration Helper isn't installed yet. Would you like to try installing now?", limited_to: ['y', 'yes', 'n', 'no'], default: 'y' )
+        say_error_and_exit("Please install the Zendesk App Migration Helper before running this command") unless try_install =~ /^y(es)?$/i
         say_error_and_exit("Unable to install the Zendesk App Migration Helper \
                             Please follow the installation instructions at \
                             https://github.com/zendesk/zendesk_app_migrator \
@@ -217,17 +217,27 @@ module ZendeskAppsTools
     protected
 
     def migration_helper_installed
-      !(/^(\d+\.)?(\d+\.)?(\*|\d+)$/ =~ migration_helper_version).nil?
+      is_semver(app_migrator_version)
     end
 
-    def migration_helper_version
-      v = `app_migrator --version`
-      return '' if v.nil?
-      v.gsub(/\n/, '')
+    def app_migrator_version
+      say_error_and_exit("Node.js and NPM are required to use the Zendesk App Migration Helper \
+                          Please see installation instructions at https://nodejs.org/en/download/") if !system("npm -v", out: File::NULL)
+      IO.popen(["npm", "ls", "-g", "--depth=0", "|", "grep", "zendesk_app_migrator"]) do |cmd_io|
+        version = cmd_io.read
+        version = version.split('@').last
+        return '' if version.nil?
+        version.gsub!(/\n/, '')
+        version.strip
+      end
+    end
+
+    def is_semver(version = '')
+      !(/^v?(\d+\.)?(\d+\.)?(\*|\d+)$/ =~ version).nil?
     end
 
     def install_migration_helper
-      system("npm install -g zendesk_app_migrator")
+      system("npm install -g zendesk_app_migrator", out: File::NULL)
     end
 
     def migrate_app(options = {})
