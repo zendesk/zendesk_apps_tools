@@ -192,4 +192,65 @@ describe ZendeskAppsTools::Command do
       @command.server
     end
   end
+
+  describe '#migrate' do
+    before do
+      allow(@command).to receive(:get_value_from_stdin)
+      allow(@command).to receive(:install_migration_helper)
+      allow(@command).to receive(:say_error_and_exit)
+      allow(@command).to receive(:migrate_app)
+    end
+
+    context 'when node and npm are not installed' do
+      before do
+        allow(IO).to receive(:popen)
+        allow(@command).to receive(:node_js_installed).and_return(false)
+      end
+
+      it 'asks the user to install node.js manually' do
+        expect(@command).to receive(:say_error_and_exit)
+          .with(/^Node.js and NPM are required/)
+        @command.migrate
+      end
+    end
+
+    context 'when node and npm are installed' do
+      before do
+        allow(@command).to receive(:node_js_installed).and_return(true)
+        allow(@command).to receive(:is_semver).and_call_original
+      end
+
+      context 'and the migrator is not installed' do
+        before do
+          allow(IO).to receive(:popen).and_return('3.2.1')
+          allow(@command).to receive(:app_migrator_version).and_return('')
+        end
+
+        it 'tries to install the migration helper, when given permission' do
+          allow(@command).to receive(:get_value_from_stdin).and_return('y')
+          expect(@command).to receive(:install_migration_helper)
+          @command.migrate
+        end
+  
+        it 'does nothing when not given permission to install' do
+          allow(@command).to receive(:get_value_from_stdin).and_return('n')
+          expect(@command).to receive(:say_error_and_exit)
+            .with(/^Please install the Zendesk App Migration Helper/)
+          @command.migrate
+        end
+      end
+
+      context 'and the migrator is installed' do
+        before do
+          allow(@command).to receive(:app_migrator_version).and_return('1.2.3')
+        end
+
+        it 'runs the migration helper without trying to install' do
+          expect(@command).not_to receive(:install_migration_helper)
+          expect(@command).to receive(:migrate_app)
+          @command.migrate
+        end
+      end
+    end
+  end
 end
