@@ -193,6 +193,7 @@ module ZendeskAppsTools
 
     desc 'migrate', 'Helps with the migration of a v1 app to v2'
     shared_options(except: [:unattended, :clean])
+    method_option %s(replace-v1), default: false, required: false, type: :boolean, aliases: '-r'
     method_option :auto, default: false, required: false, type: :boolean, aliases: '-a'
     def migrate
       cache.clear
@@ -248,6 +249,7 @@ module ZendeskAppsTools
 
     def migrate_app(options = {})
       cmds = ["app_migrator", "migrate", "--path=#{options[:path]}"]
+      cmds << "--replace-v1" if options[:"replace-v1"]
       cmds << "--auto" if options[:auto]
       system(*cmds)
     end
