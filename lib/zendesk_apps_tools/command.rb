@@ -199,13 +199,16 @@ module ZendeskAppsTools
       cache.clear
       setup_path(options[:path])
       @command = 'Migrate'
-      unless migration_helper_installed
+      say_error_and_exit("Node.js and NPM are required to use the Zendesk App Migration Helper \
+                          Please see installation instructions at https://nodejs.org/en/download/") unless package_installed('npm')
+      unless package_installed('app_migrator')
         try_install = get_value_from_stdin("The Zendesk App Migration Helper isn't installed yet. Would you like to try installing now?", limited_to: ['y', 'yes', 'n', 'no'], default: 'y' )
         say_error_and_exit("Please install the Zendesk App Migration Helper before running this command") if (try_install =~ /^y(es)?$/).nil? # thats a no
+        install_migration_helper
         say_error_and_exit("Unable to install the Zendesk App Migration Helper \
                             Please follow the installation instructions at \
                             https://github.com/zendesk/zendesk_app_migrator \
-                            before running this command again") unless install_migration_helper
+                            before running this command again") unless package_installed('app_migrator')
       end
       migrate_app(options)
     end
@@ -217,30 +220,8 @@ module ZendeskAppsTools
 
     protected
 
-    def migration_helper_installed
-      is_semver(app_migrator_version)
-    end
-
-    def node_js_installed
-      !!system("npm -v", out: File::NULL)
-    end
-
-    def app_migrator_version
-      say_error_and_exit("Node.js and NPM are required to use the Zendesk App Migration Helper \
-                          Please see installation instructions at https://nodejs.org/en/download/") unless node_js_installed
-      @migrator_version ||= begin
-        IO.popen("npm ls -g --depth=0 | grep zendesk_app_migrator") do |ls_io|
-          version = ls_io.read
-          version = version.split('@').last
-          return version if version.nil?
-          version.gsub!(/\n/, '')
-          version.strip
-        end
-      end
-    end
-
-    def is_semver(version = '')
-      !(/^v?(\d+\.)?(\d+\.)?(\*|\d+)$/ =~ version).nil?
+    def package_installed(package_name)
+      !!system(package_name, "--version", out: File::NULL)
     end
 
     def install_migration_helper
