@@ -203,8 +203,8 @@ describe ZendeskAppsTools::Command do
 
     context 'when node and npm are not installed' do
       before do
-        allow(IO).to receive(:popen)
-        allow(@command).to receive(:node_js_installed).and_return(false)
+        allow(@command).to receive(:package_installed).with('npm').and_return(false)
+        allow(@command).to receive(:package_installed).with('app_migrator').and_return(false)
       end
 
       it 'asks the user to install node.js manually' do
@@ -216,14 +216,12 @@ describe ZendeskAppsTools::Command do
 
     context 'when node and npm are installed' do
       before do
-        allow(@command).to receive(:node_js_installed).and_return(true)
-        allow(@command).to receive(:is_semver).and_call_original
+        allow(@command).to receive(:package_installed).with('npm').and_return(true)
       end
 
       context 'and the migrator is not installed' do
         before do
-          allow(IO).to receive(:popen).and_return('3.2.1')
-          allow(@command).to receive(:app_migrator_version).and_return('')
+          allow(@command).to receive(:package_installed).with('app_migrator').and_return(false)
         end
 
         it 'tries to install the migration helper, when given permission' do
@@ -242,7 +240,7 @@ describe ZendeskAppsTools::Command do
 
       context 'and the migrator is installed' do
         before do
-          allow(@command).to receive(:app_migrator_version).and_return('1.2.3')
+          allow(@command).to receive(:package_installed).with('app_migrator').and_return(true)
         end
 
         it 'runs the migration helper without trying to install' do
