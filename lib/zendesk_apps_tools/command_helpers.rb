@@ -25,5 +25,9 @@ module ZendeskAppsTools
         Cache.new(options)
       end
     end
+
+    def setup_path(path)
+      @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
+    end
   end
 end
