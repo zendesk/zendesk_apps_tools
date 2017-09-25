@@ -133,7 +133,7 @@ module ZendeskAppsTools
         if options[:livereload]
           require 'rack-livereload'
           require 'faye/websocket'
-          Faye::WebSocket.load_adapter('sinatra')
+          Faye::WebSocket.load_adapter('thin')
         end
 
         ZendeskAppsTools::Theming::Server.tap do |server|
