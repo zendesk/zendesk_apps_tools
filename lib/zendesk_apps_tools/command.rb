@@ -10,12 +10,16 @@ module ZendeskAppsTools
     include Thor::Actions
     include ZendeskAppsTools::CommandHelpers
 
-    map %w(-v) => :version
+    map %w[-v] => :version
+    DEFAULT_SERVER_PORT = '4567'
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
 
     desc 'translate SUBCOMMAND', 'Manage translation files', hide: true
     subcommand 'translate', Translate
+
+    desc 'theme SUBCOMMAND', 'Development tools for Theming Center (Beta)', hide: false
+    subcommand 'theme', Theme
 
     desc 'bump SUBCOMMAND', 'Bump version for app', hide: true
     subcommand 'bump', Bump
@@ -125,13 +129,12 @@ module ZendeskAppsTools
 
     DEFAULT_SERVER_PATH = './'
     DEFAULT_CONFIG_PATH = './settings.yml'
-    DEFAULT_SERVER_PORT = '4567'
     DEFAULT_APP_ID = 0
 
     desc 'server', 'Run a http server to serve the local app'
     shared_options(except: [:clean])
     method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
-    method_option :port, default: DEFAULT_SERVER_PORT, required: false
+    method_option :port, default: DEFAULT_SERVER_PORT, required: false, desc: 'Port for the http server to use.'
     method_option :app_id, default: DEFAULT_APP_ID, required: false, type: :numeric
     method_option :bind, required: false
     def server
@@ -204,10 +207,6 @@ module ZendeskAppsTools
 
     def product_codes(manifest)
       manifest.location_options.collect{ |option| option.location.product_code }
-    end
-
-    def setup_path(path)
-      @destination_stack << relative_to_original_destination_root(path) unless @destination_stack.last == path
     end
 
     def settings

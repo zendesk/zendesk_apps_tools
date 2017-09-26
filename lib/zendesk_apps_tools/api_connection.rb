@@ -16,7 +16,7 @@ module ZendeskAppsTools
       require 'faraday'
       prepare_api_auth
       Faraday.new full_url do |f|
-        f.request encoding
+        f.request encoding if encoding
         f.adapter :net_http
         f.basic_auth @username, @password
       end
