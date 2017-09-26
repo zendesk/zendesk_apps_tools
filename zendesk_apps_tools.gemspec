@@ -17,11 +17,15 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'thor',        '~> 0.19.4'
   s.add_runtime_dependency 'rubyzip',     '~> 1.2.1'
+  s.add_runtime_dependency 'thin',        '~> 1.7.2'
   s.add_runtime_dependency 'sinatra',     '~> 1.4.6'
   s.add_runtime_dependency 'faraday',     '~> 0.9.2'
   s.add_runtime_dependency 'execjs',      '~> 2.7.0'
   s.add_runtime_dependency 'zendesk_apps_support', '~> 4.2.0'
   s.add_runtime_dependency 'sinatra-cross_origin', '~> 0.3.1'
+  s.add_runtime_dependency 'listen', '~> 2.10'
+  s.add_runtime_dependency 'rack-livereload'
+  s.add_runtime_dependency 'faye-websocket', '~> 0.10.7'
 
   s.add_development_dependency 'cucumber'
   s.add_development_dependency 'aruba'
@@ -30,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'byebug'
 
-  s.files        = Dir.glob('{bin,lib,app_template*,templates}/**/*') + %w(README.md LICENSE)
+  s.files        = Dir.glob('{bin,lib,app_template*,templates}/**/*') + %w[README.md LICENSE]
   s.test_files   = Dir.glob('features/**/*')
   s.require_path = 'lib'
 end
