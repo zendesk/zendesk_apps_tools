@@ -18,3 +18,8 @@ Feature: validate a zendesk app
     When I edit file "tmp/aruba/manifest.json" and add duplicate keys
     When I run the command "zat validate --path tmp/aruba" to validate the app
     Then the command output should contain "Duplicate reference in manifest:"
+
+  Scenario: invalid manifest.json - invalid json
+    When I edit file "tmp/aruba/manifest.json" to invalid json
+    When I run the command "zat validate --path tmp/aruba" to validate the app
+    Then the command output should contain "manifest is not proper JSON"

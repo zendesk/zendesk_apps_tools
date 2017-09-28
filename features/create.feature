@@ -16,9 +16,14 @@ Feature: upload an app to the apps marketplace
     Given an app is created in directory "tmp/aruba"
     Given I remove file "tmp/aruba/manifest.json"
     When I run the command "zat create --path tmp/aruba --no-install" to validate the app
-    Then the command output should contain "Manifest file cannot be found in the given path. Check you are pointing to the path that contains your manifest.json"
+    Then the command output should contain "Could not find manifest.json"
 
   Scenario: invalid manifest.json - duplicate keys
     When I edit file "tmp/aruba/manifest.json" and add duplicate keys
     When I run the command "zat create --path tmp/aruba" to validate the app
     Then the command output should contain "Duplicate reference in manifest:"
+
+  Scenario: invalid manifest.json - duplicate keys
+    When I edit file "tmp/aruba/manifest.json" to invalid json
+    When I run the command "zat create --path tmp/aruba" to validate the app
+    Then the command output should contain "manifest is not proper JSON"

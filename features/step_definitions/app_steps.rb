@@ -71,6 +71,12 @@ When /^I edit file "(.*?)" and add duplicate keys$/ do |file|
   f.close
 end
 
+When /^I edit file "(.*?)" to invalid json$/ do |file|
+  f = File.open(file, 'w')
+  f.write("\"name\": \"John Test App\"")
+  f.close
+end
+
 Then /^the app file "(.*?)" is created with:$/ do |file, content|
   expect(File.read(file).chomp.gsub(' ', '')).to eq content.gsub(' ', '')
 end
