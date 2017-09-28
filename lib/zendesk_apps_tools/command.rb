@@ -72,6 +72,10 @@ module ZendeskAppsTools
       setup_path(options[:path])
       begin
         errors = app_package.validate(marketplace: false)
+      rescue JSON::ParserError => e
+        errors = [ZendeskAppsSupport::Validations::ValidationError.new(:manifest_not_json, errors: e)]
+      rescue ZendeskAppsSupport::Manifest::OverrideError => e
+        errors = [ZendeskAppsSupport::Validations::ValidationError.new(:duplicate_reference, key: e.key)]
       rescue ExecJS::RuntimeError
         error = "There was an error trying to validate this app.\n"
         if ExecJS.runtime.nil?

@@ -10,10 +10,16 @@ module ZendeskAppsTools
       begin
         @manifest ||= app_package.manifest
       rescue Errno::ENOENT
-        say_status "error", "Manifest file cannot be found in the given path. Check you are pointing to the path that contains your manifest.json", :red and exit 1
+        error = ZendeskAppsSupport::Validations::ValidationError.new(:missing_manifest)
+      rescue JSON::ParserError => e
+        error = ZendeskAppsSupport::Validations::ValidationError.new(:manifest_not_json, errors: e)
       rescue ZendeskAppsSupport::Manifest::OverrideError => e
-        say_status "error", e.message, :red and exit 1
+        error = ZendeskAppsSupport::Validations::ValidationError.new(:duplicate_reference, key: e.key)
       end
+
+      say_status 'error', error.to_s, :red and exit 1 if error
+
+      @manifest
     end
 
     def zip(archive_path)
