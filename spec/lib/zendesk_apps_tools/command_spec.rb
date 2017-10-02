@@ -192,4 +192,99 @@ describe ZendeskAppsTools::Command do
       @command.server
     end
   end
+
+  describe '#migrate' do
+    def catchSystemExit
+      begin
+        yield
+      rescue SystemExit => e
+        expect(e.status).to eq(1)
+      end
+    end
+
+    before do
+      allow(@command).to receive(:say_error)
+    end
+
+    context 'when node and npm are not installed:' do
+      before do
+        allow(@command).to receive(:package_installed).with('npm').and_return(false)
+      end
+
+      it 'asks the user to install node.js manually and exits' do
+        catchSystemExit {
+          expect(@command).to receive(:say_error)
+            .with(/^Node.js and NPM are required/)
+          @command.migrate
+        }
+      end
+    end
+
+    context 'when node and npm are installed' do
+      before do
+        allow(@command).to receive(:package_installed).with('npm').and_return(true)
+        allow(@command).to receive(:install_migration_helper)
+        allow(@command).to receive(:migrate_app)
+      end
+
+      context 'and the migrator is not installed' do
+        before do
+          allow(@command).to receive(:package_installed).with('app_migrator').and_return(false)
+        end
+
+        context 'and given permission to install:' do
+          before do
+            allow(@command).to receive(:get_value_from_stdin).and_return('y')
+          end
+
+          it 'tries to install the migrator and exits if fail' do
+            catchSystemExit {
+              expect(@command).to receive(:install_migration_helper)
+              expect(@command).to receive(:say_error)
+                .with(/^Unable to install the Zendesk App Migration Helper/)
+              expect(@command).not_to receive(:migrate_app)
+              @command.migrate
+            }
+          end
+
+          it 'tries to install the migrator and continue if succeed' do
+            allow(@command).to receive(:install_migration_helper) {
+              allow(@command).to receive(:package_installed).with('app_migrator').and_return(true)
+            }
+            expect(@command).to receive(:install_migration_helper)
+            expect(@command).to receive(:migrate_app)
+            @command.migrate
+          end
+        end
+
+        context 'and not given permission to install:' do
+          before do
+            allow(@command).to receive(:get_value_from_stdin).and_return('n')
+          end
+
+          it 'does nothing and exits' do
+            catchSystemExit {
+              expect(@command).not_to receive(:install_migration_helper)
+              expect(@command).to receive(:say_error)
+                .with(/^Please install the Zendesk App Migration Helper/)
+              expect(@command).not_to receive(:migrate_app)
+              @command.migrate
+            }
+          end
+        end
+      end
+
+      context 'and the migrator is installed' do
+        before do
+          allow(@command).to receive(:package_installed).with('app_migrator').and_return(true)
+        end
+
+        it 'runs the migration helper without trying to install' do
+          expect(@command).not_to receive(:install_migration_helper)
+          expect(@command).to receive(:migrate_app)
+          @command.migrate
+        end
+      end
+    end
+  end
 end
