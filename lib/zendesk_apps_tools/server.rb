@@ -6,6 +6,7 @@ require 'zendesk_apps_support/package'
 module ZendeskAppsTools
   class Server < Sinatra::Base
     set :server, :thin
+    set :logging, true
     set :protection, except: :frame_options
     ZENDESK_DOMAINS_REGEX = %r{^http(?:s)?://[a-z0-9-]+\.(?:zendesk|zopim|zd-(?:dev|master|staging))\.com$}
 
