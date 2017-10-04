@@ -69,7 +69,7 @@ module ZendeskAppsTools
       require 'json'
       JSON.parse(value)
     rescue JSON::ParserError
-      say_error_and_exit value
+      say_error_and_exit "\"#{value}\" is an invalid JSON"
     end
 
     private

@@ -75,4 +75,16 @@ describe ZendeskAppsTools::Common do
       subject.class.shared_options(except: [:clean])
     end
   end
+
+  describe 'json_or_die' do
+    it 'return json object if valid input is provided' do
+      expect(subject).not_to receive(:say)
+      expect(subject.json_or_die '{ "key":"value" }').to eq({ 'key'=>'value' })
+    end
+
+    it 'raise error if invalid input is provided' do
+      expect(subject).to receive(:say).with(/is an invalid JSON$/, :red)
+      expect { subject.json_or_die '{ "key"="value" }' }.to raise_error(SystemExit)
+    end
+  end
 end
