@@ -107,18 +107,30 @@ describe ZendeskAppsTools::Command do
     end
 
     context 'when app id is not in cache' do
-      it 'finds the app id first' do
-        @command.instance_variable_set(:@app_id, nil)
-        allow(@command).to receive(:get_value_from_stdin).and_return('itsme')
-
-        apps = {
+      let (:apps) {
+        {
           apps: [
             { name: 'hello', id: 123 },
             { name: 'world', id: 124 },
             { name: 'itsme', id: 125 }
           ]
         }
+      }
 
+      before do
+        @command.instance_variable_set(:@app_id, nil)
+        allow(@command).to receive(:get_value_from_stdin).and_return('itsme')
+      end
+
+      it 'cannot find the app id' do
+        stub_request(:get, PREFIX + '/api/apps.json')
+          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .to_return(body: '')
+        expect(@command).to receive(:say_error).with(/^The app was not found./)
+        expect { @command.update }.to raise_error(SystemExit)
+      end
+
+      it 'finds the app id' do
         stub_request(:get, PREFIX + '/api/apps.json')
           .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
           .to_return(body: JSON.generate(apps))
@@ -194,14 +206,6 @@ describe ZendeskAppsTools::Command do
   end
 
   describe '#migrate' do
-    def catchSystemExit
-      begin
-        yield
-      rescue SystemExit => e
-        expect(e.status).to eq(1)
-      end
-    end
-
     before do
       allow(@command).to receive(:say_error)
     end
@@ -212,11 +216,9 @@ describe ZendeskAppsTools::Command do
       end
 
       it 'asks the user to install node.js manually and exits' do
-        catchSystemExit {
-          expect(@command).to receive(:say_error)
-            .with(/^Node.js and NPM are required/)
-          @command.migrate
-        }
+        expect(@command).to receive(:say_error)
+          .with(/^Node.js and NPM are required/)
+        expect { @command.migrate }.to raise_error(SystemExit)
       end
     end
 
@@ -238,13 +240,11 @@ describe ZendeskAppsTools::Command do
           end
 
           it 'tries to install the migrator and exits if fail' do
-            catchSystemExit {
-              expect(@command).to receive(:install_migration_helper)
-              expect(@command).to receive(:say_error)
-                .with(/^Unable to install the Zendesk App Migration Helper/)
-              expect(@command).not_to receive(:migrate_app)
-              @command.migrate
-            }
+            expect(@command).to receive(:install_migration_helper)
+            expect(@command).to receive(:say_error)
+              .with(/^Unable to install the Zendesk App Migration Helper/)
+            expect(@command).not_to receive(:migrate_app)
+            expect { @command.migrate }.to raise_error(SystemExit)
           end
 
           it 'tries to install the migrator and continue if succeed' do
@@ -263,13 +263,11 @@ describe ZendeskAppsTools::Command do
           end
 
           it 'does nothing and exits' do
-            catchSystemExit {
-              expect(@command).not_to receive(:install_migration_helper)
-              expect(@command).to receive(:say_error)
-                .with(/^Please install the Zendesk App Migration Helper/)
-              expect(@command).not_to receive(:migrate_app)
-              @command.migrate
-            }
+            expect(@command).not_to receive(:install_migration_helper)
+            expect(@command).to receive(:say_error)
+              .with(/^Please install the Zendesk App Migration Helper/)
+            expect(@command).not_to receive(:migrate_app)
+            expect { @command.migrate }.to raise_error(SystemExit)
           end
         end
       end
