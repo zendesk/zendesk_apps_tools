@@ -12,7 +12,7 @@ PATH
       sinatra-cross_origin (~> 0.3.1)
       thin (~> 1.7.2)
       thor (~> 0.19.4)
-      zendesk_apps_support (~> 4.4.2)
+      zendesk_apps_support (~> 4.5.0)
 
 GEM
   remote: https://rubygems.org/
@@ -36,6 +36,7 @@ GEM
     contracts (0.15.0)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
+    crass (1.0.2)
     cucumber (2.4.0)
       builder (>= 2.1.2)
       cucumber-core (~> 1.5.0)
@@ -72,9 +73,15 @@ GEM
       celluloid (~> 0.16.0)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
+    loofah (2.1.1)
+      crass (~> 1.0.2)
+      nokogiri (>= 1.5.9)
+    mini_portile2 (2.1.0)
     multi_json (1.12.1)
     multi_test (0.1.2)
     multipart-post (2.0.0)
+    nokogiri (1.6.8.1)
+      mini_portile2 (~> 2.1.0)
     public_suffix (2.0.5)
     rack (1.6.8)
     rack-livereload (0.3.16)
@@ -100,7 +107,7 @@ GEM
     rspec-support (3.5.0)
     rubyzip (1.2.1)
     safe_yaml (1.0.4)
-    sass (3.5.1)
+    sass (3.5.2)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -129,12 +136,14 @@ GEM
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    zendesk_apps_support (4.4.2)
+    zendesk_apps_support (4.5.0)
       erubis
       i18n
       image_size
       jshintrb (~> 0.3.0)
       json
+      loofah
+      nokogiri (~> 1.6.8)
       sass
       sassc (~> 1.11.2)
 
