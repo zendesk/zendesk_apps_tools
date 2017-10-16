@@ -16,7 +16,7 @@ To get the latest version, run `gem update zendesk_apps_tools`.
 For information on using the tools, see  [Zendesk App Tools](https://developer.zendesk.com/apps/docs/apps-v2/getting_started#zendesk-app-tools) on developer.zendesk.com.
 
 ## Work on ZAT
-When you want to help **develop** this tool, clone this repo and run `bundle install`.
+If you want to help **develop** this tool, clone this repo and run `bundle install`.
 
 ZAT uses a gem called [ZAS](https://github.com/zendesk/zendesk_apps_support/). If you're developing ZAT, you'll probably want to edit code in ZAS too. To do so, you need to clone the ZAS repo and change the `Gemfile` in the ZAT project to say:
 
