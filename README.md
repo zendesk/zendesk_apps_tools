@@ -1,30 +1,40 @@
 # Zendesk Apps Tools
 
 ## Description
-Zendesk Apps Tools (ZAT) is the only tool needed for developing Zendesk Apps. It makes it easy to develop [Zendesk Apps](http://developer.zendesk.com/documentation/apps/). We have a [guide](http://developer.zendesk.com/documentation/apps/reference/tools.html) that explains how to use this tool.
+Zendesk Apps Tools (ZAT) are a collection of local development tools that simplify building and deploying [Zendesk apps](https://developer.zendesk.com/apps/docs/apps-v2/getting_started).
 
 ## Owners
-This repo is owned and maintained by the Zendesk Apps team. You can reach us on vegemite@zendesk.com. We are located in Melbourne!
+This repo is owned and maintained by the Zendesk Apps team. You can reach us on vegemite@zendesk.com. We are located in Melbourne.
 
-## Getting Started To **Use** ZAT
-If you want to **use** this tool, all you need to do is `gem install zendesk_apps_tools` and periodically run `gem update zendesk_apps_tools` because we will keep updating this tool.
+## Install and use ZAT
+ZAT is a Ruby gem. You don't need to know Ruby to use the tools but you do need to install Ruby to install the gem.
 
-## Getting Started To **Develop** ZAT
-When you want to help **develop** this tool, you will need to clone this repo and run `bundle install` to get it going.
+To install, run `gem install zendesk_apps_tools`.
 
-ZAT uses a gem called [ZAS](https://github.com/zendesk/zendesk_apps_support/). In the case you are developing ZAT, it is likely you want to edit code in ZAS too, which means you will need to clone the ZAS repo and change the `Gemfile` (in the ZAT project) to say `gem 'zendesk_apps_support', path: '../zendesk_apps_support'`. The path should point to your local ZAS directory. This way your clone of ZAT will use a local version of ZAS which is very helpful for development. Run a `bundle install` after changing the Gemfile.
+To get the latest version, run `gem update zendesk_apps_tools`.
+
+For information on using the tools, see  [Zendesk App Tools](https://developer.zendesk.com/apps/docs/apps-v2/getting_started#zendesk-app-tools) on developer.zendesk.com.
+
+## Work on ZAT
+When you want to help **develop** this tool, clone this repo and run `bundle install`.
+
+ZAT uses a gem called [ZAS](https://github.com/zendesk/zendesk_apps_support/). If you're developing ZAT, you'll probably want to edit code in ZAS too. To do so, you need to clone the ZAS repo and change the `Gemfile` in the ZAT project to say:
+
+`gem 'zendesk_apps_support', path: '../zendesk_apps_support'`
+
+The path should point to your local ZAS directory. In this way, your clone of ZAT will use a local version of ZAS, which is very helpful for development. Run a `bundle install` after changing the Gemfile.
 
 ## Testing
-This project uses rspec, which can be run with `bundle exec rake`.
+This project uses rspec, which you can run with `bundle exec rake`.
 
 ## Contribute
-Improvements are always welcome. To contribute, please:
+Improvements are always welcome. To contribute:
 
 * Put up a PR into the master branch.
 * CC and get two +1 from @zendesk/vegemite.
 
 ## Bugs
-Bugs can be reported as an issue here on GitHub, or submitted to support@zendesk.com. By mentioning this project it will assigned to the right team.
+You can report bugs as issues here on GitHub. You can also submit a bug to support@zendesk.com. Mention "zendesk_apps_tools" in the ticket so it can be assigned to the right team.
 
 # Copyright and license
 Copyright 2013 Zendesk
