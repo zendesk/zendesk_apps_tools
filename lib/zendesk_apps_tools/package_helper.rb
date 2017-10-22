@@ -9,7 +9,7 @@ module ZendeskAppsTools
     def manifest
       begin
         @manifest ||= app_package.manifest
-      rescue
+      rescue Errno::ENOENT
         say_status "error", "Manifest file cannot be found in the given path. Check you are pointing to the path that contains your manifest.json", :red and exit 1
       end
     end
