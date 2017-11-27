@@ -10,7 +10,8 @@ module ZendeskAppsTools
     include Thor::Actions
     include ZendeskAppsTools::Common
 
-    LOCALE_ENDPOINT = 'https://support.zendesk.com/api/v2/locales/agent.json'
+    LOCALE_BASE_ENDPOINT = 'https://support.zendesk.com/api/v2/locales'
+    LOCALE_ENDPOINT = "#{LOCALE_BASE_ENDPOINT}/agent.json"
 
     desc 'to_yml', 'Create Zendesk translation file from en.json'
     shared_options(except: [:clean])
@@ -51,6 +52,7 @@ module ZendeskAppsTools
     desc 'update', 'Update translation files from Zendesk'
     shared_options(except: [:clean])
     method_option :package_name, type: :string
+    method_option :locales, type: :string, desc: 'Path to a JSON file that has a list of locales'
     def update
       setup_path(options[:path]) if options[:path]
       app_package = package_name_for_update
@@ -173,6 +175,15 @@ module ZendeskAppsTools
         say('Fetching translations...')
         require 'net/http'
         require 'faraday'
+
+        if options[:locales]
+          content = File.read(File.expand_path(options[:locales]))
+          locales = JSON.parse(content)
+          return locales.map do |locale|
+            { 'locale' => locale, 'url' => "#{LOCALE_BASE_ENDPOINT}/#{locale}.json" }
+          end
+        end
+
         locale_response = Faraday.get(LOCALE_ENDPOINT)
 
         return json_or_die(locale_response.body)['locales'] if locale_response.status == 200
