@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require 'sinatra/base'
+require 'sinatra/cross_origin'
 require 'zendesk_apps_tools/theming/common'
 
 module ZendeskAppsTools
   module Theming
     class Server < Sinatra::Base
       include Common
+
+      enable :cross_origin
 
       get '/livereload' do
         if settings.livereload && Faye::WebSocket.websocket?(env)
@@ -59,13 +62,28 @@ module ZendeskAppsTools
       end
 
       get '/guide/*' do
+        access_control_allow_origin
+
         path = File.join(app_dir, *params[:splat])
         return send_file path if File.exist?(path)
         raise Sinatra::NotFound
       end
 
+      # This is for any preflight request
+      options "*" do
+        access_control_allow_origin
+
+        response.headers["Allow"] = "GET, POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, X-User-Email, X-Auth-Token"
+        200
+      end
+
       def app_dir
         settings.root
+      end
+
+      def access_control_allow_origin
+        headers 'Access-Control-Allow-Origin' => '*'
       end
     end
   end
