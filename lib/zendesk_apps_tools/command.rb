@@ -276,6 +276,7 @@ module ZendeskAppsTools
     def check_for_update
       begin
         require 'net/http'
+        require 'date'
 
         return unless (cache.fetch "zat_update_check").nil? || Date.parse(cache.fetch "zat_update_check") < Date.today - 7
 
