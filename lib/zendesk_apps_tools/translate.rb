@@ -33,19 +33,7 @@ module ZendeskAppsTools
     desc 'to_json', 'Convert Zendesk translation yml to I18n formatted json'
     shared_options(except: [:clean])
     def to_json
-      require 'yaml'
       setup_path(options[:path]) if options[:path]
-      en_yml = YAML.load_file("#{destination_root}/translations/en.yml")
-      package = /^txt.apps.([^\.]+)/.match(en_yml['parts'][0]['translation']['key'])[1]
-      translations = en_yml['parts'].map { |part| part['translation'] }
-      translations.select! do |translation|
-        obsolete = translation['obsolete']
-        next true unless obsolete
-        Date.parse(obsolete.to_s) > Date.today
-      end
-      en_hash = array_to_nested_hash(translations)['txt']['apps'][package]
-      en_hash['app']['package'] = package
-
       write_json('translations/en.json', en_hash)
     end
 
@@ -76,9 +64,9 @@ module ZendeskAppsTools
     def pseudotranslate
       setup_path(options[:path]) if options[:path]
 
-      package = package_name_from_json(error_out: true)
+      package = package_name(error_out: true)
 
-      pseudo = build_pseudotranslation(en_json, package)
+      pseudo = build_pseudotranslation(en_hash, package)
       write_json('translations/fr.json', pseudo)
     end
 
@@ -177,7 +165,7 @@ module ZendeskAppsTools
         require 'faraday'
 
         if options[:locales]
-          content = File.read(File.expand_path(options[:locales]))
+          content = read_file(options[:locales])
           locales = JSON.parse(content)
           return locales.map do |locale|
             { 'locale' => locale, 'url' => "#{LOCALE_BASE_ENDPOINT}/#{locale}.json" }
@@ -194,9 +182,13 @@ module ZendeskAppsTools
         end
       end
 
+      def read_file(path)
+        File.read(File.expand_path(path))
+      end
+
       def package_name_for_update
         options[:package_name] ||
-          package_name_from_json(error_out: options[:unattended]) ||
+          package_name(error_out: options[:unattended]) ||
           get_value_from_stdin('What is the package name for this app? (without leading app_)',
                                valid_regex: /^[a-z_]+$/,
                                error_msg: 'Invalid package name, try again:')
@@ -209,10 +201,40 @@ module ZendeskAppsTools
         end
       end
 
+      def en_yaml
+        @en_yaml ||= begin
+          path = "#{destination_root}/translations/en.yml"
+          require 'yaml'
+          YAML.load_file(path) if File.exist? path
+        end
+      end
+
+      def en_hash
+        @en_hash ||= begin
+          return nil unless en_yaml
+          package = /^txt.apps.([^\.]+)/.match(en_yaml['parts'][0]['translation']['key'])[1]
+          translations = en_yaml['parts'].map { |part| part['translation'] }
+          translations.select! do |translation|
+            obsolete = translation['obsolete']
+            next true unless obsolete
+            Date.parse(obsolete.to_s) > Date.today
+          end
+          en_hash = array_to_nested_hash(translations)['txt']['apps'][package]
+          en_hash['app']['package'] = package
+          en_hash
+        end
+      end
+
       def package_name_from_json(error_out: false)
         package = en_json && en_json['app']['package']
         return package if package
         say_error_and_exit 'No package defined inside en.json!' if error_out
+      end
+
+      def package_name(error_out: false)
+        package = en_hash && en_hash['app']['package']
+        return package if package
+        say_error_and_exit 'No package defined inside en.yml!' if error_out
       end
     end
   end
