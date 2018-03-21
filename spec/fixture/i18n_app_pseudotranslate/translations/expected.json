@@ -1,10 +1,10 @@
 {
   "app": {
-    "package": "my_app",
     "abc": {
       "title": "description for abc field",
-      "value": "[日本value of \"abc\"éñđ]"
-    }
+      "value": "[日本value of abcéñđ]"
+    },
+    "package": "my_app"
   },
   "a": {
     "a1": {

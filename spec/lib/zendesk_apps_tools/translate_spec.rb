@@ -97,7 +97,7 @@ describe ZendeskAppsTools::Translate do
       stub_request(:get, "https://support.zendesk.com/api/v2/locales/en.json?include=translations&packages=app_my_app").
          to_return(:status => 200, :body => JSON.dump('locale' => { 'locale' => 'en', 'translations' => { 'app.description' => 'my awesome app' } }))
 
-      translate.update()
+      translate.update
     end
 
     it 'fetches locales from a given locales file, translations and generates json files for each' do
@@ -106,7 +106,7 @@ describe ZendeskAppsTools::Translate do
       allow(translate).to receive(:ask).with('What is the package name for this app? (without leading app_)', default: nil).and_return('my_app')
       allow(translate).to receive(:create_file)
       allow(translate).to receive(:options) { { locales: './locales.json' } }
-      allow(File).to receive(:read).with(File.expand_path('./locales.json')).and_return('["en-CA"]')
+      allow(translate).to receive(:read_file).and_return('["en-CA"]')
 
       expect(translate).to receive(:nest_translations_hash).once.and_return({})
       expect(translate).to receive(:write_json).once.with("translations/en-ca.json", {})
@@ -114,7 +114,7 @@ describe ZendeskAppsTools::Translate do
       stub_request(:get, "https://support.zendesk.com/api/v2/locales/en-CA.json?include=translations&packages=app_my_app").
          to_return(:status => 200, :body => JSON.dump('locale' => { 'locale' => 'en-CA', 'translations' => { 'app.description' => 'my awesome app' } }))
 
-      translate.update()
+      translate.update
     end
   end
 

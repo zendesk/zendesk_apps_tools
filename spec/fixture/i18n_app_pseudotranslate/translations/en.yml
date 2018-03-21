@@ -1,0 +1,18 @@
+---
+packages:
+  - default
+  - app_my_app
+
+parts:
+  - translation:
+      key: "txt.apps.my_app.app.abc"
+      title: "description for abc field"
+      value: "value of abc"
+  - translation:
+      key: "txt.apps.my_app.a.a1"
+      title: "description for a1 field"
+      value: "value of a1"
+  - translation:
+      key: "txt.apps.my_app.a.b.b1"
+      title: "description for b1 field"
+      value: "value of b1"
