@@ -2,6 +2,7 @@ module ZendeskAppsTools
   module Deploy
     def deploy_app(connection_method, url, body)
       body[:upload_id] = upload(options[:path]).to_s
+      sleep 2 # Because the DB needs time to replicate
       connection = get_connection
 
       response = connection.send(connection_method) do |req|
