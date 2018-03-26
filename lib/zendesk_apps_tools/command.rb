@@ -65,7 +65,7 @@ module ZendeskAppsTools
     end
 
     desc 'validate', 'Validate your app'
-    shared_options(except: [:unattended])
+    shared_options
     def validate
       require 'execjs'
       check_for_update
@@ -85,7 +85,8 @@ module ZendeskAppsTools
 
       if valid
         app_package.warnings.each { |w| say w.to_s, :yellow }
-        deprecated_message
+        # clean when all apps are upgraded
+        deprecated_message unless options[:'unattended']
         say_status 'validate', 'OK'
       else
         errors.each do |e|
