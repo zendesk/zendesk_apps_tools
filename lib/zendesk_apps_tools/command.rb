@@ -120,6 +120,8 @@ module ZendeskAppsTools
     desc 'clean', 'Remove app packages in temp folder'
     method_option :path, default: './', required: false, aliases: '-p'
     def clean
+      require 'fileutils'
+      
       setup_path(options[:path])
 
       return unless File.exist?(Pathname.new(File.join(app_dir, 'tmp')).to_s)
