@@ -34,7 +34,7 @@ module ZendeskAppsTools
                        hide: true,
                        desc: 'Create a version 1 app template (Deprecated)'
     def new
-      deprecated_message('error', '1.0') if options[:v1]
+      run_deprecation_checks('error', '1.0') if options[:v1]
 
       enter = ->(variable) { "Enter this app author's #{variable}:\n" }
       invalid = ->(variable) { "Invalid #{variable}, try again:" }
@@ -86,7 +86,7 @@ module ZendeskAppsTools
       if valid
         app_package.warnings.each { |w| say w.to_s, :yellow }
         # clean when all apps are upgraded
-        deprecated_message unless options[:'unattended']
+        run_deprecation_checks unless options[:'unattended']
         say_status 'validate', 'OK'
       else
         errors.each do |e|
@@ -259,7 +259,7 @@ module ZendeskAppsTools
       end
     end
 
-    def deprecated_message(type = 'warning', target_version = manifest.framework_version)
+    def run_deprecation_checks(type = 'warning', target_version = manifest.framework_version)
       require 'zendesk_apps_support/app_version'
       zas = ZendeskAppsSupport::AppVersion.new(target_version)
 
