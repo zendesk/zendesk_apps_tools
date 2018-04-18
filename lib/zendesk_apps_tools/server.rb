@@ -31,6 +31,7 @@ module ZendeskAppsTools
         app_name: app_name,
         enabled: true,
         requirements: package.requirements_json,
+        collapsible: true,
         settings: settings.parameters.merge(title: app_name),
         updated_at: Time.now.iso8601,
         created_at: Time.now.iso8601
