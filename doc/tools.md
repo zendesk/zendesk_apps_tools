@@ -4,7 +4,7 @@ The Zendesk app tools (ZAT) is a collection of local development tools that simp
 
 ZAT is a [Ruby gem](http://rubygems.org/gems/zendesk_apps_tools) -- a self-contained package of Ruby code that extends Ruby. You don't need to know Ruby to use the tools but you do need to install Ruby to install the gem.
 
-To install the tools, see [Installing and using the Zendesk apps tools](https://help.zendesk.com/hc/en-us/articles/229489288). See the [known issues](https://help.zendesk.com/hc/en-us/articles/229489348) if you run into any problems installing or using the tools.
+To install the tools, see [Installing and using the Zendesk apps tools](https://develop.zendesk.com/hc/en-us/articles/360001075048). See the [known issues](https://develop.zendesk.com/hc/en-us/articles/360001075068) if you run into any problems installing or using the tools.
 
 The tools consist of the following commands.
 
@@ -30,7 +30,7 @@ Runs a suite of validation tests against your app.
 
 Starts a local HTTP server that lets you run and test your apps locally.
 
-Note: [Secure requests](./requests#secure_requests) and [app requirements](./apps_requirements) don't work when running the app locally. See [ZAT server limitations](https://help.zendesk.com/hc/en-us/articles/229489288#topic_ux4_lv3_ks) for more information and a workaround.
+Note: [Secure requests](./requests#secure_requests) and [app requirements](./apps_requirements) don't work when running the app locally. See [ZAT server limitations](https://develop.zendesk.com/hc/en-us/articles/360001075048#topic_ux4_lv3_ks) for more information and a workaround.
 
 Follow these steps to run an app locally:
 
@@ -101,7 +101,7 @@ For details on how to access the settings values from your JavaScript code or Ha
 
 ### Package
 
-Creates a zip file that you can [upload and install](https://help.zendesk.com/hc/en-us/articles/229489328) in Zendesk.
+Creates a zip file that you can [upload and install](https://develop.zendesk.com/hc/en-us/articles/360001069347) in Zendesk.
 
     $ zat package
 
