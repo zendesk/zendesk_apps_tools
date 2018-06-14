@@ -191,10 +191,12 @@ module ZendeskAppsTools
       @command = 'Update'
 
       app_id = cache.fetch('app_id') || find_app_id
-      unless /\d+/ =~ app_id.to_s
+      app_url = "/api/v2/apps/#{app_id}.json"
+      unless /\d+/ =~ app_id.to_s && check_app_installed(app_url)
         say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
       end
-      deploy_app(:put, "/api/v2/apps/#{app_id}.json", {})
+
+      deploy_app(:put, app_url, {})
     end
 
     desc 'migrate', 'Helps with the migration of a v1 app to v2'
