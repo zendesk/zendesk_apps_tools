@@ -101,8 +101,25 @@ describe ZendeskAppsTools::Command do
 
         stub_request(:put, PREFIX + '/api/v2/apps/456.json')
           .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+        stub_request(:get, PREFIX + '/api/v2/apps/456.json')
+          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .to_return(:status => 200)
 
         @command.update
+      end
+
+      context 'when app id is in cache and is invalid' do
+        it 'displays error message and exits' do
+          stub_request(:get, PREFIX + '/api/v2/apps/333.json')
+            .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+            .to_return(:status => 404)
+
+          expect(@command.cache).to receive(:fetch).with('app_id').and_return(333)
+          expect(@command).to receive(:say_error).with(/^App id not found/)
+          expect(@command).to_not receive(:deploy_app)
+
+          expect { @command.update }.to raise_error(SystemExit)
+        end
       end
     end
 
@@ -134,6 +151,9 @@ describe ZendeskAppsTools::Command do
         stub_request(:get, PREFIX + '/api/apps.json')
           .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
           .to_return(body: JSON.generate(apps))
+        stub_request(:get, PREFIX + '/api/v2/apps/125.json')
+          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .to_return(:status => 200)
 
         expect(@command.send(:find_app_id)).to eq(125)
 
