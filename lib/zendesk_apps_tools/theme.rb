@@ -88,10 +88,11 @@ module ZendeskAppsTools
 
       def generate_payload
         payload = {}
-        templates = Dir.glob(theme_package_path('templates', '*.hbs'))
+        templates = Dir.glob(theme_package_path('templates/*.hbs')) + Dir.glob(theme_package_path('templates/*/*.hbs'))
         templates_payload = {}
         templates.each do |template|
-          templates_payload[File.basename(template, '.hbs')] = File.read(template)
+          identifier = template.match(/(?<=templates\/).*(?=\.hbs)/).to_s
+          templates_payload[identifier] = File.read(template)
         end
         payload['templates'] = templates_payload
         payload['templates']['document_head'] = inject_external_tags(payload['templates']['document_head'])
