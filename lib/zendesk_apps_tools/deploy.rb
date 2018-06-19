@@ -17,7 +17,8 @@ module ZendeskAppsTools
       say_error_and_exit e.message
     end
 
-    def check_app_installed(url)
+    def app_exists?(app_id)
+      url = "/api/v2/apps/#{app_id}.json"
       connection = get_connection
       response = connection.send(:get) do |req|
         req.url url

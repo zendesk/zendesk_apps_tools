@@ -192,7 +192,7 @@ module ZendeskAppsTools
 
       app_id = cache.fetch('app_id') || find_app_id
       app_url = "/api/v2/apps/#{app_id}.json"
-      unless /\d+/ =~ app_id.to_s && check_app_installed(app_url)
+      unless /\d+/ =~ app_id.to_s && app_exists?(app_id)
         say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
       end
 
