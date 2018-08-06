@@ -33,6 +33,10 @@ module ZendeskAppsTools
                        default: false,
                        hide: true,
                        desc: 'Create a version 1 app template (Deprecated)'
+    method_option :scaffold, type: :boolean,
+                       default: false,
+                       hide: true,
+                       desc: 'Create a version 2 app template with latest scaffold'
     def new
       run_deprecation_checks('error', '1.0') if options[:v1]
 
@@ -60,8 +64,34 @@ module ZendeskAppsTools
 
       prompt_new_app_dir
 
-      directory_options = @iframe_location != 'assets/iframe.html' ? { exclude_pattern: /iframe.html/ } : {}
+      directory_options = {}
+      if options[:scaffold]
+        directory_options = { exclude_pattern: /^((?!manifest.json).)*$/ }
+      elsif @iframe_location != 'assets/iframe.html'
+        directory_options = { exclude_pattern: /iframe.html/ }
+      end
+        
       directory('app_template_iframe', @app_dir, directory_options)
+
+      if options[:scaffold]
+        require 'open-uri'
+        require 'zip'
+        download = open("https://github.com/zendesk/app_scaffold/archive/offapps-migration.zip")
+        tmpDownloadName = "scaffold-download-temp.zip"
+        IO.copy_stream(download, tmpDownloadName)
+        Zip::File.open(tmpDownloadName) do |zip_file|
+          zip_file.each do |entry|
+            filename = entry.name.sub("app_scaffold-offapps-migration/","")
+            if filename != 'src/manifest.json'
+              puts "Extracting #{filename}"
+              entry.extract("#{@app_dir}/#{filename}")
+            end
+          end
+        end
+        puts "Moving manifest.json"
+        FileUtils.mv("#{@app_dir}/manifest.json", "#{@app_dir}/src/")
+        File.delete(tmpDownloadName) if File.exist?(tmpDownloadName)
+      end
     end
 
     desc 'validate', 'Validate your app'
@@ -88,7 +118,7 @@ module ZendeskAppsTools
         # clean when all apps are upgraded
         run_deprecation_checks unless options[:'unattended']
         say_status 'validate', 'OK'
-      else
+      else  
         errors.each do |e|
           say_status 'validate', e.to_s, :red
         end
