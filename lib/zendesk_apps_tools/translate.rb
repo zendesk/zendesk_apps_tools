@@ -11,7 +11,7 @@ module ZendeskAppsTools
     include ZendeskAppsTools::Common
 
     LOCALE_BASE_ENDPOINT = 'https://support.zendesk.com/api/v2/locales'
-    LOCALE_ENDPOINT = "#{LOCALE_BASE_ENDPOINT}/agent.json"
+    LOCALE_ENDPOINT = "#{LOCALE_BASE_ENDPOINT}/apps/admin.json"
 
     desc 'to_yml', 'Create Zendesk translation file from en.json'
     shared_options(except: [:clean])

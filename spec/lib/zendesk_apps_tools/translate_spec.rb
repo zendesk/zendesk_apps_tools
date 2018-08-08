@@ -91,7 +91,7 @@ describe ZendeskAppsTools::Translate do
       expect(translate).to receive(:nest_translations_hash).once.and_return({})
       expect(translate).to receive(:write_json).once.with("translations/en.json", {})
 
-      stub_request(:get, "https://support.zendesk.com/api/v2/locales/agent.json").
+      stub_request(:get, "https://support.zendesk.com/api/v2/locales/apps/admin.json").
          to_return(:status => 200, :body => JSON.dump('locales' => [{ 'url' => 'https://support.zendesk.com/api/v2/locales/en.json', 'locale' => 'en' }]))
 
       stub_request(:get, "https://support.zendesk.com/api/v2/locales/en.json?include=translations&packages=app_my_app").
