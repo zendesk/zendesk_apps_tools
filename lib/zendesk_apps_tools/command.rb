@@ -118,7 +118,7 @@ module ZendeskAppsTools
         # clean when all apps are upgraded
         run_deprecation_checks unless options[:'unattended']
         say_status 'validate', 'OK'
-      else  
+      else
         errors.each do |e|
           say_status 'validate', e.to_s, :red
         end
