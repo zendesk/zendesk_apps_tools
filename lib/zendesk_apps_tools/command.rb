@@ -70,18 +70,18 @@ module ZendeskAppsTools
       elsif @iframe_location != 'assets/iframe.html'
         directory_options = { exclude_pattern: /iframe.html/ }
       end
-        
+
       directory('app_template_iframe', @app_dir, directory_options)
 
       if options[:scaffold]
         require 'open-uri'
         require 'zip'
-        download = open("https://github.com/zendesk/app_scaffold/archive/offapps-migration.zip")
+        download = open("https://github.com/zendesk/app_scaffold/archive/master.zip")
         tmpDownloadName = "scaffold-download-temp.zip"
         IO.copy_stream(download, tmpDownloadName)
         Zip::File.open(tmpDownloadName) do |zip_file|
           zip_file.each do |entry|
-            filename = entry.name.sub("app_scaffold-offapps-migration/","")
+            filename = entry.name.sub("app_scaffold-master/",""))
             if filename != 'src/manifest.json'
               puts "Extracting #{filename}"
               entry.extract("#{@app_dir}/#{filename}")
@@ -152,7 +152,7 @@ module ZendeskAppsTools
     method_option :path, default: './', required: false, aliases: '-p'
     def clean
       require 'fileutils'
-      
+
       setup_path(options[:path])
 
       return unless File.exist?(Pathname.new(File.join(app_dir, 'tmp')).to_s)
