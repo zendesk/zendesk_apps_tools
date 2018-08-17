@@ -74,23 +74,7 @@ module ZendeskAppsTools
       directory('app_template_iframe', @app_dir, directory_options)
 
       if options[:scaffold]
-        require 'open-uri'
-        require 'zip'
-        download = open("https://github.com/zendesk/app_scaffold/archive/master.zip")
-        tmpDownloadName = "scaffold-download-temp.zip"
-        IO.copy_stream(download, tmpDownloadName)
-        Zip::File.open(tmpDownloadName) do |zip_file|
-          zip_file.each do |entry|
-            filename = entry.name.sub("app_scaffold-master/",""))
-            if filename != 'src/manifest.json'
-              puts "Extracting #{filename}"
-              entry.extract("#{@app_dir}/#{filename}")
-            end
-          end
-        end
-        puts "Moving manifest.json"
-        FileUtils.mv("#{@app_dir}/manifest.json", "#{@app_dir}/src/")
-        File.delete(tmpDownloadName) if File.exist?(tmpDownloadName)
+        download_scaffold(@app_dir)
       end
     end
 
@@ -328,6 +312,26 @@ module ZendeskAppsTools
       rescue SocketError
         say_status 'warning', 'Unable to check for new versions of zendesk_apps_tools gem', :yellow
       end
+    end
+
+    def download_scaffold(app_dir)
+      require 'open-uri'
+      require 'zip'
+      download = open("https://github.com/zendesk/app_scaffold/archive/master.zip")
+      tmpDownloadName = "scaffold-download-temp.zip"
+      IO.copy_stream(download, tmpDownloadName)
+      Zip::File.open(tmpDownloadName) do |zip_file|
+        zip_file.each do |entry|
+          filename = entry.name.sub("app_scaffold-master/","")
+          if filename != 'src/manifest.json'
+            puts "Extracting #{filename}"
+            entry.extract("#{app_dir}/#{filename}")
+          end
+        end
+      end
+      puts "Movingg manifest.json"
+      FileUtils.mv("#{app_dir}/manifest.json", "#{app_dir}/src/")
+      File.delete(tmpDownloadName) if File.exist?(tmpDownloadName)
     end
   end
 end
