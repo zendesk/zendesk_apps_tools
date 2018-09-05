@@ -34,9 +34,9 @@ module ZendeskAppsTools
                        hide: true,
                        desc: 'Create a version 1 app template (Deprecated)'
     method_option :scaffold, type: :boolean,
-                       default: false,
-                       hide: true,
-                       desc: 'Create a version 2 app template with latest scaffold'
+                             default: false,
+                             hide: true,
+                             desc: 'Create a version 2 app template with latest scaffold'
     def new
       run_deprecation_checks('error', '1.0') if options[:v1]
 
@@ -315,23 +315,33 @@ module ZendeskAppsTools
     end
 
     def download_scaffold(app_dir)
-      require 'open-uri'
-      require 'zip'
-      download = open("https://github.com/zendesk/app_scaffold/archive/master.zip")
-      tmpDownloadName = "scaffold-download-temp.zip"
-      IO.copy_stream(download, tmpDownloadName)
-      Zip::File.open(tmpDownloadName) do |zip_file|
-        zip_file.each do |entry|
-          filename = entry.name.sub("app_scaffold-master/","")
-          if filename != 'src/manifest.json'
-            puts "Extracting #{filename}"
-            entry.extract("#{app_dir}/#{filename}")
+      tmp_download_name = 'scaffold-download-temp.zip'
+      manifest_pattern = /manifest.json$/
+      manifest_path = ''
+      scaffold_url = 'https://github.com/zendesk/app_scaffold/archive/master.zip'
+      begin
+        require 'open-uri'
+        require 'zip'
+        download = open(scaffold_url)
+        IO.copy_stream(download, tmp_download_name)
+        Zip::File.open(tmp_download_name) do |zip_file|
+          zip_file.each do |entry|
+            filename = entry.name.sub('app_scaffold-master/','')
+            if manifest_pattern.match?(filename)
+              manifest_path = filename[0..-14]
+            else
+              puts "Extracting #{filename}"
+              entry.extract("#{app_dir}/#{filename}")
+            end
           end
         end
+        puts 'Moving manifest.json'
+        FileUtils.mv("#{app_dir}/manifest.json", "#{app_dir}/#{manifest_path}")
+        say_status 'info', 'App created'
+      rescue StandardError => e
+        say_error "We encountered an error while creating your app: #{e.message}"
       end
-      puts "Movingg manifest.json"
-      FileUtils.mv("#{app_dir}/manifest.json", "#{app_dir}/src/")
-      File.delete(tmpDownloadName) if File.exist?(tmpDownloadName)
+      File.delete(tmp_download_name) if File.exist?(tmp_download_name)
     end
   end
 end
