@@ -54,13 +54,16 @@ module ZendeskAppsTools
       @app_name     = get_value_from_stdin("Enter a name for this new app:\n",
                                            error_msg: invalid.call('app name'))
 
-      @iframe_location = if options[:v1]
-                           '_legacy'
-                         else
-                           iframe_uri_text = 'Enter your iFrame URI or leave it blank to use'\
-                                             " a default local template page:\n"
-                           get_value_from_stdin(iframe_uri_text, allow_empty: true, default: 'assets/iframe.html')
-                         end
+      @iframe_location =
+        if options[:scaffold]
+          'assets/iframe.html'
+        elsif options[:v1]
+          '_legacy'
+        else
+          iframe_uri_text = 'Enter your iFrame URI or leave it blank to use'\
+                            " a default local template page:\n"
+          get_value_from_stdin(iframe_uri_text, allow_empty: true, default: 'assets/iframe.html')
+        end
 
       prompt_new_app_dir
 
