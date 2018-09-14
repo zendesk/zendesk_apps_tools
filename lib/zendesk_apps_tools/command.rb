@@ -69,6 +69,7 @@ module ZendeskAppsTools
 
       directory_options = {}
       if options[:scaffold]
+        # excludes everything but manifest.json
         directory_options = { exclude_pattern: /^((?!manifest.json).)*$/ }
       elsif @iframe_location != 'assets/iframe.html'
         directory_options = { exclude_pattern: /iframe.html/ }
