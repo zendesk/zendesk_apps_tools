@@ -67,19 +67,19 @@ module ZendeskAppsTools
 
       prompt_new_app_dir
 
-      directory_options = {}
+      directory_options =
       if options[:scaffold]
         # excludes everything but manifest.json
-        directory_options = { exclude_pattern: /^((?!manifest.json).)*$/ }
+        { exclude_pattern: /^((?!manifest.json).)*$/ }
       elsif @iframe_location != 'assets/iframe.html'
-        directory_options = { exclude_pattern: /iframe.html/ }
+        { exclude_pattern: /iframe.html/ }
+      else
+        {}
       end
 
       directory('app_template_iframe', @app_dir, directory_options)
 
-      if options[:scaffold]
-        download_scaffold(@app_dir)
-      end
+      download_scaffold(@app_dir) if options[:scaffold]
     end
 
     desc 'validate', 'Validate your app'
@@ -334,12 +334,12 @@ module ZendeskAppsTools
             if manifest_pattern.match?(filename)
               manifest_path = filename[0..-14]
             else
-              puts "Extracting #{filename}"
+              say_status 'info', "Extracting #{filename}"
               entry.extract("#{app_dir}/#{filename}")
             end
           end
         end
-        puts 'Moving manifest.json'
+        say_status 'info', 'Moving manifest.json'
         FileUtils.mv("#{app_dir}/manifest.json", "#{app_dir}/#{manifest_path}")
         say_status 'info', 'App created'
       rescue StandardError => e
