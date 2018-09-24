@@ -33,6 +33,10 @@ module ZendeskAppsTools
                        default: false,
                        hide: true,
                        desc: 'Create a version 1 app template (Deprecated)'
+    method_option :scaffold, type: :boolean,
+                             default: false,
+                             hide: true,
+                             desc: 'Create a version 2 app template with latest scaffold'
     def new
       run_deprecation_checks('error', '1.0') if options[:v1]
 
@@ -50,18 +54,32 @@ module ZendeskAppsTools
       @app_name     = get_value_from_stdin("Enter a name for this new app:\n",
                                            error_msg: invalid.call('app name'))
 
-      @iframe_location = if options[:v1]
-                           '_legacy'
-                         else
-                           iframe_uri_text = 'Enter your iFrame URI or leave it blank to use'\
-                                             " a default local template page:\n"
-                           get_value_from_stdin(iframe_uri_text, allow_empty: true, default: 'assets/iframe.html')
-                         end
+      @iframe_location =
+        if options[:scaffold]
+          'assets/iframe.html'
+        elsif options[:v1]
+          '_legacy'
+        else
+          iframe_uri_text = 'Enter your iFrame URI or leave it blank to use'\
+                            " a default local template page:\n"
+          get_value_from_stdin(iframe_uri_text, allow_empty: true, default: 'assets/iframe.html')
+        end
 
       prompt_new_app_dir
 
-      directory_options = @iframe_location != 'assets/iframe.html' ? { exclude_pattern: /iframe.html/ } : {}
+      directory_options =
+      if options[:scaffold]
+        # excludes everything but manifest.json
+        { exclude_pattern: /^((?!manifest.json).)*$/ }
+      elsif @iframe_location != 'assets/iframe.html'
+        { exclude_pattern: /iframe.html/ }
+      else
+        {}
+      end
+
       directory('app_template_iframe', @app_dir, directory_options)
+
+      download_scaffold(@app_dir) if options[:scaffold]
     end
 
     desc 'validate', 'Validate your app'
@@ -122,7 +140,7 @@ module ZendeskAppsTools
     method_option :path, default: './', required: false, aliases: '-p'
     def clean
       require 'fileutils'
-      
+
       setup_path(options[:path])
 
       return unless File.exist?(Pathname.new(File.join(app_dir, 'tmp')).to_s)
@@ -298,6 +316,36 @@ module ZendeskAppsTools
       rescue SocketError
         say_status 'warning', 'Unable to check for new versions of zendesk_apps_tools gem', :yellow
       end
+    end
+
+    def download_scaffold(app_dir)
+      tmp_download_name = 'scaffold-download-temp.zip'
+      manifest_pattern = /manifest.json$/
+      manifest_path = ''
+      scaffold_url = 'https://github.com/zendesk/app_scaffold/archive/master.zip'
+      begin
+        require 'open-uri'
+        require 'zip'
+        download = open(scaffold_url)
+        IO.copy_stream(download, tmp_download_name)
+        Zip::File.open(tmp_download_name) do |zip_file|
+          zip_file.each do |entry|
+            filename = entry.name.sub('app_scaffold-master/','')
+            if manifest_pattern.match?(filename)
+              manifest_path = filename[0..-14]
+            else
+              say_status 'info', "Extracting #{filename}"
+              entry.extract("#{app_dir}/#{filename}")
+            end
+          end
+        end
+        say_status 'info', 'Moving manifest.json'
+        FileUtils.mv("#{app_dir}/manifest.json", "#{app_dir}/#{manifest_path}")
+        say_status 'info', 'App created'
+      rescue StandardError => e
+        say_error "We encountered an error while creating your app: #{e.message}"
+      end
+      File.delete(tmp_download_name) if File.exist?(tmp_download_name)
     end
   end
 end
