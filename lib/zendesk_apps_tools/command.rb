@@ -328,15 +328,14 @@ module ZendeskAppsTools
         require 'zip'
         download = open(scaffold_url)
         IO.copy_stream(download, tmp_download_name)
-        Zip::File.open(tmp_download_name) do |zip_file|
-          zip_file.each do |entry|
-            filename = entry.name.sub('app_scaffold-master/','')
-            if manifest_pattern.match?(filename)
-              manifest_path = filename[0..-14]
-            else
-              say_status 'info', "Extracting #{filename}"
-              entry.extract("#{app_dir}/#{filename}")
-            end
+        zip_file = Zip::File.open(tmp_download_name)
+        zip_file.each do |entry|
+          filename = entry.name.sub('app_scaffold-master/','')
+          if manifest_pattern.match(filename)
+            manifest_path = filename[0..-14]
+          else
+            say_status 'info', "Extracting #{filename}"
+            entry.extract("#{app_dir}/#{filename}")
           end
         end
         say_status 'info', 'Moving manifest.json'

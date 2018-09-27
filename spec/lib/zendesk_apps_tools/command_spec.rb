@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'command'
 require 'server'
 require 'faraday'
+require 'zip'
 
 describe ZendeskAppsTools::Command do
   PREFIX = 'https://subdomain.zendesk.com'
@@ -302,6 +303,29 @@ describe ZendeskAppsTools::Command do
           expect(@command).to receive(:migrate_app)
           @command.migrate
         end
+      end
+    end
+  end
+
+  describe '#new' do
+    context 'when --scaffold option is given' do
+      it 'creates a base project with scaffold' do
+        allow(@command).to receive(:options) { { scaffold: true } }
+        allow(@command).to receive(:get_value_from_stdin) { 'TestApp' }
+
+        expect(@command).to receive(:directory).with('app_template_iframe', 'TestApp', {:exclude_pattern=>/^((?!manifest.json).)*$/})
+
+        stub_request(:get, 'https://github.com/zendesk/app_scaffold/archive/master.zip')
+          .to_return(body: 'Mock Zip Body', status: 200)
+
+        mockFile = Zip::Entry.new('', 'mockfile.json')
+        allow(Zip::File).to receive(:open) {[mockFile]}
+
+        expect(FileUtils).to receive(:mv)
+        expect(mockFile).to receive(:extract).with('TestApp/mockfile.json')
+
+        @command.new
+
       end
     end
   end
