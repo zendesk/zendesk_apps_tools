@@ -86,12 +86,14 @@ module ZendeskAppsTools
         listener.start
       end
 
+      IDENTIFIER_REGEX = /.*templates\/(?<identifier>.*)(?=\.hbs)/
+
       def generate_payload
         payload = {}
         templates = Dir.glob(theme_package_path('templates/*.hbs')) + Dir.glob(theme_package_path('templates/*/*.hbs'))
         templates_payload = {}
         templates.each do |template|
-          identifier = template.match(/(?<=templates\/).*(?=\.hbs)/).to_s
+          identifier = template.match(IDENTIFIER_REGEX)['identifier'].to_s
           templates_payload[identifier] = File.read(template)
         end
         payload['templates'] = templates_payload
