@@ -217,49 +217,12 @@ module ZendeskAppsTools
       deploy_app(:put, app_url, {})
     end
 
-    desc 'migrate', 'Helps with the migration of a v1 app to v2'
-    shared_options(except: [:unattended, :clean])
-    method_option %s(replace-v1), default: false, required: false, type: :boolean, aliases: '-r'
-    method_option :auto, default: false, required: false, type: :boolean, aliases: '-a'
-    def migrate
-      cache.clear
-      setup_path(options[:path])
-      @command = 'Migrate'
-      say_error_and_exit("Node.js and NPM are required to use the Zendesk App Migration Helper \
-                          Please see installation instructions at https://nodejs.org/en/download/") unless package_installed('npm')
-      unless package_installed('app_migrator')
-        try_install = get_value_from_stdin("The Zendesk App Migration Helper isn't installed yet. Would you like to try installing now?", limited_to: ['y', 'yes', 'n', 'no'], default: 'y' )
-        say_error_and_exit("Please install the Zendesk App Migration Helper before running this command") if (try_install =~ /^y(es)?$/).nil? # thats a no
-        install_migration_helper
-        say_error_and_exit("Unable to install the Zendesk App Migration Helper \
-                            Please follow the installation instructions at \
-                            https://github.com/zendesk/zendesk_app_migrator \
-                            before running this command again") unless package_installed('app_migrator')
-      end
-      migrate_app(options)
-    end
-
     desc "version, -v", "Print the version"
     def version
       say ZendeskAppsTools::VERSION
     end
 
     protected
-
-    def package_installed(package_name)
-      !!system(package_name, "--version", out: File::NULL)
-    end
-
-    def install_migration_helper
-      system("npm install -g zendesk_app_migrator", out: File::NULL)
-    end
-
-    def migrate_app(options = {})
-      cmds = ["app_migrator", "migrate", "--path=#{options[:path]}"]
-      cmds << "--replace-v1" if options[:"replace-v1"]
-      cmds << "--auto" if options[:auto]
-      system(*cmds)
-    end
 
     def product_names(manifest)
       product_codes(manifest).collect{ |code| ZendeskAppsSupport::Product.find_by( code: code ) }.collect(&:name)
