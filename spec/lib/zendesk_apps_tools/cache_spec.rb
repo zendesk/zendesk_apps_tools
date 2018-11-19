@@ -10,7 +10,7 @@ describe ZendeskAppsTools::Cache do
     let(:tmpdir) { Dir.mktmpdir }
 
     before do
-      content = JSON.dump(subdomain: 'under-the-domain', username: 'Roger', app_id: 12)
+      content = JSON.dump(subdomain: 'under-the-domain', username: 'Roger@something.com', app_id: 12)
       File.write(File.join(tmpdir, '.zat'), content, mode: 'w')
     end
 
@@ -20,7 +20,7 @@ describe ZendeskAppsTools::Cache do
 
     describe '#fetch' do
       it 'reads data from the cache' do
-        expect(cache.fetch('username')).to eq 'Roger'
+        expect(cache.fetch('username')).to eq 'Roger@something.com'
       end
 
       context 'with a global cache' do
