@@ -61,12 +61,16 @@ describe ZendeskAppsTools::Command do
         allow(@command.cache).to receive(:fetch).with('app_id').and_return('987')
 
         stub_request(:post, PREFIX + '/api/apps.json')
-          .with(body: JSON.generate(name: 'abc', upload_id: '123'),
-                headers: AUTHORIZATION_HEADER)
+          .with(
+            body: JSON.generate(name: 'abc', upload_id: '123'),
+            headers: AUTHORIZATION_HEADER
+          )
 
         stub_request(:post, PREFIX + '/api/support/apps/installations.json')
-          .with(body: JSON.generate(app_id: '987', settings: { name: 'abc' }),
-                headers: { 'Authorization' => 'Basic dXNlcm5hbWVAc29tZXRoaW5nLmNvbTpwYXNzd29yZA==', 'Content-Type' => 'application/json' })
+          .with(
+            body: JSON.generate(app_id: '987', settings: { name: 'abc' }),
+            headers: AUTHORIZATION_HEADER.merge({ 'Content-Type' => 'application/json' })
+          )
 
         @command.create
       end
@@ -82,12 +86,16 @@ describe ZendeskAppsTools::Command do
         expect(@command).to receive(:get_value_from_stdin) { 'abc' }
 
         stub_request(:post, PREFIX + '/api/apps.json')
-          .with(body: JSON.generate(name: 'abc', upload_id: '123'),
-                headers: AUTHORIZATION_HEADER)
+          .with(
+            body: JSON.generate(name: 'abc', upload_id: '123'),
+            headers: AUTHORIZATION_HEADER
+          )
 
         stub_request(:post, PREFIX + '/api/support/apps/installations.json')
-          .with(body: JSON.generate(app_id: nil, settings: { name: 'abc' }),
-                headers: { 'Authorization' => 'Basic dXNlcm5hbWVAc29tZXRoaW5nLmNvbTpwYXNzd29yZA==', 'Content-Type' => 'application/json' })
+          .with(
+            body: JSON.generate(app_id: nil, settings: { name: 'abc' }),
+            headers: AUTHORIZATION_HEADER.merge({ 'Content-Type' => 'application/json' })
+          )
 
         @command.create
       end
