@@ -3,7 +3,9 @@ module ZendeskAppsTools
     SUBDOMAIN    = /\A[a-z0-9][a-z0-9\-]{1,}[a-z0-9]\z/
     FULL_URL     = Regexp::new(/https?:\/\//.source + SUBDOMAIN.source + /\.zendesk\.com/.source)
     URL_TEMPLATE = 'https://%s.zendesk.com/'
-    EMAIL_REGEX  = URI::MailTo::EMAIL_REGEXP
+
+    # For Ruby 2 and 2.1 compatible
+    EMAIL_REGEX  = URI::MailTo.constants.include?(:EMAIL_REGEXP) ? URI::MailTo::EMAIL_REGEXP : URI::MailTo::MAILTO_REGEXP
 
     EMAIL_ERROR_MSG     = 'Please enter a valid email address'
     SUBDOMAIN_ERROR_MSG = 'Make sure you entered the right subdomain name '\
