@@ -1,22 +1,27 @@
 module ZendeskAppsTools
   module APIConnection
-    SUBDOMAIN    = /\A[a-z0-9][a-z0-9\-]{1,}[a-z0-9]\z/
-    FULL_URL     = Regexp::new(/https?:\/\//.source + SUBDOMAIN.source + /\.zendesk\.com/.source)
-    URL_TEMPLATE = 'https://%s.zendesk.com/'
+    # taken from zendesk_console/lib/vars.rb
+    SUBDOMAIN_VALIDATION_PATTERN = /\A[a-z0-9][a-z0-9\-]{1,}[a-z0-9]\z/
+    ZENDESK_URL_VALIDATION_PATTERN = /\A(http|https):\/\/[a-z0-9]+(([\.]|[\-]{1,2})[a-z0-9]+)*\.([a-z]{2,16}|[0-9]{1,3})((:[0-9]{1,5})?(\/?|\/.*))?\z/ix
+    DEFAULT_URL_TEMPLATE = 'https://%s.zendesk.com/'
 
-    # For Ruby 2 and 2.1 compatible
+    # Ruby versions compatible
     EMAIL_REGEX  = URI::MailTo.constants.include?(:EMAIL_REGEXP) ? URI::MailTo::EMAIL_REGEXP : URI::MailTo::MAILTO_REGEXP
 
-    EMAIL_ERROR_MSG     = 'Please enter a valid email address'
-    SUBDOMAIN_ERROR_MSG = 'Make sure you entered the right subdomain name '\
-      '(e.g. if account url is https://mysubdomain.zendesk.com, then enter mysubdomain).'
+    EMAIL_ERROR_MSG = 'Please enter a valid email address.'
+    PROMPT_FOR_URL  = 'Enter your Zendesk subdomain or FULL url (including protocol):'
+    URL_ERROR_MSG   = [
+      'URL error. Example URL: https://mysubdomain.zendesk.com ',
+      'If you are using FULL url, please follow the url as shown above.',
+      'If you are using URL subdomain, please enter the equivalent of \'mysubdomain\' of the url above.'
+    ].join("\n")
 
     def prepare_api_auth
-      @subdomain ||= cache.fetch('subdomain') || get_value_from_stdin('Enter your Zendesk subdomain:')
-      say_error_and_exit SUBDOMAIN_ERROR_MSG unless @subdomain =~ SUBDOMAIN
+      @subdomain ||= cache.fetch('subdomain') || get_value_from_stdin(PROMPT_FOR_URL)
+      say_error_and_exit URL_ERROR_MSG unless valid_subdomain? || valid_full_url?
 
       @username  ||= cache.fetch('username', @subdomain) || get_value_from_stdin('Enter your username:')
-      say_error_and_exit EMAIL_ERROR_MSG unless @username =~ EMAIL_REGEX
+      say_error_and_exit EMAIL_ERROR_MSG unless valid_email?
 
       @password  ||= cache.fetch('password', @subdomain) || get_password_from_stdin('Enter your password:')
 
@@ -37,11 +42,19 @@ module ZendeskAppsTools
     private
 
     def full_url
-      if FULL_URL =~ @subdomain
-        @subdomain
-      else
-        URL_TEMPLATE % @subdomain
-      end
+      valid_full_url? ? @subdomain : (DEFAULT_URL_TEMPLATE % @subdomain)
+    end
+
+    def valid_full_url?
+      ZENDESK_URL_VALIDATION_PATTERN.match? @subdomain
+    end
+
+    def valid_subdomain?
+      SUBDOMAIN_VALIDATION_PATTERN.match? @subdomain
+    end
+
+    def valid_email?
+      EMAIL_REGEX.match? @username
     end
   end
 end
