@@ -1,10 +1,9 @@
 module ZendeskAppsTools
   module APIConnection
+    DEFAULT_URL_TEMPLATE = 'https://%s.zendesk.com/'
     # taken from zendesk_console/lib/vars.rb
     SUBDOMAIN_VALIDATION_PATTERN = /\A[a-z0-9][a-z0-9\-]{1,}[a-z0-9]\z/
-    ZENDESK_URL_VALIDATION_PATTERN = /\A(http|https):\/\/[a-z0-9]+(([\.]|[\-]{1,2})[a-z0-9]+)*\.([a-z]{2,16}|[0-9]{1,3})((:[0-9]{1,5})?(\/?|\/.*))?\z/ix
-    DEFAULT_URL_TEMPLATE = 'https://%s.zendesk.com/'
-
+    ZENDESK_URL_VALIDATION_PATTERN = /\A(https?):\/\/[a-z0-9]+(([\.]|[\-]{1,2})[a-z0-9]+)*\.([a-z]{2,16}|[0-9]{1,3})((:[0-9]{1,5})?(\/?|\/.*))?\z/ix
     # Ruby versions compatible
     EMAIL_REGEX  = URI::MailTo.constants.include?(:EMAIL_REGEXP) ? URI::MailTo::EMAIL_REGEXP : URI::MailTo::MAILTO_REGEXP
 
@@ -46,15 +45,15 @@ module ZendeskAppsTools
     end
 
     def valid_full_url?
-      ZENDESK_URL_VALIDATION_PATTERN.match? @subdomain
+      !!ZENDESK_URL_VALIDATION_PATTERN.match(@subdomain)
     end
 
     def valid_subdomain?
-      SUBDOMAIN_VALIDATION_PATTERN.match? @subdomain
+      !!SUBDOMAIN_VALIDATION_PATTERN.match(@subdomain)
     end
 
     def valid_email?
-      EMAIL_REGEX.match? @username
+      !!EMAIL_REGEX.match(@username)
     end
   end
 end
