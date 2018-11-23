@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'api_connection'
-require 'common'
 
 describe ZendeskAppsTools::APIConnection do
   let(:subdomain_validation_pattern) { ZendeskAppsTools::APIConnection::SUBDOMAIN_VALIDATION_PATTERN }
@@ -26,11 +25,11 @@ describe ZendeskAppsTools::APIConnection do
           expect(valid_subdomain?('sub!domain')).to eq(false)
           expect(valid_subdomain?('sub~domain')).to eq(false)
           expect(valid_subdomain?('sub_domain')).to eq(false)
-          expect(valid_subdomain?('SUBDOMAIN')).to eq(false)
-          expect(valid_subdomain?('subDomain')).to eq(false)
         end
 
         it 'returns true if subdomain is in valid format' do
+          expect(valid_subdomain?('subDomain')).to eq(true)
+          expect(valid_subdomain?('SUBDOMAIN')).to eq(true)
           expect(valid_subdomain?('subdomain')).to eq(true)
           expect(valid_subdomain?('sub-domain')).to eq(true)
         end
@@ -48,6 +47,7 @@ describe ZendeskAppsTools::APIConnection do
           end
 
           it 'returns true when subdomain does match full url pattern' do
+            expect(valid_full_url?('http://z3n-subdomain.zendesk.com')).to eq(true)
             expect(valid_full_url?('https://subdomain.zendesk.com')).to eq(true)
             expect(valid_full_url?('https://my-subdomain.zendesk-staging.com')).to eq(true)
           end
@@ -60,6 +60,56 @@ describe ZendeskAppsTools::APIConnection do
             expect(valid_full_url?('https://subdomain.au')).to eq(true)
           end
         end
+      end
+    end
+  end
+
+  describe '#prepare_api_auth' do
+    let(:url_error_message) { ZendeskAppsTools::APIConnection::URL_ERROR_MSG }
+    let(:email_error_message) { ZendeskAppsTools::APIConnection::EMAIL_ERROR_MSG }
+    let(:subject_class) do
+      Class.new do
+        include ZendeskAppsTools::APIConnection
+        attr_reader :cache, :subdomain, :username
+
+        def initialize(subdomain = nil, username = nil)
+          zat_cache = {
+            'subdomain' => @subdomain = subdomain,
+            'username' => @username = username
+          }
+          @cache = zat_cache
+        end
+
+        # mocking say_error_and_exit in ZendeskAppsTools::Common::ClassMethods
+        def say_error_and_exit(error_message)
+          raise SystemExit.new(error_message)
+        end
+      end
+    end
+
+    define_method(:method_execution) do |subject_instance|
+      begin
+        subject_instance.prepare_api_auth
+      rescue SystemExit => e
+        e.message
+      end
+    end
+
+    context 'invalid subdomain' do
+      it 'errors and exit' do
+        expect(method_execution(subject_class.new('bad!subdomain'))).to eq(url_error_message)
+      end
+    end
+
+    context 'invalid full url' do
+      it 'errors and exit' do
+        expect(method_execution(subject_class.new('www.keith.com'))).to eq(url_error_message)
+      end
+    end
+
+    context 'with invalid email format' do
+      it 'errors and exit' do
+        expect(method_execution(subject_class.new('subdomain', 'bad-email'))).to eq(email_error_message)
       end
     end
   end

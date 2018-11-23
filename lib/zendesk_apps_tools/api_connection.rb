@@ -1,19 +1,18 @@
 module ZendeskAppsTools
   module APIConnection
     DEFAULT_URL_TEMPLATE = 'https://%s.zendesk.com/'
-    # taken from zendesk_console/lib/vars.rb
-    SUBDOMAIN_VALIDATION_PATTERN = /\A[a-z0-9][a-z0-9\-]{1,}[a-z0-9]\z/
-    ZENDESK_URL_VALIDATION_PATTERN = /\A(https?):\/\/[a-z0-9]+(([\.]|[\-]{1,2})[a-z0-9]+)*\.([a-z]{2,16}|[0-9]{1,3})((:[0-9]{1,5})?(\/?|\/.*))?\z/ix
-    # Ruby versions compatible
-    EMAIL_REGEX  = URI::MailTo.constants.include?(:EMAIL_REGEXP) ? URI::MailTo::EMAIL_REGEXP : URI::MailTo::MAILTO_REGEXP
+    # taken from zendesk/lib/vars.rb
+    SUBDOMAIN_VALIDATION_PATTERN = /^[a-z0-9][a-z0-9\-]{1,}[a-z0-9]$/i
+    ZENDESK_URL_VALIDATION_PATTERN = /^(https?):\/\/[a-z0-9]+(([\.]|[\-]{1,2})[a-z0-9]+)*\.([a-z]{2,16}|[0-9]{1,3})((:[0-9]{1,5})?(\/?|\/.*))?$/ix
+    EMAIL_REGEX  = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i
 
     EMAIL_ERROR_MSG = 'Please enter a valid email address.'
-    PROMPT_FOR_URL  = 'Enter your Zendesk subdomain or FULL url (including protocol):'
+    PROMPT_FOR_URL  = 'Enter your Zendesk subdomain or full URL (including protocol):'
     URL_ERROR_MSG   = [
-      'URL error. Example URL: https://mysubdomain.zendesk.com ',
+      'URL error. Example URL: https://mysubdomain.zendesk.com',
       'If you are using FULL url, please follow the url as shown above.',
       'If you are using URL subdomain, please enter the equivalent of \'mysubdomain\' of the url above.'
-    ].join("\n")
+    ].join('\n')
 
     def prepare_api_auth
       @subdomain ||= cache.fetch('subdomain') || get_value_from_stdin(PROMPT_FOR_URL)
