@@ -10,8 +10,8 @@ module ZendeskAppsTools
     PROMPT_FOR_URL  = 'Enter your Zendesk subdomain or full URL (including protocol):'
     URL_ERROR_MSG   = [
       'URL error. Example URL: https://mysubdomain.zendesk.com',
-      'If you are using FULL url, please follow the url as shown above.',
-      'If you are using URL subdomain, please enter the equivalent of \'mysubdomain\' of the url above.'
+      'If you are using a full URL, follow the url as shown above.',
+      'If you are using a subdomain, ensure that it contains only valid characters (a-z, A-Z, 0-9, and hyphens).'
     ].join('\n')
 
     def prepare_api_auth
