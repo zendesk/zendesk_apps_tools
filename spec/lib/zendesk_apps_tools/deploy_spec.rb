@@ -61,7 +61,7 @@ describe ZendeskAppsTools::Deploy do
       expect { subject.find_app_id }.to raise_error(SystemExit)
     end
 
-    it 'returns app id if is in response_with_apps' do
+    it 'returns app id if app exist within response_with_apps' do
       subject = subject_class.new(mock_response.new(response_with_apps))
       allow(subject).to receive_message_chain(:cache, :save)
       expect(subject.find_app_id).to eq(2)

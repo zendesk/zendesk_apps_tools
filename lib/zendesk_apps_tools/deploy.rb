@@ -1,9 +1,16 @@
+require 'faraday'
+require 'zendesk_apps_tools/common'
+require 'zendesk_apps_tools/api_connection'
+
 module ZendeskAppsTools
   module Deploy
+    include ZendeskAppsTools::Common
+    include ZendeskAppsTools::APIConnection
+    alias_method :connection, :get_connection
+
     def deploy_app(connection_method, url, body)
       body[:upload_id] = upload(options[:path]).to_s
       sleep 2 # Because the DB needs time to replicate
-      connection = get_connection
 
       response = connection.send(connection_method) do |req|
         req.url url
@@ -19,7 +26,6 @@ module ZendeskAppsTools
 
     def app_exists?(app_id)
       url = "/api/v2/apps/#{app_id}.json"
-      connection = get_connection
       response = connection.send(:get) do |req|
         req.url url
       end
@@ -28,7 +34,6 @@ module ZendeskAppsTools
     end
 
     def install_app(poll_job, product_name, installation)
-      connection = get_connection
       response = connection.post do |req|
         req.url "api/#{product_name}/apps/installations.json"
         req.headers[:content_type] = 'application/json'
@@ -38,7 +43,6 @@ module ZendeskAppsTools
     end
 
     def upload(path)
-      connection = get_connection :multipart
       zipfile_path = options[:zipfile]
 
       if zipfile_path
@@ -48,9 +52,11 @@ module ZendeskAppsTools
         package_path = Dir[File.join path, '/tmp/*.zip'].sort.last
       end
 
-      payload = { uploaded_data: Faraday::UploadIO.new(package_path, 'application/zip') }
+      payload = {
+        uploaded_data: Faraday::UploadIO.new(package_path, 'application/zip')
+      }
 
-      response = connection.post('/api/v2/apps/uploads.json', payload)
+      response = connection(:multipart).post('/api/v2/apps/uploads.json', payload)
       json_or_die(response.body)['id']
 
     rescue Faraday::Error::ClientError => e
@@ -59,25 +65,31 @@ module ZendeskAppsTools
 
     def find_app_id
       say_status 'Update', 'app ID is missing, searching...'
-      name = get_value_from_stdin('Enter the name of the app:')
+      app_name = get_value_from_stdin('Enter the name of the app:')
 
-      connection = get_connection
+      all_apps_json = connection.get('/api/apps.json').body
 
-      all_apps = connection.get('/api/apps.json').body
+      app = unless all_apps_json.empty?
+        json_or_die(all_apps_json)['apps'].find { |app| app['name'] == app_name }
+      end
 
-      app_json = all_apps.empty? ? nil : json_or_die(all_apps)['apps'].find { |app| app['name'] == name }
-      say_error_and_exit('The app was not found. Please verify your credentials, subdomain, and app name are correct.') unless app_json
-      app_id = app_json['id']
+      unless app
+        say_error_and_exit(
+          "App not found. " \
+          "Please verify that your credentials, subdomain, and app name are correct."
+        )
+      end
 
-      cache.save 'app_id' => app_id
-      app_id
+      cache.save 'app_id' => app['id']
+      app['id']
+
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
     end
 
     def check_status(response, poll_job = true)
-      job = response.body
-      job_response = json_or_die(job)
+      job_response = json_or_die(response.body)
+
       say_error_and_exit job_response['error'] if job_response['error']
 
       if poll_job
@@ -87,22 +99,21 @@ module ZendeskAppsTools
     end
 
     def check_job(job_id)
-      connection = get_connection
+      check_job_connection = connection
 
       loop do
-        response = connection.get("/api/v2/apps/job_statuses/#{job_id}")
+        response = check_job_connection.get("/api/v2/apps/job_statuses/#{job_id}")
         info     = json_or_die(response.body)
         status   = info['status']
-        message  = info['message']
-        app_id   = info['app_id']
 
         if %w(completed failed).include? status
           case status
           when 'completed'
+            app_id = info['app_id']
             cache.save 'app_id' => app_id if app_id
             say_status @command, 'OK'
           when 'failed'
-            say_status @command, message, :red
+            say_status @command, info['message'], :red
             exit 1
           end
           break
