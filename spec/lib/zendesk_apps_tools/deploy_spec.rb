@@ -19,52 +19,67 @@ describe ZendeskAppsTools::Deploy do
   let(:subject_class) do
     Class.new do
       include ZendeskAppsTools::Deploy
-      attr_reader :get_connection
+      attr_reader :get_connection, :app_name
 
-      def initialize(get_response)
+      def initialize(get_response, app_name)
         @get_connection = get_response
+        @app_name = app_name
       end
 
       def connection(multipart = nil)
         get_connection
       end
 
-      def say_status(command, text)
-      end
-
       def get_value_from_stdin(text)
-        'app_2'
-      end
-
-      def say(message, color = nil)
+        app_name
       end
     end
   end
 
-  let(:response_with_apps) {
-    {
-      'apps'=> [
-        {'name'=> 'app_1', 'id'=> 1},
-        {'name'=> 'app_2', 'id'=> 2}
-      ]
-    }.to_json
-  }
-
   describe '#find_app_id' do
-    it 'exits system if apps_json is empty' do
-      subject = subject_class.new(mock_response.new(''))
 
-      expect(subject).to receive(:say_error).with(
-        "App not found. " \
-        "Please verify that your credentials, subdomain, and app name are correct."
+    let(:api_response) do
+      mock_response.new(
+       {
+         'apps'=> [
+            { 'name'=> 'notification_app', 'id'=> 22 },
+            { 'name'=> 'time_tracking_app', 'id' => 99 }
+          ]
+        }.to_json
       )
-      expect { subject.find_app_id }.to raise_error(SystemExit)
     end
 
-    it 'returns app id if app exist within response_with_apps' do
-      subject = subject_class.new(mock_response.new(response_with_apps))
-      allow(subject).to receive_message_chain(:cache, :save)
-      expect(subject.find_app_id).to eq(2)
+    let(:subject) { subject_class.new(api_response) }
+
+    context 'user inputs an app name that is NOT in api response' do
+      it 'errors and exits system' do
+        subject = subject_class.new(api_response, 'random_app_name')
+        allow(subject).to receive_message_chain(:say_status, :command, :text)
+
+        expect(subject).to receive(:say_error).with(
+          "App not found. " \
+          "Please verify that your credentials, subdomain, and app name are correct."
+        )
+        expect { subject.find_app_id }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'user inputs an app name that is in api response' do
+      it 'returns app id 22 for notification_app' do
+        subject = subject_class.new(api_response, 'notification_app')
+        allow(subject).to receive_message_chain(:cache, :save)
+        allow(subject).to receive_message_chain(:say_status, :command, :text)
+
+        expect(subject.find_app_id).to eq(22)
+      end
+
+      it 'returns app id 99 for notification_app' do
+        subject = subject_class.new(api_response, 'time_tracking_app')
+        allow(subject).to receive_message_chain(:cache, :save)
+        allow(subject).to receive_message_chain(:say_status, :command, :text)
+
+        expect(subject.find_app_id).to eq(99)
+      end
     end
   end
 end
