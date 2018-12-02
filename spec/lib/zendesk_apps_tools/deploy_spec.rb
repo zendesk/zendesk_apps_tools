@@ -44,22 +44,21 @@ describe ZendeskAppsTools::Deploy do
     end
 
     context 'user inputs an app name that is in api response' do
-
-      it 'returns app id 22 for notification_app' do
-        subject = subject_class.new('notification_app')
+      define_method(:mock_methods_and_api) do |subject|
         allow(subject).to receive_message_chain(:cache, :save)
         allow(subject).to receive(:say_status)
         allow(subject).to receive_message_chain(:connection, :get, :body) { api_response }
+      end
 
+      it 'returns app id 22 for notification_app' do
+        subject = subject_class.new('notification_app')
+        mock_methods_and_api(subject)
         expect(subject.find_app_id).to eq(22)
       end
 
       it 'returns app id 99 for notification_app' do
         subject = subject_class.new('time_tracking_app')
-        allow(subject).to receive_message_chain(:cache, :save)
-        allow(subject).to receive(:say_status)
-        allow(subject).to receive_message_chain(:connection, :get, :body) { api_response }
-
+        mock_methods_and_api(subject)
         expect(subject.find_app_id).to eq(99)
       end
     end

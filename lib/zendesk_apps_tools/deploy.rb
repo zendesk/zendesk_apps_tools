@@ -69,9 +69,10 @@ module ZendeskAppsTools
 
       all_apps_json = connection.get('/api/apps.json').body
 
-      app = unless all_apps_json.empty?
-        json_or_die(all_apps_json)['apps'].find { |app| app['name'] == app_name }
-      end
+      app =
+        unless all_apps_json.empty?
+          json_or_die(all_apps_json)['apps'].find { |app| app['name'] == app_name }
+        end
 
       unless app
         say_error_and_exit(
