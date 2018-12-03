@@ -100,10 +100,10 @@ module ZendeskAppsTools
     end
 
     def check_job(job_id)
-      check_job_connection = connection
+      http_client = connection
 
       loop do
-        response = check_job_connection.get("/api/v2/apps/job_statuses/#{job_id}")
+        response = http_client.get("/api/v2/apps/job_statuses/#{job_id}")
         info     = json_or_die(response.body)
         status   = info['status']
 
