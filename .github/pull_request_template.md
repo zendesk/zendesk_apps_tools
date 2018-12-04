@@ -1,4 +1,4 @@
-:v: :construction:
+:v:
 
 /cc @zendesk/vegemite
 
@@ -13,8 +13,8 @@ Describe the original problem and the changes made on this PR.
 * JIRA: https://zendesk.atlassian.net/browse/AF-XXX
 
 ### Risks
-* [HIGH | medium | low] Does it work across browsers (including IE!)?
-* [HIGH | medium | low] Does it work in the different products (Support, Chat, Connect)?
+* [HIGH | medium | low] Does it work on windows?
+* [HIGH | medium | low] Does it work in the different products (Support, Chat)?
 * [HIGH | medium | low] Are there any performance implications?
 * [HIGH | medium | low] Any security risks?
 * [HIGH | medium | low] What features does this touch?
