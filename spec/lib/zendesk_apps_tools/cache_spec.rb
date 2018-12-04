@@ -6,12 +6,13 @@ require 'fileutils'
 
 describe ZendeskAppsTools::Cache do
   context 'with a local cache file' do
-    let(:cache) { ZendeskAppsTools::Cache.new(path: tmpdir) }
-    let(:tmpdir) { Dir.mktmpdir }
+    let(:tmpdir)   { Dir.mktmpdir }
+    let(:cache)    { ZendeskAppsTools::Cache.new(path: tmpdir) }
+    let(:zat_file) { File.join(tmpdir, '.zat') }
 
     before do
       content = JSON.dump(subdomain: 'under-the-domain', username: 'Roger', app_id: 12)
-      File.write(File.join(tmpdir, '.zat'), content, mode: 'w')
+      File.write(zat_file, content, mode: 'w')
     end
 
     after do
@@ -45,20 +46,20 @@ describe ZendeskAppsTools::Cache do
     describe '#save' do
       it 'works' do
         cache.save(other_key: 'value')
-        expect(JSON.parse(File.read(File.join(tmpdir, '.zat')))['other_key']).to eq 'value'
+        expect(JSON.parse(File.read(zat_file))['other_key']).to eq 'value'
       end
     end
 
     describe '#clear' do
       it 'does nothing by default' do
         cache.clear
-        expect(File.exist?(File.join(tmpdir, '.zat'))).to be_truthy
+        expect(File.exist?(zat_file)).to be_truthy
       end
 
       it 'works' do
         cache = ZendeskAppsTools::Cache.new(path: tmpdir, clean: true)
         cache.clear
-        expect(File.exist?(File.join(tmpdir, '.zat'))).to be_falsey
+        expect(File.exist?(zat_file)).to be_falsey
       end
     end
   end

@@ -144,7 +144,10 @@ describe ZendeskAppsTools::Command do
         stub_request(:get, PREFIX + '/api/apps.json')
           .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
           .to_return(body: '')
-        expect(@command).to receive(:say_error).with(/^The app was not found./)
+        expect(@command).to receive(:say_error).with(
+          "App not found. " \
+          "Please verify that your credentials, subdomain, and app name are correct."
+        )
         expect { @command.update }.to raise_error(SystemExit)
       end
 
