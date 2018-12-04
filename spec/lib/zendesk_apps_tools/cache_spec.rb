@@ -12,7 +12,7 @@ describe ZendeskAppsTools::Cache do
 
     before do
       content = JSON.dump(subdomain: 'under-the-domain', username: 'Roger@something.com', app_id: 12)
-      File.write(File.join(tmpdir, '.zat'), content, mode: 'w')
+      File.write(zat_file, content, mode: 'w')
     end
 
     after do

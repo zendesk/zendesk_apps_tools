@@ -79,37 +79,36 @@ describe ZendeskAppsTools::APIConnection do
           }
           @cache = zat_cache
         end
-
-        # mocking say_error_and_exit in ZendeskAppsTools::Common::ClassMethods
-        def say_error_and_exit(error_message)
-          raise SystemExit.new(error_message)
-        end
-      end
-    end
-
-    define_method(:method_execution) do |subject_instance|
-      begin
-        subject_instance.prepare_api_auth
-      rescue SystemExit => e
-        e.message
       end
     end
 
     context 'invalid subdomain' do
       it 'errors and exit' do
-        expect(method_execution(subject_class.new('bad!subdomain'))).to eq(url_error_message)
+        subject = subject_class.new('bad!subdomain')
+
+        expect(subject).to receive(:say_error_and_exit).with(url_error_message) { exit }
+
+        expect { subject.prepare_api_auth }.to raise_error(SystemExit)
       end
     end
 
     context 'invalid full url' do
       it 'errors and exit' do
-        expect(method_execution(subject_class.new('www.keith.com'))).to eq(url_error_message)
+        subject = subject_class.new('www.keith.com')
+
+        expect(subject).to receive(:say_error_and_exit).with(url_error_message) { exit }
+
+        expect { subject.prepare_api_auth }.to raise_error(SystemExit)
       end
     end
 
     context 'with invalid email format' do
       it 'errors and exit' do
-        expect(method_execution(subject_class.new('subdomain', 'bad-email'))).to eq(email_error_message)
+        subject = subject_class.new('subdomain', 'bad-email')
+
+        expect(subject).to receive(:say_error_and_exit).with(email_error_message) { exit }
+
+        expect { subject.prepare_api_auth }.to raise_error(SystemExit)
       end
     end
   end
