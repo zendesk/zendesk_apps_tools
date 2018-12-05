@@ -6,10 +6,11 @@ require 'zip'
 
 describe ZendeskAppsTools::Command do
   PREFIX = 'https://subdomain.zendesk.com'
+  AUTHORIZATION_HEADER = { 'Authorization' => 'Basic dXNlcm5hbWVAc29tZXRoaW5nLmNvbTpwYXNzd29yZA==' }
 
   before do
     @command = ZendeskAppsTools::Command.new
-    @command.instance_variable_set(:@username, 'username')
+    @command.instance_variable_set(:@username, 'username@something.com')
     @command.instance_variable_set(:@password, 'password')
     @command.instance_variable_set(:@subdomain, 'subdomain')
     @command.instance_variable_set(:@app_id, '123')
@@ -29,7 +30,7 @@ describe ZendeskAppsTools::Command do
         allow(Faraday::UploadIO).to receive(:new)
 
         stub_request(:post, PREFIX + '/api/v2/apps/uploads.json')
-          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .with(headers: AUTHORIZATION_HEADER)
           .to_return(body: '{ "id": 123 }')
 
         expect(@command.upload('nah')).to eq(123)
@@ -42,7 +43,7 @@ describe ZendeskAppsTools::Command do
         expect(Faraday::UploadIO).to receive(:new).with('app.zip', 'application/zip').and_return(nil)
 
         stub_request(:post, PREFIX + '/api/v2/apps/uploads.json')
-          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .with(headers: AUTHORIZATION_HEADER)
           .to_return(body: '{ "id": 123 }')
 
         expect(@command.upload('nah')).to eq(123)
@@ -60,12 +61,16 @@ describe ZendeskAppsTools::Command do
         allow(@command.cache).to receive(:fetch).with('app_id').and_return('987')
 
         stub_request(:post, PREFIX + '/api/apps.json')
-          .with(body: JSON.generate(name: 'abc', upload_id: '123'),
-                headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .with(
+            body: JSON.generate(name: 'abc', upload_id: '123'),
+            headers: AUTHORIZATION_HEADER
+          )
 
         stub_request(:post, PREFIX + '/api/support/apps/installations.json')
-          .with(body: JSON.generate(app_id: '987', settings: { name: 'abc' }),
-                headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=', 'Content-Type' => 'application/json' })
+          .with(
+            body: JSON.generate(app_id: '987', settings: { name: 'abc' }),
+            headers: AUTHORIZATION_HEADER.merge({ 'Content-Type' => 'application/json' })
+          )
 
         @command.create
       end
@@ -81,12 +86,16 @@ describe ZendeskAppsTools::Command do
         expect(@command).to receive(:get_value_from_stdin) { 'abc' }
 
         stub_request(:post, PREFIX + '/api/apps.json')
-          .with(body: JSON.generate(name: 'abc', upload_id: '123'),
-                headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .with(
+            body: JSON.generate(name: 'abc', upload_id: '123'),
+            headers: AUTHORIZATION_HEADER
+          )
 
         stub_request(:post, PREFIX + '/api/support/apps/installations.json')
-          .with(body: JSON.generate(app_id: nil, settings: { name: 'abc' }),
-                headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=', 'Content-Type' => 'application/json' })
+          .with(
+            body: JSON.generate(app_id: nil, settings: { name: 'abc' }),
+            headers: AUTHORIZATION_HEADER.merge({ 'Content-Type' => 'application/json' })
+          )
 
         @command.create
       end
@@ -101,9 +110,9 @@ describe ZendeskAppsTools::Command do
         expect(@command.cache).to receive(:fetch).with('app_id').and_return(456)
 
         stub_request(:put, PREFIX + '/api/v2/apps/456.json')
-          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .with(headers: AUTHORIZATION_HEADER)
         stub_request(:get, PREFIX + '/api/v2/apps/456.json')
-          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .with(headers: AUTHORIZATION_HEADER)
           .to_return(:status => 200)
 
         @command.update
@@ -112,7 +121,7 @@ describe ZendeskAppsTools::Command do
       context 'when app id is in cache and is invalid' do
         it 'displays error message and exits' do
           stub_request(:get, PREFIX + '/api/v2/apps/333.json')
-            .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+            .with(headers: AUTHORIZATION_HEADER)
             .to_return(:status => 404)
 
           expect(@command.cache).to receive(:fetch).with('app_id').and_return(333)
@@ -142,7 +151,7 @@ describe ZendeskAppsTools::Command do
 
       it 'cannot find the app id' do
         stub_request(:get, PREFIX + '/api/apps.json')
-          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .with(headers: AUTHORIZATION_HEADER)
           .to_return(body: '')
         expect(@command).to receive(:say_error).with(
           "App not found. " \
@@ -153,10 +162,10 @@ describe ZendeskAppsTools::Command do
 
       it 'finds the app id' do
         stub_request(:get, PREFIX + '/api/apps.json')
-          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .with(headers: AUTHORIZATION_HEADER)
           .to_return(body: JSON.generate(apps))
         stub_request(:get, PREFIX + '/api/v2/apps/125.json')
-          .with(headers: { 'Authorization' => 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=' })
+          .with(headers: AUTHORIZATION_HEADER)
           .to_return(:status => 200)
 
         expect(@command.send(:find_app_id)).to eq(125)
