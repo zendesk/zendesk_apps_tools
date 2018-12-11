@@ -2,11 +2,11 @@ require 'spec_helper'
 require 'api_connection'
 
 describe ZendeskAppsTools::APIConnection do
-  let(:subdomain_validation_pattern) { ZendeskAppsTools::APIConnection::SUBDOMAIN_VALIDATION_PATTERN }
-  let(:url_validation_pattern)       { ZendeskAppsTools::APIConnection::ZENDESK_URL_VALIDATION_PATTERN }
-  let(:default_url_template)         { ZendeskAppsTools::APIConnection::DEFAULT_URL_TEMPLATE }
-
   describe 'CONSTANTS' do
+    let(:subdomain_validation_pattern) { ZendeskAppsTools::APIConnection::SUBDOMAIN_VALIDATION_PATTERN }
+    let(:url_validation_pattern)       { ZendeskAppsTools::APIConnection::ZENDESK_URL_VALIDATION_PATTERN }
+    let(:default_url_template)         { ZendeskAppsTools::APIConnection::DEFAULT_URL_TEMPLATE }
+
     describe 'DEFAULT_URL_TEMPLATE' do
       context '% subdomain (used in private method full_url)' do
         it 'replaces %s with subdomain in template' do
@@ -64,23 +64,25 @@ describe ZendeskAppsTools::APIConnection do
     end
   end
 
+  let(:subject_class) do
+    Class.new do
+      include ZendeskAppsTools::APIConnection
+      attr_reader :cache, :subdomain, :username, :password
+
+      def initialize(subdomain = nil, username = nil, password = nil)
+        zat_cache = {
+          'subdomain' => @subdomain = subdomain,
+          'username' => @username = username,
+        }
+        @cache = zat_cache
+        @password = password if password
+      end
+    end
+  end
+
   describe '#prepare_api_auth' do
     let(:url_error_message) { ZendeskAppsTools::APIConnection::URL_ERROR_MSG }
     let(:email_error_message) { ZendeskAppsTools::APIConnection::EMAIL_ERROR_MSG }
-    let(:subject_class) do
-      Class.new do
-        include ZendeskAppsTools::APIConnection
-        attr_reader :cache, :subdomain, :username
-
-        def initialize(subdomain = nil, username = nil)
-          zat_cache = {
-            'subdomain' => @subdomain = subdomain,
-            'username' => @username = username
-          }
-          @cache = zat_cache
-        end
-      end
-    end
 
     context 'invalid subdomain' do
       it 'errors and exit' do
@@ -109,6 +111,35 @@ describe ZendeskAppsTools::APIConnection do
         expect(subject).to receive(:say_error_and_exit).with(email_error_message) { exit }
 
         expect { subject.prepare_api_auth }.to raise_error(SystemExit)
+      end
+    end
+  end
+
+  describe '#get_connection' do
+    context 'with missing credentials' do
+      it 'calls prepare_api_auth for password when password is missing' do
+        subject = subject_class.new('subdomain', 'username')
+        expect(subject).to receive(:prepare_api_auth).exactly(1).times
+        subject.get_connection
+      end
+
+      it 'calls prepare_api_auth for username when username is missing' do
+        subject = subject_class.new('subdomain')
+        expect(subject).to receive(:prepare_api_auth).exactly(1).times
+        subject.get_connection
+      end
+    end
+
+    context 'with all credentials' do
+      let(:subject) { subject_class.new('subdomain', 'username', 'password') }
+
+      it 'does not call prepare_api_auth for credentials' do
+        expect(subject).to receive(:prepare_api_auth).exactly(0).times
+        subject.get_connection
+      end
+
+      it 'creates a faraday network client for requests' do
+        expect(subject.get_connection.class).to eq(Faraday::Connection)
       end
     end
   end
