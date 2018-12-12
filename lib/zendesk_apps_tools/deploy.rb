@@ -6,7 +6,6 @@ module ZendeskAppsTools
   module Deploy
     include ZendeskAppsTools::Common
     include ZendeskAppsTools::APIConnection
-    alias_method :connection, :get_connection
 
     def deploy_app(connection_method, url, body)
       body[:upload_id] = upload(options[:path]).to_s
@@ -56,7 +55,7 @@ module ZendeskAppsTools
         uploaded_data: Faraday::UploadIO.new(package_path, 'application/zip')
       }
 
-      response = connection(:multipart).post('/api/v2/apps/uploads.json', payload)
+      response = get_connection(:multipart).post('/api/v2/apps/uploads.json', payload)
       json_or_die(response.body)['id']
 
     rescue Faraday::Error::ClientError => e
@@ -100,10 +99,8 @@ module ZendeskAppsTools
     end
 
     def check_job(job_id)
-      http_client = connection
-
       loop do
-        response = http_client.get("/api/v2/apps/job_statuses/#{job_id}")
+        response = connection.get("/api/v2/apps/job_statuses/#{job_id}")
         info     = json_or_die(response.body)
         status   = info['status']
 
@@ -125,6 +122,12 @@ module ZendeskAppsTools
       end
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
+    end
+
+    private
+
+    def connection
+      @connection ||= get_connection
     end
   end
 end
