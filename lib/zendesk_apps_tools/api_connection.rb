@@ -4,7 +4,7 @@ module ZendeskAppsTools
     # taken from zendesk/lib/vars.rb
     SUBDOMAIN_VALIDATION_PATTERN = /^[a-z0-9][a-z0-9\-]{1,}[a-z0-9]$/i
     ZENDESK_URL_VALIDATION_PATTERN = /^(https?):\/\/[a-z0-9]+(([\.]|[\-]{1,2})[a-z0-9]+)*\.([a-z]{2,16}|[0-9]{1,3})((:[0-9]{1,5})?(\/?|\/.*))?$/ix
-    EMAIL_REGEX  = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})(\/token:\S+)?$/i
+    EMAIL_REGEX  = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})(\/token)?$/i
 
     EMAIL_ERROR_MSG = 'Please enter a valid email address.'
     PROMPT_FOR_URL  = 'Enter your Zendesk subdomain or full URL (including protocol):'

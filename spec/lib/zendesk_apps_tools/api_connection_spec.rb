@@ -10,6 +10,8 @@ describe ZendeskAppsTools::APIConnection do
       expect(matches_email?('username')).to eq(false)
       expect(matches_email?('username.com')).to eq(false)
       expect(matches_email?('u!sername@email.com')).to eq(false)
+      expect(matches_email?('username@email.com/token:password')).to eq(false)
+      expect(matches_email?('username@email.com/')).to eq(false)
     end
 
     it 'will match valid email addresses' do
@@ -18,8 +20,7 @@ describe ZendeskAppsTools::APIConnection do
     end
 
     it 'will match valid email addresses with api_token' do
-      expect(matches_email?('username@email.com/token:p0K3Mon')).to eq(true)
-      expect(matches_email?('username123@e-mail.com/token:@#$123QWERasd|?:"{>')).to eq(true)
+      expect(matches_email?('username@email.com/token')).to eq(true)
     end
   end
 
