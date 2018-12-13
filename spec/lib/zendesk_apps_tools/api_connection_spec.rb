@@ -2,6 +2,28 @@ require 'spec_helper'
 require 'api_connection'
 
 describe ZendeskAppsTools::APIConnection do
+  describe 'EMAIL_REGEX' do
+    let(:email_regex) { ZendeskAppsTools::APIConnection::EMAIL_REGEX }
+    define_method(:matches_email?) { |email| !!email_regex.match(email) }
+
+    it 'does not match invalid email addresses' do
+      expect(matches_email?('username')).to eq(false)
+      expect(matches_email?('username.com')).to eq(false)
+      expect(matches_email?('u!sername@email.com')).to eq(false)
+      expect(matches_email?('username@email.com/token:password')).to eq(false)
+      expect(matches_email?('username@email.com/')).to eq(false)
+    end
+
+    it 'will match valid email addresses' do
+      expect(matches_email?('username@email.com')).to eq(true)
+      expect(matches_email?('username123@e-mail.com')).to eq(true)
+    end
+
+    it 'will match valid email addresses with api_token' do
+      expect(matches_email?('username@email.com/token')).to eq(true)
+    end
+  end
+
   describe 'CONSTANTS' do
     let(:subdomain_validation_pattern) { ZendeskAppsTools::APIConnection::SUBDOMAIN_VALIDATION_PATTERN }
     let(:url_validation_pattern)       { ZendeskAppsTools::APIConnection::ZENDESK_URL_VALIDATION_PATTERN }
@@ -81,7 +103,7 @@ describe ZendeskAppsTools::APIConnection do
   end
 
   describe '#prepare_api_auth' do
-    let(:url_error_message) { ZendeskAppsTools::APIConnection::URL_ERROR_MSG }
+    let(:url_error_message)   { ZendeskAppsTools::APIConnection::URL_ERROR_MSG }
     let(:email_error_message) { ZendeskAppsTools::APIConnection::EMAIL_ERROR_MSG }
 
     context 'invalid subdomain' do
