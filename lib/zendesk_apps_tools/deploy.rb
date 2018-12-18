@@ -103,18 +103,17 @@ module ZendeskAppsTools
       http_client = connection
 
       loop do
-        response = http_client.get("/api/v2/apps/job_statuses/#{job_id}")
-        info     = json_or_die(response.body)
-        status   = info['status']
+        request  = http_client.get("/api/v2/apps/job_statuses/#{job_id}")
+        response = json_or_die(request.body)
+        status   = response['status']
 
         if %w(completed failed).include? status
           case status
           when 'completed'
-            app_id = info['app_id']
-            cache.save 'app_id' => app_id if app_id
+            cache.save zat_details(response)
             say_status @command, 'OK'
           when 'failed'
-            say_status @command, info['message'], :red
+            say_status @command, response['message'], :red
             exit 1
           end
           break
@@ -125,6 +124,18 @@ module ZendeskAppsTools
       end
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
+    end
+
+    private
+
+    def zat_details(response)
+      zat_details = {}
+
+      zat_details['app_id']    = response['app_id'] if response['app_id']
+      zat_details['subdomain'] = @subdomain
+      zat_details['username']  = @username
+
+      zat_details
     end
   end
 end
