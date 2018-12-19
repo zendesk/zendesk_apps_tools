@@ -129,13 +129,12 @@ module ZendeskAppsTools
     private
 
     def zat_details(response)
-      zat_details = {}
+      zat_details = {
+        'subdomain' => @subdomain,
+        'username' => @username
+      }
 
-      zat_details['app_id']    = response['app_id'] if response['app_id']
-      zat_details['subdomain'] = @subdomain
-      zat_details['username']  = @username
-
-      zat_details
+      zat_details.merge('app_id' => response['app_id']) if response['app_id']
     end
   end
 end

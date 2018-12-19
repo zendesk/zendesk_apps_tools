@@ -75,7 +75,7 @@ describe ZendeskAppsTools::Deploy do
         subject = subject_class.new
         allow(subject).to receive_message_chain(:connection, :get, :body) { completed_api_response_body }
         allow(subject).to receive_message_chain(:cache, :save)
-        allow(subject).to receive(:say_status).with(nil, "OK")
+        allow(subject).to receive(:say_status).with(@command, "OK")
 
         subject.check_job(random_job_id)
       end
