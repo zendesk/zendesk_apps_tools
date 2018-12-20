@@ -156,12 +156,12 @@ describe ZendeskAppsTools::APIConnection do
       let(:subject) { subject_class.new('subdomain', 'username', 'password') }
 
       it 'does not call prepare_api_auth for credentials' do
-        expect(subject).to receive(:prepare_api_auth).exactly(0).times
+        expect(subject).to_not receive(:prepare_api_auth)
         subject.get_connection
       end
 
       it 'creates a faraday network client for requests' do
-        expect(subject.get_connection.class).to eq(Faraday::Connection)
+        expect(subject.get_connection).to be_instance_of(Faraday::Connection)
       end
     end
   end
