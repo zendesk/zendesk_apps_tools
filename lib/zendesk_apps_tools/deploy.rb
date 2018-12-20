@@ -110,7 +110,7 @@ module ZendeskAppsTools
         if %w(completed failed).include? status
           case status
           when 'completed'
-            cache.save zat_details(response)
+            cache.save zat_contents(response)
             say_status @command, 'OK'
           when 'failed'
             say_status @command, response['message'], :red
@@ -128,13 +128,13 @@ module ZendeskAppsTools
 
     private
 
-    def zat_details(response)
-      zat_details = {
-        'subdomain' => @subdomain,
-        'username' => @username
-      }
+    def zat_contents(response)
+      zat = {}
+      zat['subdomain'] = @subdomain
+      zat['username'] = @username
+      zat['app_id'] = response['app_id'] if response['app_id']
 
-      zat_details.merge('app_id' => response['app_id']) if response['app_id']
+      zat
     end
   end
 end

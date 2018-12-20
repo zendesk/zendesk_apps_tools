@@ -54,17 +54,17 @@ describe ZendeskAppsTools::Deploy do
   end
 
   describe '#check_job' do
-    let(:failed_api_response_body) { { 'status' => 'failed', 'message' => 'You failed!' }.to_json }
-    let(:completed_api_response_body){ { 'status' => 'completed', 'app_id' => 2}.to_json }
     let(:random_job_id) { 9999 }
+    let(:completed_api_response_body) { {'status' => 'completed'} }
+    let(:failed_api_response_body)    { {'status' => 'failed', 'message' => 'You failed!'} }
 
     let(:subject_class) { Class.new { include ZendeskAppsTools::Deploy } }
     let(:subject) { subject_class.new }
 
     context 'response status is failed' do
       it 'errors and exit' do
-        allow(subject).to receive_message_chain(:connection, :get, :body) { failed_api_response_body }
-        allow(subject).to receive(:say_status).with(@command, 'You failed!', :red) { exit }
+        allow(subject).to receive_message_chain(:connection, :get, :body) { failed_api_response_body.to_json  }
+        allow(subject).to receive(:say_status).with(@command, failed_api_response_body['message'], :red) { exit }
 
         expect { subject.check_job(random_job_id)}.to raise_error(SystemExit)
       end
@@ -73,7 +73,7 @@ describe ZendeskAppsTools::Deploy do
     context 'response status is completed' do
       it 'caches subdomain, username and app_id' do
         subject = subject_class.new
-        allow(subject).to receive_message_chain(:connection, :get, :body) { completed_api_response_body }
+        allow(subject).to receive_message_chain(:connection, :get, :body) { completed_api_response_body.to_json  }
         allow(subject).to receive_message_chain(:cache, :save)
         allow(subject).to receive(:say_status).with(@command, "OK")
 
