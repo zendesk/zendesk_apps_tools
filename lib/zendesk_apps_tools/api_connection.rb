@@ -27,7 +27,8 @@ module ZendeskAppsTools
     def get_connection(encoding = :url_encoded)
       require 'net/http'
       require 'faraday'
-      prepare_api_auth
+      prepare_api_auth unless @subdomain && @username && @password
+
       Faraday.new full_url do |f|
         f.request encoding if encoding
         f.adapter :net_http
