@@ -22,8 +22,6 @@ module ZendeskAppsTools
       say_error_and_exit EMAIL_ERROR_MSG unless valid_email?
 
       @password  ||= cache.fetch('password', @subdomain) || get_password_from_stdin('Enter your password:')
-
-      cache.save 'subdomain' => @subdomain, 'username' => @username
     end
 
     def get_connection(encoding = :url_encoded)

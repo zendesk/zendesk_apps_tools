@@ -100,18 +100,17 @@ module ZendeskAppsTools
 
     def check_job(job_id)
       loop do
-        response = cached_connection.get("/api/v2/apps/job_statuses/#{job_id}")
-        info     = json_or_die(response.body)
-        status   = info['status']
+        request  = cached_connection.get("/api/v2/apps/job_statuses/#{job_id}")
+        response = json_or_die(request.body)
+        status   = response['status']
 
         if %w(completed failed).include? status
           case status
           when 'completed'
-            app_id = info['app_id']
-            cache.save 'app_id' => app_id if app_id
+            cache.save zat_contents(response)
             say_status @command, 'OK'
           when 'failed'
-            say_status @command, info['message'], :red
+            say_status @command, response['message'], :red
             exit 1
           end
           break
@@ -125,6 +124,15 @@ module ZendeskAppsTools
     end
 
     private
+
+    def zat_contents(response)
+      zat = {}
+      zat['subdomain'] = @subdomain
+      zat['username'] = @username
+      zat['app_id'] = response['app_id'] if response['app_id']
+
+      zat
+    end
 
     def cached_connection(encoding = :url_encoded)
       @connection ||= {}
