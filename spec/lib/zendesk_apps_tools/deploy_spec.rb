@@ -33,7 +33,7 @@ describe ZendeskAppsTools::Deploy do
       it 'errors and exits system' do
         subject = subject_class.new('random_app_name')
         allow(subject).to receive(:say_status)
-        allow(subject).to receive_message_chain(:connection, :get, :body) { api_response }
+        allow(subject).to receive_message_chain(:cached_connection, :get, :body) { api_response }
 
         expect(subject).to receive(:say_error).with(
           "App not found. " \
@@ -47,7 +47,7 @@ describe ZendeskAppsTools::Deploy do
       define_method(:mock_methods_and_api) do |subject|
         allow(subject).to receive_message_chain(:cache, :save)
         allow(subject).to receive(:say_status)
-        allow(subject).to receive_message_chain(:connection, :get, :body) { api_response }
+        allow(subject).to receive_message_chain(:cached_connection, :get, :body) { api_response }
       end
 
       it 'returns app id 22 for notification_app' do

@@ -86,23 +86,25 @@ describe ZendeskAppsTools::APIConnection do
     end
   end
 
+  let(:subject_class) do
+    Class.new do
+      include ZendeskAppsTools::APIConnection
+      attr_reader :cache, :subdomain, :username, :password
+
+      def initialize(subdomain = nil, username = nil, password = nil)
+        @cache = {
+          'subdomain' => @subdomain = subdomain,
+          'username' => @username = username,
+        }
+
+        @cache['password'] = @password = password if password
+      end
+    end
+  end
+
   describe '#prepare_api_auth' do
     let(:url_error_message)   { ZendeskAppsTools::APIConnection::URL_ERROR_MSG }
     let(:email_error_message) { ZendeskAppsTools::APIConnection::EMAIL_ERROR_MSG }
-    let(:subject_class) do
-      Class.new do
-        include ZendeskAppsTools::APIConnection
-        attr_reader :cache, :subdomain, :username
-
-        def initialize(subdomain = nil, username = nil)
-          zat_cache = {
-            'subdomain' => @subdomain = subdomain,
-            'username' => @username = username
-          }
-          @cache = zat_cache
-        end
-      end
-    end
 
     context 'invalid subdomain' do
       it 'errors and exit' do
@@ -131,6 +133,34 @@ describe ZendeskAppsTools::APIConnection do
         expect(subject).to receive(:say_error_and_exit).with(email_error_message) { exit }
 
         expect { subject.prepare_api_auth }.to raise_error(SystemExit)
+      end
+    end
+  end
+
+  describe '#get_connection' do
+    context 'with all credentials (available in cache)' do
+      let(:subject_with_all_credentials) { subject_class.new('subdomain', 'username', 'password') }
+
+      it 'does not call prepare_api_auth' do
+        expect(subject_with_all_credentials).to_not receive(:prepare_api_auth)
+        subject_with_all_credentials.get_connection
+      end
+
+      it 'creates a faraday client for network requests' do
+        expect(subject_with_all_credentials.get_connection).to be_instance_of(Faraday::Connection)
+      end
+    end
+
+    context 'with one or more missing credentials (in cache)' do
+      let(:subject_with_1_missing_credential)  { subject_class.new('subdomain', 'username') }
+      let(:subject_with_2_missing_credentials) { subject_class.new('subdomain') }
+
+      it 'calls prepare_api_auth only once' do
+        expect(subject_with_1_missing_credential).to receive(:prepare_api_auth).exactly(1).times
+        subject_with_1_missing_credential.get_connection
+
+        expect(subject_with_2_missing_credentials).to receive(:prepare_api_auth).exactly(1).times
+        subject_with_2_missing_credentials.get_connection
       end
     end
   end
