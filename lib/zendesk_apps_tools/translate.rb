@@ -176,9 +176,9 @@ module ZendeskAppsTools
 
         return json_or_die(locale_response.body)['locales'] if locale_response.status == 200
         if locale_response.status == 401
-          say_error_and_exit 'Authentication failed'
+          say_error_and_exit 'Authentication failed.'
         else
-          say_error_and_exit "Failed to download locales, got HTTP status #{locale_response.status}"
+          say_error_and_exit "Failed to download locales, got HTTP status #{locale_response.status}."
         end
       end
 
@@ -228,13 +228,13 @@ module ZendeskAppsTools
       def package_name_from_json(error_out: false)
         package = en_json && en_json['app']['package']
         return package if package
-        say_error_and_exit 'No package defined inside en.json!' if error_out
+        say_error_and_exit 'No package defined inside en.json.' if error_out
       end
 
       def package_name(error_out: false)
         package = en_hash && en_hash['app']['package']
         return package if package
-        say_error_and_exit 'No package defined inside en.yml!' if error_out
+        say_error_and_exit 'No package defined inside en.yml.' if error_out
       end
     end
   end

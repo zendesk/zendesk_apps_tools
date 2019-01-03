@@ -60,7 +60,7 @@ module ZendeskAppsTools
             say_status 'Error', error_hash
           end
         rescue JSON::ParserError
-          say_error_and_exit 'Server error 😭'
+          say_error_and_exit 'Server error.'
         end
       end
 

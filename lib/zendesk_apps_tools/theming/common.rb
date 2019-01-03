@@ -34,7 +34,7 @@ module ZendeskAppsTools
         full_manifest_path = theme_package_path('manifest.json')
         JSON.parse(File.read(full_manifest_path))
       rescue Errno::ENOENT
-        say_error_and_exit "There's no manifest file in #{full_manifest_path}"
+        say_error_and_exit "There is no manifest file in #{full_manifest_path}"
       rescue JSON::ParserError
         say_error_and_exit "The manifest file is invalid at #{full_manifest_path}"
       end
