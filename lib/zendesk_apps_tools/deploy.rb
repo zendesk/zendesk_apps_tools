@@ -64,20 +64,25 @@ module ZendeskAppsTools
 
     def find_app_id(product_name)
       say_status 'Update', 'app ID is missing, searching...'
-      app_name = get_value_from_stdin('Enter the name of the app:')
+      app_name = get_value_from_stdin('Enter the name of the installed app:')
 
-      all_apps_json = cached_connection.get("/api/#{product_name}/apps.json").body
+      installations_json = cached_connection.get("/api/#{product_name}/apps/installations.json").body
 
-      if all_apps_json.empty?
+      if installations_json.empty?
         say_error_and_exit "Unable to retrieve app ID. Please check your internet connection."
       else
-        app = json_or_die(all_apps_json)['apps'].find { |app| app['name'] == app_name }
+        installation = json_or_die(installations_json)['installations'].find {
+          |i| i['settings'] && i['settings']['name'] == app_name
+        }
       end
 
-      say_error_and_exit "App not found. Please verify that your credentials, subdomain, and app name are correct." unless app
+      unless installation
+        say_error_and_exit "App not found. Please verify that your credentials, subdomain, and app name are correct."
+      end
 
-      cache.save 'app_id' => app['id']
-      app['id']
+      app_id = installation['app_id']
+      cache.save 'app_id' => app_id
+      app_id
 
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message
