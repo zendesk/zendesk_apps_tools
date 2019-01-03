@@ -62,23 +62,19 @@ module ZendeskAppsTools
       say_error_and_exit e.message
     end
 
-    def find_app_id
+    def find_app_id(product_name)
       say_status 'Update', 'app ID is missing, searching...'
       app_name = get_value_from_stdin('Enter the name of the app:')
 
-      all_apps_json = cached_connection.get('/api/apps.json').body
+      all_apps_json = cached_connection.get("/api/#{product_name}/apps.json").body
 
-      app =
-        unless all_apps_json.empty?
-          json_or_die(all_apps_json)['apps'].find { |app| app['name'] == app_name }
-        end
-
-      unless app
-        say_error_and_exit(
-          "App not found. " \
-          "Please verify that your credentials, subdomain, and app name are correct."
-        )
+      if all_apps_json.empty?
+        say_error_and_exit "Unable to retrieve app ID. Please check your internet connection."
+      else
+        app = json_or_die(all_apps_json)['apps'].find { |app| app['name'] == app_name }
       end
+
+      say_error_and_exit "App not found. Please verify that your credentials, subdomain, and app name are correct." unless app
 
       cache.save 'app_id' => app['id']
       app['id']
