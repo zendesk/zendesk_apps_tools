@@ -13,7 +13,7 @@ To install, run `gem install zendesk_apps_tools`.
 
 To get the latest version, run `gem update zendesk_apps_tools`.
 
-For information on using the tools, see  [Zendesk App Tools](https://developer.zendesk.com/apps/docs/apps-v2/getting_started#zendesk-app-tools) on developer.zendesk.com.
+For information on using the tools, see  [Zendesk App Tools](https://developer.zendesk.com/apps/docs/developer-guide/zat) on developer.zendesk.com.
 
 ## Work on ZAT
 If you want to help **develop** this tool, clone this repo and run `bundle install`.
