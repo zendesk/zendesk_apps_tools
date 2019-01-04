@@ -54,7 +54,7 @@ describe ZendeskAppsTools::Deploy do
         expect(subject.find_app_id).to eq(22)
       end
 
-      it 'returns app id 99 for notification_app' do
+      it 'returns app id 99 for time_tracking_app' do
         subject = mocked_instance_methods_and_api('time_tracking_app', api_response_with_installations)
         allow(subject).to receive_message_chain(:cache, :save)
 
