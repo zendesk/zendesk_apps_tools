@@ -62,14 +62,14 @@ module ZendeskAppsTools
       say_error_and_exit e.message
     end
 
-    def find_app_id(product_name)
+    def find_app_id(product_name = 'v2') # use the v2 endpoint if no product name is provided
       say_status 'Update', 'app ID is missing, searching...'
       app_name = get_value_from_stdin('Enter the name of the installed app:')
 
       installations_json = cached_connection.get("/api/#{product_name}/apps/installations.json").body
 
       if installations_json.empty?
-        say_error_and_exit "Unable to retrieve app ID. Please check your internet connection."
+        say_error_and_exit "Unable to retrieve installations. Please check your internet connection."
       else
         installation = json_or_die(installations_json)['installations'].find {
           |i| i['settings'] && i['settings']['name'] == app_name
