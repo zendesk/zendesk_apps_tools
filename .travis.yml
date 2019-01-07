@@ -12,3 +12,6 @@ branches:
     - master
 sudo: false
 cache: bundler
+before_install:
+  - gem uninstall bundler -a -x
+  - gem install bundler -v 1.17.3
