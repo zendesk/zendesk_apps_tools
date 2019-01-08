@@ -69,7 +69,7 @@ module ZendeskAppsTools
       require 'json'
       JSON.parse(value)
     rescue JSON::ParserError
-      say_error_and_exit "\"#{value}\" is an invalid JSON"
+      say_error_and_exit "\"#{value}\" is an invalid JSON."
     end
 
     private
@@ -77,7 +77,7 @@ module ZendeskAppsTools
     def error_or_default_if_unattended(prompt, opts = {})
       if options[:unattended]
         return opts[:default] if opts.key? :default
-        say_error 'Would have prompted for a value interactively, but zat is not listening to keyboard input.'
+        say_error 'Would have prompted for a value interactively, but ZAT is not listening to keyboard input.'
         say_error_and_exit prompt
       else
         yield

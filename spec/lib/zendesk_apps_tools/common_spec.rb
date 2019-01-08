@@ -83,7 +83,7 @@ describe ZendeskAppsTools::Common do
     end
 
     it 'raise error if invalid input is provided' do
-      expect(subject).to receive(:say).with(/is an invalid JSON$/, :red)
+      expect(subject).to receive(:say).with(/is an invalid JSON.$/, :red)
       expect { subject.json_or_die '{ "key"="value" }' }.to raise_error(SystemExit)
     end
   end

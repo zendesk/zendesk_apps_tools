@@ -208,10 +208,11 @@ module ZendeskAppsTools
       setup_path(options[:path])
       @command = 'Update'
 
-      app_id = cache.fetch('app_id') || find_app_id
+      product_name = product_names(manifest).first
+      app_id = cache.fetch('app_id') || find_app_id(product_name)
       app_url = "/api/v2/apps/#{app_id}.json"
       unless /\d+/ =~ app_id.to_s && app_exists?(app_id)
-        say_error_and_exit "App id not found\nPlease try running command with --clean or check your internet connection"
+        say_error_and_exit "App ID not found. Please try running command with --clean or check your internet connection."
       end
 
       deploy_app(:put, app_url, {})

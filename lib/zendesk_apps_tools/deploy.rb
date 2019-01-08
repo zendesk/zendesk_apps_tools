@@ -62,26 +62,28 @@ module ZendeskAppsTools
       say_error_and_exit e.message
     end
 
-    def find_app_id
+    def find_app_id(product_name = 'v2') # use the v2 endpoint if no product name is provided
       say_status 'Update', 'app ID is missing, searching...'
-      app_name = get_value_from_stdin('Enter the name of the app:')
+      app_name = get_value_from_stdin('Enter the name of the installed app:')
 
-      all_apps_json = cached_connection.get('/api/apps.json').body
+      response = cached_connection.get("/api/#{product_name}/apps/installations.json")
+      installations_json = json_or_die(response.body)
 
-      app =
-        unless all_apps_json.empty?
-          json_or_die(all_apps_json)['apps'].find { |app| app['name'] == app_name }
-        end
-
-      unless app
-        say_error_and_exit(
-          "App not found. " \
-          "Please verify that your credentials, subdomain, and app name are correct."
-        )
+      unless response.success? && installations_json.has_key?('installations')
+        say_error_and_exit "Unable to retrieve installations. Please check your credentials and internet connection."
+      else
+        installation = installations_json['installations'].find {
+          |i| i['settings'] && i['settings']['name'] == app_name
+        }
       end
 
-      cache.save 'app_id' => app['id']
-      app['id']
+      unless installation
+        say_error_and_exit "App not found. Please check that your app name is correct."
+      end
+
+      app_id = installation['app_id']
+      cache.save 'app_id' => app_id
+      app_id
 
     rescue Faraday::Error::ClientError => e
       say_error_and_exit e.message

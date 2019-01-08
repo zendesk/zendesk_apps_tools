@@ -1,51 +1,71 @@
 require 'spec_helper'
 require 'zendesk_apps_tools/deploy'
 require 'json'
+require 'faraday'
 
 describe ZendeskAppsTools::Deploy do
   let(:subject_class) { Class.new { include ZendeskAppsTools::Deploy } }
 
   describe '#find_app_id' do
-    let(:api_response_with_app_ids) do
-     {
-       'apps'=> [
-          { 'name'=> 'notification_app', 'id'=> 22 },
-          { 'name'=> 'time_tracking_app', 'id' => 99 }
+    let(:valid_response_body) {
+      {
+        installations: [
+          { id: 1, app_id: 22, settings: { name: 'notification_app' }},
+          { id: 2, app_id: 99, settings: { name: 'time_tracking_app' }}
         ]
       }.to_json
-    end
+    }
+    let(:valid_api_response) { Faraday::Response.new({ body: valid_response_body, status: 200}) }
+    let(:invalid_api_response) { Faraday::Response.new({ body: {}.to_json, status: 200}) }
+    let(:failed_api_response) { Faraday::Response.new({ body: {}.to_json, status: 403}) }
+    let(:connection_error_msg) { /Unable to retrieve installations/ }
+    let(:app_lookup_error_msg) { /App not found/ }
 
-    define_method(:mocked_instance_methods_and_api) do |app_name|
+    def mocked_instance_methods_and_api(app_name, api_response)
       subject = subject_class.new
       allow(subject).to receive(:say_status)
       allow(subject).to receive(:get_value_from_stdin) { app_name }
-      allow(subject).to receive_message_chain(:cached_connection, :get, :body) { api_response_with_app_ids }
-
+      allow(subject).to receive_message_chain(:cached_connection, :get) { api_response }
       subject
+    end
+
+    context 'receives an invalid api response' do
+      it 'errors and exits system' do
+        subject = mocked_instance_methods_and_api('notification_app', invalid_api_response)
+
+        expect(subject).to receive(:say_error).with(connection_error_msg)
+        expect { subject.find_app_id }.to raise_error(SystemExit)
+      end
+    end
+
+   context 'user inputs the wrong credentials' do
+      it 'errors and exits system' do
+        subject = mocked_instance_methods_and_api('notification_app', failed_api_response)
+
+        expect(subject).to receive(:say_error).with(connection_error_msg)
+        expect { subject.find_app_id }.to raise_error(SystemExit)
+      end
     end
 
     context 'user inputs an app name that is NOT in api response' do
       it 'errors and exits system' do
-        subject = mocked_instance_methods_and_api('random_app_name')
+        subject = mocked_instance_methods_and_api('random_app_name', valid_api_response)
 
-        expect(subject).to receive(:say_error).with(
-          "App not found. " \
-          "Please verify that your credentials, subdomain, and app name are correct."
-        )
+        expect(subject).to receive(:say_error).with(app_lookup_error_msg)
         expect { subject.find_app_id }.to raise_error(SystemExit)
       end
     end
 
     context 'user inputs an app name that is in api response' do
       it 'returns app id 22 for notification_app' do
-        subject = mocked_instance_methods_and_api('notification_app')
+        subject = mocked_instance_methods_and_api('notification_app', valid_api_response)
         allow(subject).to receive_message_chain(:cache, :save)
 
         expect(subject.find_app_id).to eq(22)
       end
 
-      it 'returns app id 99 for notification_app' do
-        subject = mocked_instance_methods_and_api('time_tracking_app')
+      it 'returns app id 99 for time_tracking_app' do
+        subject = mocked_instance_methods_and_api('time_tracking_app', valid_api_response)
         allow(subject).to receive_message_chain(:cache, :save)
 
         expect(subject.find_app_id).to eq(99)
