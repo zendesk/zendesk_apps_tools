@@ -161,9 +161,7 @@ describe ZendeskAppsTools::Command do
           stub_request(:get, PREFIX + '/api/support/apps/installations.json')
             .with(headers: AUTHORIZATION_HEADER)
             .to_return(body: JSON.generate(installations_incomplete))
-          expect(@command).to receive(:say_error).with(
-            "App not found. Please verify that your credentials, subdomain, and app name are correct."
-          )
+          expect(@command).to receive(:say_error).with(/App not found/)
           expect { @command.update }.to raise_error(SystemExit)
         end
       end
