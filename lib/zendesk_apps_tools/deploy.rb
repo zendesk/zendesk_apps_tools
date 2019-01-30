@@ -64,13 +64,13 @@ module ZendeskAppsTools
 
     def find_app_id(product_name = 'v2') # use the v2 endpoint if no product name is provided
       say_status 'Update', 'app ID is missing, searching...'
-      app_name = get_value_from_stdin('Enter the name of the installed app:')
+      app_name = get_value_from_stdin('Enter the name of the app:')
 
       response = cached_connection.get("/api/#{product_name}/apps/owned.json")
       owned_apps_json = json_or_die(response.body)
 
       unless response.success? && owned_apps_json.has_key?('apps')
-        say_error_and_exit "Unable to retrieve installations. Please check your credentials and internet connection."
+        say_error_and_exit "Unable to retrieve apps. Please check your credentials and internet connection."
       else
         app = owned_apps_json['apps'].find {
           |app| app['name'] == app_name
