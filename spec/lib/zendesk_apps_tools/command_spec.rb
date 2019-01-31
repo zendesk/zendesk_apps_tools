@@ -137,18 +137,18 @@ describe ZendeskAppsTools::Command do
     end
 
     context 'when app id is NOT in cache' do
-      let (:installations) {
+      let (:apps) {
         [
-          { id: 3, app_id: 123, settings: { name: 'hello' }},
-          { id: 4, app_id: 124, settings: { name: 'world' }},
-          { id: 5, app_id: 125, settings: { name: 'itsme' }}
+          { id: 123, name: 'hello' },
+          { id: 124, name: 'world' },
+          { id: 125, name: 'itsme' }
         ]
       }
-      let (:installations_incomplete) {{
-          installations: [ installations[0] ]
+      let (:apps_incomplete) {{
+          apps: [ apps[0] ]
       }}
-      let (:installations_complete) {{
-          installations: installations
+      let (:apps_complete) {{
+          apps: apps
       }}
 
       before do
@@ -158,9 +158,9 @@ describe ZendeskAppsTools::Command do
 
       context 'and it cannot find the app id' do
         it 'displays an error message and exits' do
-          stub_request(:get, PREFIX + '/api/support/apps/installations.json')
+          stub_request(:get, PREFIX + '/api/support/apps/owned.json')
             .with(headers: AUTHORIZATION_HEADER)
-            .to_return(body: JSON.generate(installations_incomplete))
+            .to_return(body: JSON.generate(apps_incomplete))
           expect(@command).to receive(:say_error).with(/App not found/)
           expect { @command.update }.to raise_error(SystemExit)
         end
@@ -168,12 +168,12 @@ describe ZendeskAppsTools::Command do
 
       context 'and it finds the app id' do
         it 'updates the app' do
-          stub_request(:get, PREFIX + '/api/support/apps/installations.json')
+          stub_request(:get, PREFIX + '/api/support/apps/owned.json')
             .with(headers: AUTHORIZATION_HEADER)
-            .to_return(body: JSON.generate(installations_complete))
-          stub_request(:get, PREFIX + '/api/v2/apps/installations.json')
+            .to_return(body: JSON.generate(apps_complete))
+          stub_request(:get, PREFIX + '/api/v2/apps/owned.json')
             .with(headers: AUTHORIZATION_HEADER)
-            .to_return(body: JSON.generate(installations_complete))
+            .to_return(body: JSON.generate(apps_complete))
           stub_request(:get, PREFIX + '/api/v2/apps/125.json')
             .with(headers: AUTHORIZATION_HEADER)
             .to_return(:status => 200)
