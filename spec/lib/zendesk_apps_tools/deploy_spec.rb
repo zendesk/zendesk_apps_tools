@@ -9,16 +9,16 @@ describe ZendeskAppsTools::Deploy do
   describe '#find_app_id' do
     let(:valid_response_body) {
       {
-        installations: [
-          { id: 1, app_id: 22, settings: { name: 'notification_app' }},
-          { id: 2, app_id: 99, settings: { name: 'time_tracking_app' }}
+        apps: [
+          { id: 22, name: 'notification_app' },
+          { id: 99, name: 'time_tracking_app' }
         ]
       }.to_json
     }
     let(:valid_api_response) { Faraday::Response.new({ body: valid_response_body, status: 200}) }
     let(:invalid_api_response) { Faraday::Response.new({ body: {}.to_json, status: 200}) }
     let(:failed_api_response) { Faraday::Response.new({ body: {}.to_json, status: 403}) }
-    let(:connection_error_msg) { /Unable to retrieve installations/ }
+    let(:connection_error_msg) { /Unable to retrieve apps/ }
     let(:app_lookup_error_msg) { /App not found/ }
 
     def mocked_instance_methods_and_api(app_name, api_response)
