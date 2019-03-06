@@ -1,16 +1,19 @@
+<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
-  <!-- http://garden.zendesk.com -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@zendeskgarden/css-bedrock@7.0" type="text/css">
+  <!--   See "Using Zendesk Garden":
+    https://developer.zendesk.com/apps/docs/developer-guide/setup#using-zendesk-garden
+    https://garden.zendesk.com/css-components/utilities/typography/
+   -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@zendeskgarden/css-utilities@4/dist/index.min.css">
 </head>
 <body>
-  <h2 class="u-gamma">Hello, World!</h2>
-  <!-- https://github.com/zendesk/zendesk_app_framework_sdk -->
+  <h2 class="u-semibold u-fs-xl">Hello, World!</h2>
   <script type="text/javascript" src="https://assets.zendesk.com/apps/sdk/2.0/zaf_sdk.js"></script>
   <script>
-    // Initialise the Zendesk JavaScript API client
-    // https://developer.zendesk.com/apps/docs/apps-v2
+    // Initialise Apps framework client. See also:
+    // https://developer.zendesk.com/apps/docs/developer-guide/getting_started
     var client = ZAFClient.init();
     client.invoke('resize', { width: '100%', height: '200px' });
   </script>
