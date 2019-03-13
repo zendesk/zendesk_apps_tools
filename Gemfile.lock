@@ -69,7 +69,7 @@ GEM
     gherkin (4.1.3)
     hashdiff (0.3.8)
     hitimes (1.3.0)
-    i18n (1.6.0)
+    i18n (1.5.1)
       concurrent-ruby (~> 1.0)
     image_size (2.0.0)
     jshintrb (0.3.0)
