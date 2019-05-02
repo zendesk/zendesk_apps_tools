@@ -7,8 +7,12 @@ module ZendeskAppsTools
     end
 
     def manifest
+      require 'zendesk_apps_support'
+      require 'zendesk_apps_support/manifest/no_override_hash'
       begin
         @manifest ||= app_package.manifest
+      rescue JSON::ParserError, ZendeskAppsSupport::Manifest::OverrideError => e
+        say_status "error", "Manifest file is incorrectly formatted: #{e.message}", :red and exit 1
       rescue Errno::ENOENT
         say_status "error", "Manifest file cannot be found in the given path. Check you are pointing to the path that contains your manifest.json", :red and exit 1
       end
