@@ -7,6 +7,7 @@ module ZendeskAppsTools
     end
 
     def manifest
+      require 'zendesk_apps_support/manifest/no_override_hash'
       begin
         @manifest ||= app_package.manifest
       rescue JSON::ParserError, ZendeskAppsSupport::Manifest::OverrideError => e
