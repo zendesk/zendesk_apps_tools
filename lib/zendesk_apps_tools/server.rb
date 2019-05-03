@@ -34,7 +34,8 @@ module ZendeskAppsTools
         collapsible: true,
         settings: settings.parameters.merge(title: app_name),
         updated_at: Time.now.iso8601,
-        created_at: Time.now.iso8601
+        created_at: Time.now.iso8601,
+        plan: { name: settings.plan }
       )
 
       app_js = package.compile(

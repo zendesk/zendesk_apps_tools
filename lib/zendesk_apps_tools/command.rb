@@ -158,6 +158,7 @@ module ZendeskAppsTools
     method_option :port, default: DEFAULT_SERVER_PORT, required: false, desc: 'Port for the http server to use.'
     method_option :app_id, default: DEFAULT_APP_ID, required: false, type: :numeric
     method_option :bind, required: false
+    method_option :plan, required: false
     def server
       setup_path(options[:path])
       if app_package.has_file?('assets/app.js')
@@ -173,6 +174,7 @@ module ZendeskAppsTools
         server.set :public_folder, File.join(options[:path], 'assets')
         server.set :parameters, settings
         server.set :app_id, options[:app_id]
+        server.set :plan, [options[:plan], cache.fetch('plan')].reject(&:nil?).first
         server.run!
       end
     end
