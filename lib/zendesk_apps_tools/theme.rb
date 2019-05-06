@@ -12,12 +12,6 @@ module ZendeskAppsTools
     shared_options(except: %i[clean unattended])
     method_option :port, default: Command::DEFAULT_SERVER_PORT, required: false, desc: 'Port for the http server to use.'
     method_option :bind, required: false
-    method_option :role,
-                  type: :string,
-                  enum: %w[manager agent end_user anonymous],
-                  default: 'manager',
-                  desc: 'The role for the preview URL',
-                  aliases: '-r'
     method_option :livereload, type: :boolean, default: true, desc: 'Enable or disable live-reloading the preview when a change is made.'
     def preview
       setup_path(options[:path])
@@ -32,7 +26,7 @@ module ZendeskAppsTools
     no_commands do
       def full_upload
         say_status 'Generating', 'Generating theme from local files'
-        payload = generate_payload.merge(role: options[:role])
+        payload = generate_payload
         say_status 'Generating', 'OK'
         say_status 'Uploading', 'Uploading theme'
         connection = get_connection(nil)
