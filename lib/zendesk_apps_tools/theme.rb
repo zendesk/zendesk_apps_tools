@@ -13,13 +13,15 @@ module ZendeskAppsTools
     method_option :port, default: Command::DEFAULT_SERVER_PORT, required: false, desc: 'Port for the http server to use.'
     method_option :bind, required: false
     method_option :livereload, type: :boolean, default: true, desc: 'Enable or disable live-reloading the preview when a change is made.'
+    method_option :ignore, type: :array, required: false, desc: 'Directories and files to ignore from listening for changes.'
+
     def preview
       setup_path(options[:path])
       ensure_manifest!
       require 'faraday'
       full_upload
       callbacks_after_upload = []
-      start_listener(callbacks_after_upload)
+      start_listener(callbacks_after_upload, options[:ignore])
       start_server(callbacks_after_upload)
     end
 
@@ -58,11 +60,12 @@ module ZendeskAppsTools
         end
       end
 
-      def start_listener(callbacks_after_upload)
+      def start_listener(callbacks_after_upload, ignore_paths = [])
         # TODO: do we need to stop the listener at some point?
         require 'listen'
         path = Pathname.new(theme_package_path('.')).cleanpath
         listener = ::Listen.to(path, ignore: /\.zat/) do |modified, added, removed|
+          listener.ignore ignore_paths.map { |s| Regexp.new s }
           need_upload = false
           if modified.any? { |file| file[/templates|manifest/] }
             need_upload = true
