@@ -15,13 +15,13 @@ module ZendeskAppsTools
     ].join('\n')
 
     def prepare_api_auth
-      @subdomain ||= cache.fetch('subdomain') || get_value_from_stdin(PROMPT_FOR_URL)
+      @subdomain ||= ENV['ZAT_URL'] || cache.fetch('subdomain') || get_value_from_stdin(PROMPT_FOR_URL)
       say_error_and_exit URL_ERROR_MSG unless valid_subdomain? || valid_full_url?
 
-      @username  ||= cache.fetch('username', @subdomain) || get_value_from_stdin('Enter your username:')
+      @username  ||= ENV['ZAT_USERNAME'] || cache.fetch('username', @subdomain) || get_value_from_stdin('Enter your username:')
       say_error_and_exit EMAIL_ERROR_MSG unless valid_email?
 
-      @password  ||= cache.fetch('password', @subdomain) || get_password_from_stdin('Enter your password:')
+      @password  ||= ENV['ZAT_PASSWORD'] || cache.fetch('password', @subdomain) || get_password_from_stdin('Enter your password:')
     end
 
     def get_connection(encoding = :url_encoded)
