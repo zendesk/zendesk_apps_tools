@@ -1,6 +1,6 @@
 ---
+os: windows
 language: ruby
-dist: trusty
 rvm:
   - 2.1
   - 2.2.6
