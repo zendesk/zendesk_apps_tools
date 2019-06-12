@@ -102,17 +102,17 @@ module ZendeskAppsTools
       def inject_external_tags(head_template)
         live_reload_script_tag = <<-html
           <script type="text/javascript">
-            RACK_LIVERELOAD_PORT = 4567;
+            RACK_LIVERELOAD_PORT = #{options[:port]};
           </script>
-          <script src="http://localhost:4567/__rack/livereload.js?host=localhost"></script>
+          <script src="http://localhost:#{options[:port]}/__rack/livereload.js?host=localhost"></script>
         html
 
         js_tag = <<-html
-          <script src="http://localhost:4567/guide/script.js"></script>
+          <script src="http://localhost:#{options[:port]}/guide/script.js"></script>
         html
 
         css_tag = <<-html
-          <link rel="stylesheet" type="text/css" href="http://localhost:4567/guide/style.css">
+          <link rel="stylesheet" type="text/css" href="http://localhost:#{options[:port]}/guide/style.css">
         html
 
         template = StringIO.new
