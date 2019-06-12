@@ -102,14 +102,12 @@ module ZendeskAppsTools
       valid = errors.none?
 
       if valid
-        app_package.warnings.each { |w| say w.to_s, :yellow }
+        app_package.warnings.each { |w| say_status 'warning', w.to_s, :yellow }
         # clean when all apps are upgraded
         run_deprecation_checks unless options[:'unattended']
         say_status 'validate', 'OK'
       else
-        errors.each do |e|
-          say_status 'validate', e.to_s, :red
-        end
+        errors.each { |e| say_status 'validate', e.to_s, :red }
       end
 
       @destination_stack.pop if options[:path]
@@ -124,7 +122,10 @@ module ZendeskAppsTools
 
       setup_path(options[:path])
 
-      say_status 'warning', 'Please note that the name key of manifest.json is currently only used in development.', :yellow if app_package.manifest.name
+      if app_package.manifest.name
+        warning = 'Please note that the name key of manifest.json is currently only used in development.'
+        say_status 'warning', warning, :yellow
+      end
 
       archive_path = File.join(tmp_dir, "app-#{Time.now.strftime('%Y%m%d%H%M%S')}.zip")
 
@@ -162,7 +163,8 @@ module ZendeskAppsTools
     def server
       setup_path(options[:path])
       if app_package.has_file?('assets/app.js')
-        say 'Warning: creating assets/app.js causes zat server to behave badly.', :yellow
+        warning = 'Warning: creating assets/app.js causes zat server to behave badly.'
+        say_status 'warning', warning, :yellow
       end
 
       require 'zendesk_apps_tools/server'
