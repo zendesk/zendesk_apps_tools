@@ -39,6 +39,8 @@ Improvements are always welcome. To contribute:
 * Put up a PR into the master branch.
 * CC and get two +1 from @zendesk/vegemite.
 
+This repo contains the ZAT documentation published on the developer portal at https://developer.zendesk.com. Please cc **@zendesk/documentation** on any PR that adds or updates the documentation.
+
 ## Bugs
 You can report bugs as issues here on GitHub. You can also submit a bug to support@zendesk.com. Mention "zendesk_apps_tools" in the ticket so it can be assigned to the right team.
 
