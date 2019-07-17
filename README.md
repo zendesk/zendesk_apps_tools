@@ -30,6 +30,10 @@ Then, comment-out the line referring to `zendesk_apps_support` in this project's
 
 The path should point to your local ZAS directory. In this way, your clone of ZAT will use a local version of ZAS, which is very helpful for development. Run a `bundle install` after changing the Gemfile.
 
+## Bumping ZAT
+
+If you want to bump ZAT, run `bump patch|minor|major --no-bundle` from the root directory.  This is in order to circumvent a bundle update command that [bump](https://github.com/gregorym/bump) runs by default.
+
 ## Testing
 This project uses rspec, which you can run with `bundle exec rake`.
 
