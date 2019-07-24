@@ -32,8 +32,5 @@ git push origin master
 echo "*** Pushing tag $VERSION to origin"
 git push origin $VERSION
 
-echo "*** Publishing to RubyGems"
-bundle exec rake release
-
 echo "*** Done"
 exit 0
