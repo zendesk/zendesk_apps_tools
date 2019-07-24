@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# This script is intended to be used as an 'after deploy' script for the Travis build.
-# When a change is merged to master, we want to build the assets and commit to zendesk_app_framework.
+# This script is intended to be used as an 'after success' script for the Travis build.
+# When a change is merged to master, we want to safely bump zat so that this
+# process at least is not a manual one.
 
 echo '*** Checking if branch is master'
 if [[ $TRAVIS_BRANCH != "master" ]] || [[ $TRAVIS_EVENT_TYPE != 'push' ]]
