@@ -25,8 +25,14 @@ else
 fi
 
 echo '*** Updating version'
-VERSION=$(bump $BUMP --no-bundle)
-
+VERSION=$(bump $BUMP --no-bundle | head -n 1 | awk '{print $3}')
+# e.g.
+# [cgoddard/autopublish 9aee057] v3.2.0
+#  1 file changed, 1 insertion(+), 1 deletion(-)
+# Bump version 3.1.1 to 3.2.0
+# ->
+# [cgoddard/autopublish 9aee057] v3.2.0
+# -> v3.2.0
 echo "*** Pushing master to origin"
 git push origin master
 
