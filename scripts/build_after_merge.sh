@@ -4,6 +4,8 @@
 # When a change is merged to master, we want to safely bump zat so that this
 # process at least is not a manual one.
 
+branch=cgoddard/autopublish
+
 echo '*** Checking if branch is master'
 if [[ $TRAVIS_BRANCH != "master" ]] || [[ $TRAVIS_EVENT_TYPE != 'push' ]]
 then
@@ -12,7 +14,7 @@ then
 fi
 
 echo '** Checking out master branch'
-git checkout master
+git checkout $branch
 
 echo '*** checking if major/minor/patch'
 LAST_MSG=$(git log -1)
@@ -34,7 +36,7 @@ VERSION=$(bump $BUMP --no-bundle | head -n 1 | awk '{print $3}')
 # [cgoddard/autopublish 9aee057] v3.2.0
 # -> v3.2.0
 echo "*** Pushing master to origin"
-git push origin master
+git push origin $branch
 
 echo "*** Pushing tag $VERSION to origin"
 git push origin $VERSION
