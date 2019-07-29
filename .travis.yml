@@ -11,4 +11,4 @@ branches:
     - master
 sudo: false
 cache: bundler
-after_success: ./build_after_merge.sh
+after_success: ./scripts/build_after_merge.sh
