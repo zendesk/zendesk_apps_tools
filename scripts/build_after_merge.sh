@@ -39,7 +39,7 @@ echo "*** Pushing master to origin"
 git push origin $branch
 
 echo "*** Pushing tag $VERSION to origin"
-git push origin $VERSION
+# git push origin $VERSION
 
 echo "*** Done"
 exit 0
