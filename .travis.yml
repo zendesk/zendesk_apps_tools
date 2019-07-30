@@ -1,14 +1,20 @@
 ---
 language: ruby
 dist: trusty
+
 rvm:
   - 2.1
   - 2.2.6
   - 2.3.3
   - 2.4.0
-branches:
-  only:
-    - master
+jobs:
+  include:
+    - stage: test
+      rvm: 2.4.0
+      branches:
+        only:
+          - master
+    - stage: deploy
+      script: ./scripts/build_after_merge.sh
 sudo: false
 cache: bundler
-after_success: ./scripts/build_after_merge.sh
