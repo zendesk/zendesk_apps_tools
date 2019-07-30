@@ -27,7 +27,7 @@ else
 fi
 
 echo '*** Updating version'
-VERSION=$(bump $BUMP --no-bundle | head -n 1 | awk '{print $3}')
+VERSION=$(bundle exec bump $BUMP --no-bundle | head -n 1 | awk '{print $3}')
 # e.g.
 # [cgoddard/autopublish 9aee057] v3.2.0
 #  1 file changed, 1 insertion(+), 1 deletion(-)
