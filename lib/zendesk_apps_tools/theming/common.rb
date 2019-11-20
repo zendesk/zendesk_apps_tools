@@ -45,6 +45,10 @@ module ZendeskAppsTools
         end
       end
 
+      def metadata_hash
+        { 'api_version' => manifest['api_version'] }
+      end
+
       def value_for_setting(variable)
         return variable.fetch('value') unless variable.fetch('type') == 'file'
 
