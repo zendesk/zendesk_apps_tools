@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module ZendeskAppsTools
   module Directory
     def app_dir

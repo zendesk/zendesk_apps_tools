@@ -85,40 +85,26 @@ module ZendeskAppsTools
     desc 'validate', 'Validate your app'
     shared_options
     def validate
-      require 'execjs'
       check_for_update
       setup_path(options[:path])
-      begin
-        errors = app_package.validate(marketplace: false)
-      rescue ExecJS::RuntimeError
-        error = "There was an error trying to validate this app.\n"
-        if ExecJS.runtime.nil?
-          error += 'Validation relies on a JavaScript runtime. See https://github.com/rails/execjs for a list of available runtimes.'
-        elsif ExecJS.runtime.name == 'JScript'
-          error += 'To validate on Windows, please install node from https://nodejs.org/'
-        end
-        say_error_and_exit error
-      end
-      valid = errors.none?
+      @command = 'Validate'
 
-      if valid
-        app_package.warnings.each { |w| say_status 'warning', w.to_s, :yellow }
-        # clean when all apps are upgraded
-        run_deprecation_checks unless options[:'unattended']
-        say_status 'validate', 'OK'
-      else
-        errors.each { |e| say_status 'validate', e.to_s, :red }
-      end
+      response = validate_app(app_package)
 
-      @destination_stack.pop if options[:path]
-      exit 1 unless valid
-      true
+      if response.body == ''
+        say_status 'info', 'App Validation Successful'
+        true
+      elsif
+        errors = json_or_die(response.body)
+        say_status 'error', errors, :red
+        exit 1
+      end
     end
 
     desc 'package', 'Package your app'
     shared_options(except: [:unattended])
     def package
-      return false unless validate
+      # return false unless validate
 
       setup_path(options[:path])
 

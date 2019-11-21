@@ -136,6 +136,17 @@ module ZendeskAppsTools
       zat
     end
 
+    def validate_app(payload)
+      file_name = "#{options[:path]}/tmp/app-#{Time.now.strftime('%Y%m%d%H%M%S')}.zip"
+      zip file_name
+
+      payload = {
+        file: Faraday::UploadIO.new(file_name, 'application/zip')
+      }
+
+      response = cached_connection(:multipart).post('/api/v2/apps/validate.json', payload)
+    end
+
     def cached_connection(encoding = :url_encoded)
       @connection ||= {}
       @connection[encoding] ||= get_connection(encoding)
