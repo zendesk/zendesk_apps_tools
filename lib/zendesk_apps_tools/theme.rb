@@ -96,6 +96,7 @@ module ZendeskAppsTools
         payload['templates']['js'] = ''
         payload['templates']['assets'] = assets
         payload['templates']['variables'] = settings_hash
+        payload['templates']['metadata'] = metadata_hash
         payload
       end
 
