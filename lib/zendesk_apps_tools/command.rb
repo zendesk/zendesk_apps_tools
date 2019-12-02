@@ -88,6 +88,8 @@ module ZendeskAppsTools
       require 'execjs'
       check_for_update
       setup_path(options[:path])
+
+      # run usual validation checks
       begin
         errors = app_package.validate(marketplace: false)
       rescue ExecJS::RuntimeError
@@ -99,6 +101,15 @@ module ZendeskAppsTools
         end
         say_error_and_exit error
       end
+
+      # check svgs
+      begin
+        errors = app_package.curl_zam_svg_validation_endpoint
+      rescue ExecJS::RuntimeError
+        error = "There was an error with svg validation.\n"
+        say_error_and_exit error
+      end
+
       valid = errors.none?
 
       if valid
