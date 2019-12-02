@@ -8,7 +8,7 @@ module ZendeskAppsTools
     set :server, :thin
     set :logging, true
     set :protection, except: :frame_options
-    ZENDESK_DOMAINS_REGEX = %r{^http(?:s)?://[a-z0-9-]+\.(?:zendesk|zopim|zd-(?:dev|master|staging))\.com$}
+    ZENDESK_DOMAINS_REGEX = %r{^http(?:s)?://[a-z0-9-]+\.(?:zendesk|zopim|zendesk-(?:dev|master|staging))\.com$}
 
     get '/app.js' do
       serve_installed_js
