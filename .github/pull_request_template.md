@@ -8,6 +8,7 @@ Describe the original problem and the changes made on this PR.
 ### Tasks
 - [ ] Include comments/inline docs where appropriate
 - [ ] Write tests
+- [ ] Update changelog [here](https://github.com/zendesk/zaf_docs/blob/master/doc/v2/dev_guide/changelog.md)
 
 ### References
 * JIRA: https://zendesk.atlassian.net/browse/AF-XXX
