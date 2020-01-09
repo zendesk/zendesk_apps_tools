@@ -89,7 +89,7 @@ GEM
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     public_suffix (3.0.3)
-    rack (1.6.11)
+    rack (1.6.12)
     rack-livereload (0.3.17)
       rack
     rack-protection (1.5.5)
