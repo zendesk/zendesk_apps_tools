@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Tools to help you develop Zendesk Apps.'
   s.description = s.summary
 
-  s.required_ruby_version = '>= 2.1'
+  s.required_ruby_version = '>= 2.3'
   s.required_rubygems_version = '>= 1.3.6'
 
   s.add_runtime_dependency 'thor',        '~> 0.19.4'
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sinatra',     '~> 1.4.6'
   s.add_runtime_dependency 'faraday',     '~> 0.9.2'
   s.add_runtime_dependency 'execjs',      '~> 2.7.0'
-  s.add_runtime_dependency 'zendesk_apps_support', '~> 4.27.0'
+  s.add_runtime_dependency 'zendesk_apps_support', '~> 4.28.0'
   s.add_runtime_dependency 'sinatra-cross_origin', '~> 0.3.1'
   s.add_runtime_dependency 'listen', '~> 2.10'
   s.add_runtime_dependency 'rack-livereload'
@@ -32,7 +32,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'bump'
   s.add_development_dependency 'webmock'
-  s.add_development_dependency 'byebug'
   s.add_development_dependency 'rake'
 
 
