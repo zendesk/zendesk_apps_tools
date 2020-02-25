@@ -141,7 +141,7 @@ module ZendeskAppsTools
           server.set :livereload, options[:livereload]
           server.set :callbacks_after_load, callbacks_after_upload
           server.set :callback_map, {}
-          server.use Rack::LiveReload, live_reload_port: 4567 if options[:livereload]
+          server.use Rack::LiveReload, live_reload_port: options[:port] if options[:livereload]
           server.run!
         end
       end

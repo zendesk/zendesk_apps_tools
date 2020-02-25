@@ -9,7 +9,7 @@ module ZendeskAppsTools
         relative_path = relative_path_for(package_file)
         path_parts = recursive_pathname_split(relative_path)
         path_parts.shift
-        "http://localhost:4567/guide/#{path_parts.join('/')}"
+        "http://localhost:#{options[:port]}/guide/#{path_parts.join('/')}"
       end
 
       def relative_path_for(filename)
