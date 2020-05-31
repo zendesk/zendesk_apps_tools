@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.version     = ZendeskAppsTools::VERSION
   s.executables << 'zat'
   s.platform    = Gem::Platform::RUBY
-  s.license     = 'Apache License Version 2.0'
+  s.license     = 'Apache-2.0'
   s.authors     = ['James A. Rosen', 'Kenshiro Nakagawa', 'Shajith Chacko', 'Likun Liu']
   s.email       = ['dev@zendesk.com']
   s.homepage    = 'http://github.com/zendesk/zendesk_apps_tools'
