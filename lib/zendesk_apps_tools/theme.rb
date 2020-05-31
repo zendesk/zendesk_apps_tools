@@ -90,8 +90,15 @@ module ZendeskAppsTools
           identifier = template.match(IDENTIFIER_REGEX)['identifier'].to_s
           templates_payload[identifier] = File.read(template)
         end
+        #template where inject_external_tags will inject scripts/tags
+        script_location = 'document_head'
+        #use footer as location for tag injections 
+        if metadata_hash['api_version'] == 2
+          script_location = 'footer'
+        end
         payload['templates'] = templates_payload
-        payload['templates']['document_head'] = inject_external_tags(payload['templates']['document_head'])
+        #inject tag in either document_head (theming_v1 based themes), or footer (theming_v2 based themes)
+        payload['templates'][script_location] = inject_external_tags(payload['templates'][script_location])
         payload['templates']['css'] = ''
         payload['templates']['js'] = ''
         payload['templates']['assets'] = assets
