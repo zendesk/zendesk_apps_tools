@@ -168,6 +168,7 @@ module ZendeskAppsTools
           server.set :root, app_dir
           server.set :public_folder, app_dir
           server.set :livereload, options[:livereload]
+          server.set :base_url, base_url
           server.set :callbacks_after_load, callbacks_after_upload
           server.set :callback_map, {}
           server.use Rack::LiveReload, live_reload_port: options[:port] if options[:livereload]
