@@ -9,7 +9,8 @@ module ZendeskAppsTools
         relative_path = relative_path_for(package_file)
         path_parts = recursive_pathname_split(relative_path)
         path_parts.shift
-        base = "https://localhost:4567" unless base_url
+        base = "https://localhost:4567"
+        base = base_url if base_url
         "#{base}/guide/#{path_parts.join('/')}"
       end
 
