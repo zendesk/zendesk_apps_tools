@@ -90,45 +90,66 @@ module ZendeskAppsTools
           identifier = template.match(IDENTIFIER_REGEX)['identifier'].to_s
           templates_payload[identifier] = File.read(template)
         end
-        #template where inject_external_tags will inject scripts/tags
         script_location = 'document_head'
-        #use footer as location for tag injections 
+        style_location = 'document_head'
+        livereload_location = 'document_head'
+
+        #theming_v2 based theme should have script.js
+        # injected at the end of the page
         if metadata_hash['api_version'] == 2
           script_location = 'footer'
         end
+
         payload['templates'] = templates_payload
         #inject tag in either document_head (theming_v1 based themes), or footer (theming_v2 based themes)
-        payload['templates'][script_location] = inject_external_tags(payload['templates'][script_location])
+        payload['templates'][script_location] = inject_external_tags(payload['templates'][script_location],
+                                                                     js_tag_hash['html'])
+        payload['templates'][style_location] = inject_external_tags(payload['templates'][style_location],
+                                                                    css_tag_hash['html'], true)
+        payload['templates'][livereload_location] = inject_external_tags(payload['templates'][livereload_location],
+                                                                         live_reload_script_tag_hash['html'])
         payload['templates']['css'] = ''
         payload['templates']['js'] = ''
-        payload['templates']['assets'] = assets
-        payload['templates']['variables'] = settings_hash
+        payload['templates']['assets'] = assets(base_url)
+        payload['templates']['variables'] = settings_hash(base_url)
         payload['templates']['metadata'] = metadata_hash
         payload
       end
 
-      def inject_external_tags(head_template)
-        live_reload_script_tag = <<-html
+      def base_url
+        "http://localhost:#{options[:port]}"
+      end
+
+      def live_reload_script_tag_hash
+        { 'html' => <<-html
           <script type="text/javascript">
-            RACK_LIVERELOAD_PORT = 4567;
+            RACK_LIVERELOAD_PORT = #{options[:port]};
           </script>
-          <script src="http://localhost:4567/__rack/livereload.js?host=localhost"></script>
-        html
+          <script src="#{base_url}/__rack/livereload.js?host=localhost"></script>
+          html
+        }
+      end
 
-        js_tag = <<-html
-          <script src="http://localhost:4567/guide/script.js"></script>
-        html
+      def js_tag_hash
+        { 'html' => <<-html
+          <script src="#{base_url}/guide/script.js"></script>
+          html
+        }
+      end
 
-        css_tag = <<-html
-          <link rel="stylesheet" type="text/css" href="http://localhost:4567/guide/style.css">
-        html
+      def css_tag_hash
+        { 'html' => <<-html
+          <link rel="stylesheet" type="text/css" href="#{base_url}/guide/style.css">
+          html
+        }
+      end
 
-        template = StringIO.new
-        template << css_tag
-        template << head_template
-        template << js_tag
-        template << live_reload_script_tag
-        template.string
+      def inject_external_tags(template, tag_html, top=false)
+        _template = StringIO.new
+        _template << tag_html if top
+        _template << template
+        _template << tag_html unless top
+        _template.string
       end
 
       alias_method :ensure_manifest!, :manifest
@@ -149,7 +170,7 @@ module ZendeskAppsTools
           server.set :livereload, options[:livereload]
           server.set :callbacks_after_load, callbacks_after_upload
           server.set :callback_map, {}
-          server.use Rack::LiveReload, live_reload_port: 4567 if options[:livereload]
+          server.use Rack::LiveReload, live_reload_port: options[:port] if options[:livereload]
           server.run!
         end
       end
