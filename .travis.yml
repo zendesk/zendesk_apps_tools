@@ -2,7 +2,7 @@
 language: ruby
 dist: trusty
 before_install:
-  gem install bundler -v 1.17.3
+  gem install bundler -v 2.2.4
 rvm:
   - 2.5.0
   - 2.6.0

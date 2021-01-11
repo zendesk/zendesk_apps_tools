@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: bundler
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "11:00"
+      timezone: Europe/London
+    open-pull-requests-limit: 5
+    versioning-strategy: auto
+    target-branch: master
