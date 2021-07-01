@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'thor',        '~> 0.19.4'
   s.add_runtime_dependency 'rubyzip',     '~> 1.2.1'
-  s.add_runtime_dependency 'thin',        '~> 1.7.2'
+  s.add_runtime_dependency 'thin',        '~> 1.8.0'
   s.add_runtime_dependency 'sinatra',     '~> 1.4.6'
   s.add_runtime_dependency 'faraday',     '~> 0.9.2'
   s.add_runtime_dependency 'execjs',      '~> 2.7.0'
