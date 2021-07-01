@@ -1,6 +1,6 @@
-# TO BE DEPRECATED
+# IN MAINTENANCE MODE
 
-This project is in maintaince mode only, we will not be actively adding anymore features or enhacements here. In near future we will be deprecating this in favor of our new cli tool [ZCLI](https://github.com/zendesk/zcli)
+Zendesk Apps Tools is in maintenance mode. This means no additional feature enhancements or non-security bugs will be fixed. **We recommend switching to using [ZCLI](https://github.com/zendesk/zcli) for our best CLI experience.**
 
 
 # Zendesk Apps Tools
