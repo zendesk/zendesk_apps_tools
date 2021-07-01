@@ -1,3 +1,8 @@
+# TO BE DEPRECATED
+
+This project is in maintaince mode only, we will not be actively adding anymore features or enhacements here. In near future we will be deprecating this in favor of our new cli tool [ZCLI](https://github.com/zendesk/zcli)
+
+
 # Zendesk Apps Tools
 
 ## Description
