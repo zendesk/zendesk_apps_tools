@@ -1,3 +1,8 @@
+# IN MAINTENANCE MODE
+
+Zendesk Apps Tools is in maintenance mode. This means no additional feature enhancements or non-security bugs will be fixed. **We recommend switching to using [ZCLI](https://github.com/zendesk/zcli) for our best CLI experience.**
+
+
 # Zendesk Apps Tools
 
 ## Description
