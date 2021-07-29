@@ -32,7 +32,7 @@ GEM
     celluloid (0.16.0)
       timers (~> 4.0.0)
     childprocess (3.0.0)
-    concurrent-ruby (1.1.7)
+    concurrent-ruby (1.1.9)
     contracts (0.16.0)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -63,23 +63,23 @@ GEM
     faye-websocket (0.10.9)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
-    ffi (1.9.25)
+    ffi (1.15.3)
     gherkin (5.1.0)
     hashdiff (1.0.0)
     hitimes (2.0.0)
-    i18n (1.8.5)
+    i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     image_size (2.0.2)
     ipaddress_2 (0.13.0)
-    json (2.3.1)
+    json (2.5.1)
     listen (2.10.1)
       celluloid (~> 0.16.0)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
-    loofah (2.2.3)
+    loofah (2.3.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    mimemagic (0.3.10)
+    marcel (1.0.1)
     mini_portile2 (2.4.0)
     multi_json (1.14.1)
     multi_test (0.1.2)
@@ -93,7 +93,7 @@ GEM
     rack-protection (1.5.5)
       rack
     rake (13.0.1)
-    rb-fsevent (0.10.4)
+    rb-fsevent (0.11.0)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
     rspec (3.9.0)
@@ -116,10 +116,8 @@ GEM
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-    sassc (1.11.4)
-      bundler
-      ffi (~> 1.9.6)
-      sass (>= 3.3.0)
+    sassc (2.4.0)
+      ffi (~> 1.9)
     sinatra (1.4.8)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -140,18 +138,18 @@ GEM
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zendesk_apps_support (4.29.5)
+    zendesk_apps_support (4.29.8)
       erubis
       i18n
       image_size (~> 2.0.2)
       ipaddress_2 (~> 0.13.0)
       json
-      loofah (~> 2.2.3)
-      mimemagic (~> 0.3.3)
+      loofah (~> 2.3.1)
+      marcel
       nokogiri (>= 1.8.5, < 1.11.0)
       rb-inotify (= 0.9.10)
       sass
-      sassc (~> 1.11.2)
+      sassc
 
 PLATFORMS
   ruby
