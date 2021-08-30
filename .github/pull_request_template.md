@@ -11,7 +11,7 @@ Describe the original problem and the changes made on this PR.
 - [ ] Update changelog [here](https://github.com/zendesk/zaf_docs/blob/master/doc/v2/dev_guide/changelog.md)
 
 ### References
-* JIRA: https://zendesk.atlassian.net/browse/AF-XXX
+* JIRA: https://zendesk.atlassian.net/browse/VEG-XXX
 
 ### Risks
 * [HIGH | medium | low] Does it work on windows?
