@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sinatra',     '~> 1.4.6'
   s.add_runtime_dependency 'faraday',     '~> 0.9.2'
   s.add_runtime_dependency 'execjs',      '~> 2.7.0'
+  s.add_runtime_dependency 'racc',        '~> 1.5.2'
   s.add_runtime_dependency 'zendesk_apps_support', '~> 4.29.9'
   s.add_runtime_dependency 'sinatra-cross_origin', '~> 0.3.1'
   s.add_runtime_dependency 'listen', '~> 2.10'
