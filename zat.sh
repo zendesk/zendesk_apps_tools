@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-if [[ "$(docker images -q zat:latest 2> /dev/null)" == "" ]]; then
+if [[ -z "$(docker images -q zat:latest 2> /dev/null)" ]]; then
   echo "ZAT Image not found, building..."
   ./scripts/compile.sh
 fi
