@@ -5,4 +5,4 @@ if [[ -z "$(docker images -q zat:latest 2> /dev/null)" ]]; then
   ./scripts/compile.sh
 fi
 
-./scripts/invoke.sh $@
+./scripts/invoke.sh "$@"
