@@ -11,16 +11,13 @@ In particular, to run ZAT in this mode:
 * Run the following command in the ZAT repository:
 
 ```
-./zat.sh
+./scripts/compile.sh
 ```
-The first time this is run, this will check for the existence of the Docker image and build it if it doesn't exist.  It will then proceed to run the Docker image tagged "zat:latest".
-
-You should then see a list of available commands.
-
-For instance, you should be able to get this sort of output.
-
+This will build the Docker image for zat.
+* Append scripts/invoke.sh to your PATH, or alternatively alias it in your .bashrc, .zshrc, or .profile.
+* For example, if you were to append alias zt=/User/your_user/zat/scripts/invoke.sh to your .bashrc, you would be able to run zt to run ZAT locally.
 ```
->./zat.sh help new
+>zt help new
 Usage:
   zat new
 
