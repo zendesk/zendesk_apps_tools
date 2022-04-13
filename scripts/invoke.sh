@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 PROGNAME="$(basename $0)"
+VERSION="0.0.1"
 
 # Helper functions for guards
 error(){
@@ -10,8 +11,7 @@ error(){
   exit "$1"
 }
 check_cmd_in_path(){
-  cmd="$1"
-  which $cmd > /dev/null 2>&1 || error 1 "$cmd not found!"
+  command -v "$1" >/dev/null 2>&1 || error 1 "Command '$1' not found in PATH"
 }
 
 # Guards (checks for dependencies)
