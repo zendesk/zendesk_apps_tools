@@ -23,4 +23,5 @@ docker run \
     --interactive --tty --rm \
     --volume "$PWD":/wd \
     --workdir /wd \
+    -p 4567:4567 \
     zat "$@"
