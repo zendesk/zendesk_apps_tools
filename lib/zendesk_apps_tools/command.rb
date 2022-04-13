@@ -11,6 +11,7 @@ module ZendeskAppsTools
     include ZendeskAppsTools::CommandHelpers
 
     map %w[-v] => :version
+    DEFAULT_SERVER_IP = '0.0.0.0'
     DEFAULT_SERVER_PORT = '4567'
 
     source_root File.expand_path(File.join(File.dirname(__FILE__), '../..'))
@@ -158,7 +159,7 @@ module ZendeskAppsTools
     method_option :config, default: DEFAULT_CONFIG_PATH, required: false, aliases: '-c'
     method_option :port, default: DEFAULT_SERVER_PORT, required: false, desc: 'Port for the http server to use.'
     method_option :app_id, default: DEFAULT_APP_ID, required: false, type: :numeric
-    method_option :bind, required: false
+    method_option :bind, default: DEFAULT_SERVER_IP, required: false
     method_option :plan, required: false
     def server
       setup_path(options[:path])

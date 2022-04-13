@@ -11,7 +11,7 @@ module ZendeskAppsTools
     desc 'preview', 'Preview a theme in development'
     shared_options(except: %i[clean unattended])
     method_option :port, default: Command::DEFAULT_SERVER_PORT, required: false, desc: 'Port for the http server to use.'
-    method_option :bind, required: false
+    method_option :bind, default: Command::DEFAULT_SERVER_IP, required: false
     method_option :livereload, type: :boolean, default: true, desc: 'Enable or disable live-reloading the preview when a change is made.'
     def preview
       setup_path(options[:path])
