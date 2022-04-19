@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sinatra-cross_origin', '~> 0.3.1'
   s.add_runtime_dependency 'listen', '~> 2.10'
   s.add_runtime_dependency 'rack-livereload'
-  s.add_runtime_dependency 'faye-websocket', '~> 0.10.7'
+  s.add_runtime_dependency 'faye-websocket', '>= 0.10.7', '< 0.12.0'
 
   s.add_development_dependency 'cucumber'
   s.add_development_dependency 'aruba'
