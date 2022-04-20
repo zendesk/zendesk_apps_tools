@@ -17,7 +17,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.7.0)
+    addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     aruba (0.14.14)
       childprocess (>= 0.6.3, < 4.0.0)
@@ -87,7 +87,7 @@ GEM
     nokogiri (1.13.1)
       mini_portile2 (~> 2.7.0)
       racc (~> 1.4)
-    public_suffix (4.0.3)
+    public_suffix (4.0.6)
     racc (1.6.0)
     rack (1.6.13)
     rack-livereload (0.3.17)
