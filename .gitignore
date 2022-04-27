@@ -1,5 +1,6 @@
 .idea
 .bundle
+.byebug_history
 .rvmrc
 vendor
 tmp
