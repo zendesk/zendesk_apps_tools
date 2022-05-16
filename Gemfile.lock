@@ -12,7 +12,7 @@ PATH
       sinatra-cross_origin (~> 0.3.1)
       thin (~> 1.8.0)
       thor (~> 0.19.4)
-      zendesk_apps_support (~> 4.31.1)
+      zendesk_apps_support (~> 4.32.0)
 
 GEM
   remote: https://rubygems.org/
@@ -100,7 +100,7 @@ GEM
     mime-types-data (3.2022.0105)
     multi_test (0.1.2)
     multipart-post (2.1.1)
-    nokogiri (1.13.4-x86_64-darwin)
+    nokogiri (1.13.6-x86_64-darwin)
       racc (~> 1.4)
     pry (0.14.1)
       coderay (~> 1.1)
@@ -160,7 +160,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zendesk_apps_support (4.31.1)
+    zendesk_apps_support (4.32.0)
       erubis
       i18n
       image_size (~> 2.0.2)
@@ -175,6 +175,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-darwin-21
 
 DEPENDENCIES
   aruba
