@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.3'
   s.required_rubygems_version = '>= 1.3.6'
 
-  s.add_runtime_dependency 'thor',        '~> 0.19.4'
+  s.add_runtime_dependency 'thor',        '~> 1.2.1'
   s.add_runtime_dependency 'rubyzip',     '>= 1.2.1', '< 2.4.0'
   s.add_runtime_dependency 'thin',        '~> 1.8.0'
   s.add_runtime_dependency 'sinatra',     '>= 1.4.6', '< 2.3.0'
@@ -27,6 +27,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rack-livereload'
   s.add_runtime_dependency 'faye-websocket', '>= 0.10.7', '< 0.12.0'
 
+  s.add_development_dependency 'bundler-audit'
+  s.add_development_dependency 'bundler-audit-fix'
   s.add_development_dependency 'cucumber'
   s.add_development_dependency 'aruba'
   s.add_development_dependency 'rspec'
@@ -35,7 +37,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'bump'
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'rake'
-
 
   s.files        = Dir.glob('{bin,lib,app_template*,templates}/**/*') + %w[README.md LICENSE]
   s.test_files   = Dir.glob('features/**/*')
