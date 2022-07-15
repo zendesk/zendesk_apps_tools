@@ -11,8 +11,9 @@ module ZendeskAppsTools
     desc 'preview', 'Preview a theme in development'
     shared_options(except: %i[clean unattended])
     method_option :port, default: Command::DEFAULT_SERVER_PORT, required: false, desc: 'Port for the http server to use.'
-    method_option :bind, required: false
+    method_option :bind, default: Command::DEFAULT_SERVER_IP, required: false
     method_option :livereload, type: :boolean, default: true, desc: 'Enable or disable live-reloading the preview when a change is made.'
+    method_option :force_polling, type: :boolean, default: false, desc: 'Force the use of the polling adapter.'
     def preview
       setup_path(options[:path])
       ensure_manifest!
@@ -62,7 +63,7 @@ module ZendeskAppsTools
         # TODO: do we need to stop the listener at some point?
         require 'listen'
         path = Pathname.new(theme_package_path('.')).cleanpath
-        listener = ::Listen.to(path, ignore: /\.zat/) do |modified, added, removed|
+        listener = ::Listen.to(path, ignore: /\.zat/, force_polling: options[:force_polling]) do |modified, added, removed|
           need_upload = false
           if modified.any? { |file| file[/templates|manifest/] }
             need_upload = true

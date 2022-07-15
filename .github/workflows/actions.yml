@@ -1,0 +1,34 @@
+name: repo-checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  main:
+    name: ruby
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: [2.7.5, 2.6.9, 2.6.8]
+    steps:
+    - uses: zendesk/checkout@v2
+    - uses: zendesk/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+    - name: Vendor Cache
+      id: vendor-cache
+      uses: zendesk/cache@v2
+      with:
+        path: vendor/cache
+        key: ${{ runner.os }}-vendor
+    - name: before_script
+      run: |
+        bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}
+        gem build zendesk_apps_tools.gemspec
+        gem install "./zendesk_apps_tools-$(sed -n "s/^.*VERSION = '\\([0-9\\.]\\+\\)'$/\\1/p" lib/zendesk_apps_tools/version.rb).gem"
+    - name: Test
+      run: |
+        bundle exec rake

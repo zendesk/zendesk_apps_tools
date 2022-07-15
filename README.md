@@ -1,3 +1,8 @@
+# IN MAINTENANCE MODE
+
+Zendesk Apps Tools is in maintenance mode. This means no additional feature enhancements or non-security bugs will be fixed. **We recommend switching to using [ZCLI](https://github.com/zendesk/zcli) for our best CLI experience.**
+
+
 # Zendesk Apps Tools
 
 ## Description
@@ -17,6 +22,11 @@ For information on using the tools, see  [Zendesk App Tools](https://developer.z
 
 ## Work on ZAT
 If you want to help **develop** this tool, clone this repo and run `bundle install`.
+
+If you receive this error:
+    Installing nokogiri 1.10.10 with native extensions
+    Gem::Ext::BuildError: ERROR: Failed to build gem native extension.
+Then run `gem install nokogiri -- --use-system-libraries` followed by run `bundle config build.nokogiri --use-system-libraries` and try running `bundle install` again.
 
 ZAT uses a gem called [ZAS](https://github.com/zendesk/zendesk_apps_support/). If you're developing ZAT, you'll probably want to edit code in ZAS too. To do so, you need to clone the ZAS repo and add the following line at the end of `Gemfile` in the ZAT project:
 
