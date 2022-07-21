@@ -10,8 +10,8 @@ module ZendeskAppsTools
     include Thor::Actions
     include ZendeskAppsTools::Common
 
-    LOCALE_BASE_ENDPOINT = 'https://support.zendesk.com/api/v2/locales'
-    LOCALE_ENDPOINT = "#{LOCALE_BASE_ENDPOINT}/apps/admin.json"
+    LOCALE_BASE_ENDPOINT = 'https://static.zdassets.com/translations'
+    LOCALE_ENDPOINT = "#{LOCALE_BASE_ENDPOINT}/admin/manifest.json"
 
     desc 'to_yml', 'Create Zendesk translation file from en.json'
     shared_options(except: [:clean])
@@ -45,11 +45,10 @@ module ZendeskAppsTools
       setup_path(options[:path]) if options[:path]
       app_package = package_name_for_update
       locale_list
-        .map { |locale| fetch_locale_async locale, app_package }
+      .map { |locale| fetch_locale_async locale }
         .each do |locale_thread|
           locale = locale_thread.value
           translations = locale['translations']
-
           locale_name = ZendeskAppsTools::LocaleIdentifier.new(locale['locale']).locale_id
           write_json(
             "translations/#{locale_name}.json",
@@ -75,11 +74,12 @@ module ZendeskAppsTools
     end
 
     no_commands do
-      def fetch_locale_async(locale, app_package)
+      def fetch_locale_async(locale)
         Thread.new do
-          say("Fetching #{locale['locale']}")
-          json = Faraday.get("#{locale['url']}?include=translations&packages=app_#{app_package}").body
-          json_or_die(json)['locale']
+          say("Fetching #{locale['name']}")
+          puts "#{LOCALE_BASE_ENDPOINT}#{locale['path']}"
+          json = Faraday.get("#{LOCALE_BASE_ENDPOINT}#{locale['path']}").body
+          json_or_die(json)
         end
       end
 
@@ -168,13 +168,12 @@ module ZendeskAppsTools
           content = read_file(options[:locales])
           locales = JSON.parse(content)
           return locales.map do |locale|
-            { 'locale' => locale, 'url' => "#{LOCALE_BASE_ENDPOINT}/#{locale}.json" }
+            { 'name' => name, 'path' => "#{LOCALE_BASE_ENDPOINT}/#{locale}.json" }
           end
         end
 
         locale_response = Faraday.get(LOCALE_ENDPOINT)
-
-        return json_or_die(locale_response.body)['locales'] if locale_response.status == 200
+        return json_or_die(locale_response.body)['json'] if locale_response.status == 200
         if locale_response.status == 401
           say_error_and_exit 'Authentication failed.'
         else
