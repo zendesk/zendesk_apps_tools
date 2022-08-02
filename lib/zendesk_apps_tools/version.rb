@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 module ZendeskAppsTools
-  VERSION = '3.8.13'
+  VERSION = '3.8.14'
 end
