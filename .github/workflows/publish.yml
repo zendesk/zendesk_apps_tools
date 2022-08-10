@@ -1,0 +1,14 @@
+name: Ruby Gem Publish
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  publish:
+    name: Publish to rubygems.org
+    uses: zendesk/gw/.github/workflows/ruby-gem-publication.yml@main
+    secrets:
+      RUBY_GEMS_API_KEY: ${{ secrets.RUBY_GEMS_API_KEY }}
+      RUBY_GEMS_TOTP_DEVICE: ${{ secrets.RUBY_GEMS_TOTP_DEVICE }}
