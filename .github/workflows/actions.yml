@@ -28,7 +28,8 @@ jobs:
       run: |
         bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}
         gem build zendesk_apps_tools.gemspec
-        gem install "./zendesk_apps_tools-$(sed -n "s/^.*VERSION = '\\([0-9\\.]\\+\\)'$/\\1/p" lib/zendesk_apps_tools/version.rb).gem"
+        GEM_VERSION="$(sed -En "s/^.*VERSION = '([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+(\\.(beta|pre|rc)([[:digit:]]+|\\.?[[:digit:]]+)?)?)'$/\\1/p" lib/zendesk_apps_tools/version.rb)"
+        gem install "./zendesk_apps_tools-$GEM_VERSION.gem"
     - name: Test
       run: |
         bundle exec rake
