@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = s.summary
 
   s.required_ruby_version = '>= 2.6'
-  s.required_rubygems_version = '>= 1.3.6'
+  s.required_rubygems_version = '>= 3.0.0'
 
   s.add_runtime_dependency 'thor',        '~> 0.19.4'
   s.add_runtime_dependency 'rubyzip',     '>= 1.2.1', '< 2.4.0'
