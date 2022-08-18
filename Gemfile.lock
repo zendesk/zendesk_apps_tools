@@ -12,7 +12,7 @@ PATH
       sinatra-cross_origin (~> 0.3.1)
       thin (~> 1.8.0)
       thor (~> 0.19.4)
-      zendesk_apps_support (~> 4.32.0)
+      zendesk_apps_support (~> 4.36.0)
 
 GEM
   remote: https://rubygems.org/
@@ -166,7 +166,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zendesk_apps_support (4.32.0)
+    zendesk_apps_support (4.36.0)
       erubis
       i18n
       image_size (~> 2.0.2)
