@@ -89,13 +89,13 @@ describe ZendeskAppsTools::Translate do
       allow(translate).to receive(:create_file)
 
       expect(translate).to receive(:nest_translations_hash).once.and_return({})
-      expect(translate).to receive(:write_json).once.with("translations/en.json", {})
+      expect(translate).to receive(:write_json).once.with("translations/en-US.json", {})
 
-      stub_request(:get, "https://support.zendesk.com/api/v2/locales/apps/admin.json").
-         to_return(:status => 200, :body => JSON.dump('locales' => [{ 'url' => 'https://support.zendesk.com/api/v2/locales/en.json', 'locale' => 'en' }]))
+      stub_request(:get, "https://static.zdassets.com/translations/admin/manifest.json").
+          to_return(:status => 200, :body => JSON.dump('json' => [{'name' => 'en-US', 'path' => '/admin/en-au.7deffe494e55e77fb87cd91d16c4fe25.json'}]))
 
-      stub_request(:get, "https://support.zendesk.com/api/v2/locales/en.json?include=translations&packages=app_my_app").
-         to_return(:status => 200, :body => JSON.dump('locale' => { 'locale' => 'en', 'translations' => { 'app.description' => 'my awesome app' } }))
+      stub_request(:get, "https://static.zdassets.com/translations/admin/en-au.7deffe494e55e77fb87cd91d16c4fe25.json").
+         to_return(:status => 200, :body => JSON.dump('locale' => 'en-US', 'translations' => { 'app.description' => 'my awesome app' }))
 
       translate.update
     end
@@ -106,13 +106,13 @@ describe ZendeskAppsTools::Translate do
       allow(translate).to receive(:ask).with('What is the package name for this app? (without leading app_)', default: nil).and_return('my_app')
       allow(translate).to receive(:create_file)
       allow(translate).to receive(:options) { { locales: './locales.json' } }
-      allow(translate).to receive(:read_file).and_return('["en-CA"]')
+      allow(translate).to receive(:read_file).and_return('["en-ca.c68cff07da3c07bed9849e29aa7566d7"]')
 
       expect(translate).to receive(:nest_translations_hash).once.and_return({})
       expect(translate).to receive(:write_json).once.with("translations/en-ca.json", {})
 
-      stub_request(:get, "https://support.zendesk.com/api/v2/locales/en-CA.json?include=translations&packages=app_my_app").
-         to_return(:status => 200, :body => JSON.dump('locale' => { 'locale' => 'en-CA', 'translations' => { 'app.description' => 'my awesome app' } }))
+      stub_request(:get, "https://static.zdassets.com/translations/admin/en-ca.c68cff07da3c07bed9849e29aa7566d7.json").
+         to_return(:status => 200, :body => JSON.dump('locale' => 'en-ca', 'translations' => { 'app.description' => 'my awesome app' }))
 
       translate.update
     end
