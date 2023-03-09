@@ -27,11 +27,15 @@ jobs:
         uses: zendesk/cache@v3
         with:
           path: vendor/cache
-          key: ${{ runner.os }}-vendor
+          key: ${{ runner.os }}-vendor-ruby-${{ matrix.ruby-version }}-lock-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-vendor-ruby-${{ matrix.ruby-version }}-
+            ${{ runner.os }}-vendor-
       - name: before_script
         run: |
           bundle config set frozen true
-          bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}
+          bundle config set --local path 'vendor/cache'
+          bundle install --jobs=3 --retry=3
           gem build zendesk_apps_tools.gemspec
           GEM_VERSION="$(sed -En "s/^.*VERSION = '([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+(\\.(beta|pre|rc)([[:digit:]]+|\\.?[[:digit:]]+)?)?)'$/\\1/p" lib/zendesk_apps_tools/version.rb)"
           gem install "./zendesk_apps_tools-$GEM_VERSION.gem"
