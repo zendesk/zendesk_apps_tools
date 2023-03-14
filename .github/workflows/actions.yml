@@ -12,25 +12,33 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: [2.7.5, 2.6.9, 2.6.8]
+        ruby-version:
+          - "2.7.5"
+          - "2.6.10"
+          - "2.6.9"
+          - "2.6.8"
     steps:
-    - uses: zendesk/checkout@v2
-    - uses: zendesk/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-    - name: Vendor Cache
-      id: vendor-cache
-      uses: zendesk/cache@v2
-      with:
-        path: vendor/cache
-        key: ${{ runner.os }}-vendor
-    - name: before_script
-      run: |
-        bundle config set frozen true
-        bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}
-        gem build zendesk_apps_tools.gemspec
-        GEM_VERSION="$(sed -En "s/^.*VERSION = '([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+(\\.(beta|pre|rc)([[:digit:]]+|\\.?[[:digit:]]+)?)?)'$/\\1/p" lib/zendesk_apps_tools/version.rb)"
-        gem install "./zendesk_apps_tools-$GEM_VERSION.gem"
-    - name: Test
-      run: |
-        bundle exec rake
+      - uses: zendesk/checkout@v3
+      - uses: zendesk/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+      - name: Vendor Cache
+        id: vendor-cache
+        uses: zendesk/cache@v3
+        with:
+          path: vendor/cache
+          key: ${{ runner.os }}-vendor-ruby-${{ matrix.ruby-version }}-lock-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-vendor-ruby-${{ matrix.ruby-version }}-
+            ${{ runner.os }}-vendor-
+      - name: before_script
+        run: |
+          bundle config set frozen true
+          bundle config set --local path 'vendor/cache'
+          bundle install --jobs=3 --retry=3
+          gem build zendesk_apps_tools.gemspec
+          GEM_VERSION="$(sed -En "s/^.*VERSION = '([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+(\\.(beta|pre|rc)([[:digit:]]+|\\.?[[:digit:]]+)?)?)'$/\\1/p" lib/zendesk_apps_tools/version.rb)"
+          gem install "./zendesk_apps_tools-$GEM_VERSION.gem"
+      - name: Test
+        run: |
+          bundle exec rake
