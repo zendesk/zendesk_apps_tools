@@ -1,6 +1,6 @@
 :v:
 
-/cc @zendesk/vegemite
+/cc @zendesk/wattle
 
 ### Description
 Describe the original problem and the changes made on this PR.
@@ -11,7 +11,7 @@ Describe the original problem and the changes made on this PR.
 - [ ] Update changelog [here](https://github.com/zendesk/zaf_docs/blob/master/doc/v2/dev_guide/changelog.md)
 
 ### References
-* JIRA: https://zendesk.atlassian.net/browse/VEG-XXX
+* JIRA: https://zendesk.atlassian.net/browse/APPS-XXX
 
 ### Risks
 <!--
