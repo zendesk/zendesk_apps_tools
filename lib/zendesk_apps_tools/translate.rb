@@ -79,6 +79,7 @@ module ZendeskAppsTools
       def fetch_locale_async(locale)
         Thread.new do
           say("Fetching #{locale['name']}")
+          puts("#{LOCALE_BASE_ENDPOINT}#{locale['path']}")
           json = Faraday.get("#{LOCALE_BASE_ENDPOINT}#{locale['path']}").body
           json_or_die(json)
         end
