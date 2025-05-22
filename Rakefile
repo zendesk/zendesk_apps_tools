@@ -1,3 +1,4 @@
+require 'bundler/setup'
 require 'bundler/gem_tasks'
 require 'rake/clean'
 require 'cucumber/rake/task'
