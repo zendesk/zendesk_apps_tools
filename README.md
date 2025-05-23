@@ -2,7 +2,6 @@
 
 Zendesk Apps Tools is in maintenance mode. This means no additional feature enhancements or non-security bugs will be fixed. **We recommend switching to using [ZCLI](https://github.com/zendesk/zcli) for our best CLI experience.**
 
-
 # Zendesk Apps Tools
 
 ## Description
@@ -40,10 +39,20 @@ Then, comment-out the line referring to `zendesk_apps_support` in this project's
 
 The path should point to your local ZAS directory. In this way, your clone of ZAT will use a local version of ZAS, which is very helpful for development. Run a `bundle install` after changing the Gemfile.
 
-## Deploy ZAT
+## Releasing a new version
+A new version is published to RubyGems.org every time a change to `version.rb` is pushed to the `main` branch.
+In short, follow these steps:
+1. Update `version.rb`,
+2. run `bundle lock` to update `Gemfile.lock`,
+3. merge this change into `main`, and
+4. look at [the action](https://github.com/zendesk/zendesk_apps_tools/actions/workflows/publish.yml) for output.
 
-* To bump ZAT version, run `bump patch|minor|major --no-bundle` from the root directory. **Note:** `--no-bundle` is required in order to prevent `bundle update` command from running, which is by default triggered by the [bump](https://github.com/gregorym/bump) gem and could lead to incompatible dependencies.
-* To publish ZAT to [Rubygems](https://rubygems.org/gems/zendesk_apps_tools), run `bundle exec rake release`.
+To create a pre-release from a non-main branch:
+1. change the version in `version.rb` to something like `1.2.0.pre.1` or `2.0.0.beta.2`,
+2. push this change to your branch,
+3. go to [Actions → “Publish to RubyGems.org” on GitHub](https://github.com/zendesk/zendesk_apps_tools/actions/workflows/publish.yml),
+4. click the “Run workflow” button,
+5. pick your branch from a dropdown.
 
 ## Testing
 This project uses rspec, which you can run with `bundle exec rake`.
