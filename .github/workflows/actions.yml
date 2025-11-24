@@ -33,6 +33,7 @@ jobs:
             ${{ runner.os }}-vendor-
       - name: before_script
         run: |
+          gem update --system 3.3.22
           bundle config set frozen true
           bundle config set --local path 'vendor/cache'
           bundle install --jobs=3 --retry=3

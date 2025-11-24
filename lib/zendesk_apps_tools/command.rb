@@ -178,6 +178,12 @@ module ZendeskAppsTools
         server.set :parameters, settings
         server.set :app_id, options[:app_id]
         server.set :plan, [options[:plan], cache.fetch('plan')].reject(&:nil?).first
+
+        host = options[:bind] || DEFAULT_SERVER_IP
+        say "If apps fail to load, your browser may be blocking requests to http://#{host}:#{options[:port]}", :yellow
+        say 'Make sure Local Network Access (LNA) is allowed to access your local apps server.', :yellow
+        say 'Learn more: https://developer.zendesk.com/documentation/apps/zendesk-app-tools-zat/installing-and-using-zat/#testing-your-app-locally-in-a-browser', :yellow
+
         server.run!
       end
     end
