@@ -14,11 +14,8 @@ jobs:
       matrix:
         ruby-version:
           - "3.1.0"
+          - "3.1.2"
           - "3.1.4"
-          - "2.7.5"
-          - "2.6.10"
-          - "2.6.9"
-          - "2.6.8"
     steps:
       - uses: zendesk/checkout@v3
       - uses: zendesk/setup-ruby@v1
@@ -32,7 +29,6 @@ jobs:
           key: ${{ runner.os }}-vendor-ruby-${{ matrix.ruby-version }}-lock-${{ hashFiles('Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-vendor-ruby-${{ matrix.ruby-version }}-
-            ${{ runner.os }}-vendor-
       - name: before_script
         run: |
           gem update --system 3.3.22
