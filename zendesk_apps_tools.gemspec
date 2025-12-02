@@ -15,11 +15,11 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 3.1'
   s.required_rubygems_version = '>= 3.0.0'
 
-  s.add_runtime_dependency 'thor',        '~> 0.19.4'
+  s.add_runtime_dependency 'thor',        '~> 1.2'
   s.add_runtime_dependency 'rubyzip',     '>= 1.2.1', '< 2.4.0'
   s.add_runtime_dependency 'thin',        '~> 1.8.0'
   s.add_runtime_dependency 'sinatra',     '>= 1.4.6', '< 2.3.0'
-  s.add_runtime_dependency 'faraday',     '~> 0.17.5'
+  s.add_runtime_dependency 'faraday',     '~> 1.10'
   s.add_runtime_dependency 'execjs',      '~> 2.7.0'
   s.add_runtime_dependency 'nokogiri',    '~> 1.13.10'
   s.add_runtime_dependency 'zendesk_apps_support', '~> 4.39.0'

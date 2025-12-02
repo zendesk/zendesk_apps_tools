@@ -47,7 +47,7 @@ module ZendeskAppsTools
 
         thor_options = { default: options[:default] }
 
-        while input = ask(prompt, thor_options)
+        while input = ask(prompt, **thor_options)
           return '' if options[:allow_empty] && input.empty?
           break if input.to_s =~ options[:valid_regex]
           say_error options[:error_msg]

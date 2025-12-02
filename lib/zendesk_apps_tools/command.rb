@@ -301,7 +301,7 @@ module ZendeskAppsTools
       begin
         require 'open-uri'
         require 'zip'
-        download = open(scaffold_url)
+        download = URI.open(scaffold_url)
         IO.copy_stream(download, tmp_download_name)
         zip_file = Zip::File.open(tmp_download_name)
         zip_file.each do |entry|
