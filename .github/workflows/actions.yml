@@ -13,10 +13,7 @@ jobs:
     strategy:
       matrix:
         ruby-version:
-          - "2.7.5"
-          - "2.6.10"
-          - "2.6.9"
-          - "2.6.8"
+          - "3.1.0"
     steps:
       - uses: zendesk/checkout@v3
       - uses: zendesk/setup-ruby@v1

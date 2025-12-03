@@ -3,7 +3,7 @@ PATH
   specs:
     zendesk_apps_tools (3.9.3)
       execjs (~> 2.7.0)
-      faraday (~> 0.17.5)
+      faraday (~> 1.0.0)
       faye-websocket (>= 0.10.7, < 0.12.0)
       listen (~> 2.10)
       nokogiri (~> 1.13.10)
@@ -13,7 +13,7 @@ PATH
       sinatra-cross_origin (~> 0.3.1)
       thin (~> 1.8.0)
       thor (~> 0.19.4)
-      zendesk_apps_support (~> 4.38.2)
+      zendesk_apps_support (~> 4.39.0)
 
 GEM
   remote: https://rubygems.org/
@@ -74,7 +74,7 @@ GEM
     erubis (2.7.0)
     eventmachine (1.2.7)
     execjs (2.7.0)
-    faraday (0.17.6)
+    faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
     faye-websocket (0.11.1)
       eventmachine (>= 0.12.0)
@@ -103,6 +103,8 @@ GEM
     multipart-post (2.3.0)
     mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
+    nokogiri (1.13.10-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.13.10-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.13.10-x86_64-linux)
@@ -167,9 +169,9 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zendesk_apps_support (4.38.2)
+    zendesk_apps_support (4.39.0)
       erubis
-      i18n
+      i18n (>= 1.7.1)
       image_size (~> 2.0.2)
       ipaddress_2 (~> 0.13.0)
       json
@@ -181,6 +183,7 @@ GEM
       sassc
 
 PLATFORMS
+  arm64-darwin-24
   x86_64-darwin-20
   x86_64-darwin-21
   x86_64-darwin-22
