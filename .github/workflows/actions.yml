@@ -27,7 +27,6 @@ jobs:
           key: ${{ runner.os }}-vendor-ruby-${{ matrix.ruby-version }}-lock-${{ hashFiles('Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-vendor-ruby-${{ matrix.ruby-version }}-
-            ${{ runner.os }}-vendor-
       - name: before_script
         run: |
           gem update --system 3.3.22
