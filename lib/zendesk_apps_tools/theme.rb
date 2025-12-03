@@ -40,7 +40,7 @@ module ZendeskAppsTools
         say_status 'Uploading', 'OK'
         say_status 'Ready', "#{connection.url_prefix}hc/admin/local_preview/start"
         say "You can exit preview mode in the UI or by visiting #{connection.url_prefix}hc/admin/local_preview/stop"
-      rescue Faraday::Error::ClientError => e
+      rescue Faraday::ClientError => e
         say_status 'Uploading', "Failed: #{e.message}", :red
         begin
           error_hash = JSON.parse(e.response[:body])

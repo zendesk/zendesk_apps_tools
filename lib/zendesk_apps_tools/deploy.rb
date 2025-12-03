@@ -19,7 +19,7 @@ module ZendeskAppsTools
 
       check_status response
 
-    rescue Faraday::Error::ClientError, JSON::ParserError => e
+    rescue Faraday::ClientError, JSON::ParserError => e
       say_error_and_exit e.message
     end
 
@@ -58,7 +58,7 @@ module ZendeskAppsTools
       response = cached_connection(:multipart).post('/api/v2/apps/uploads.json', payload)
       json_or_die(response.body)['id']
 
-    rescue Faraday::Error::ClientError => e
+      rescue Faraday::ClientError => e
       say_error_and_exit e.message
     end
 
@@ -85,7 +85,7 @@ module ZendeskAppsTools
       cache.save 'app_id' => app_id
       app_id
 
-    rescue Faraday::Error::ClientError => e
+    rescue Faraday::ClientError => e
       say_error_and_exit e.message
     end
 
@@ -121,7 +121,7 @@ module ZendeskAppsTools
         say_status 'Status', status
         sleep 3
       end
-    rescue Faraday::Error::ClientError => e
+    rescue Faraday::ClientError => e
       say_error_and_exit e.message
     end
 
