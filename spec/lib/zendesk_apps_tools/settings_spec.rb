@@ -79,8 +79,8 @@ describe ZendeskAppsTools::Settings do
         'not_required_with_default' => '789'
       }
 
-      allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'required':\n", default: nil).and_return('xyz')
-      allow(@user_input).to receive(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n", default: nil).and_return('456')
+      allow(@user_input).to receive(:ask).with("Enter a value for required parameter 'required':\n", { default: nil }).and_return('xyz')
+      allow(@user_input).to receive(:ask).with("Enter a value for optional parameter 'not_required' or press 'Return' to skip:\n", { default: nil }).and_return('456')
       expect(@context.get_settings_from_user_input(parameters)).to eq(settings)
     end
   end

@@ -81,7 +81,7 @@ module ZendeskAppsTools
           JSON.load(contents)
         else
           require 'yaml'
-          YAML.safe_load(contents, permitted_classes: [Date])
+          YAML.safe_load(contents)
         end
       settings_data.each do |index, setting|
         if setting.is_a?(Hash) || setting.is_a?(Array)

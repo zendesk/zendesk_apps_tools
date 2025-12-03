@@ -85,7 +85,7 @@ describe ZendeskAppsTools::Translate do
     it 'fetches default locales, translations and generates json files for each' do
       translate = ZendeskAppsTools::Translate.new
       allow(translate).to receive(:say)
-      allow(translate).to receive(:ask).with('What is the package name for this app? (without leading app_)', default: nil).and_return('my_app')
+      allow(translate).to receive(:ask).with('What is the package name for this app? (without leading app_)', { default: nil }).and_return('my_app')
       allow(translate).to receive(:create_file)
 
       expect(translate).to receive(:nest_translations_hash).once.and_return({})
@@ -103,7 +103,7 @@ describe ZendeskAppsTools::Translate do
     it 'fetches locales from a given locales file, translations and generates json files for each' do
       translate = ZendeskAppsTools::Translate.new
       allow(translate).to receive(:say)
-      allow(translate).to receive(:ask).with('What is the package name for this app? (without leading app_)', default: nil).and_return('my_app')
+      allow(translate).to receive(:ask).with('What is the package name for this app? (without leading app_)', { default: nil }).and_return('my_app')
       allow(translate).to receive(:create_file)
       allow(translate).to receive(:options) { { locales: './locales.json' } }
       allow(translate).to receive(:read_file).and_return('["en-ca.c68cff07da3c07bed9849e29aa7566d7"]')
