@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Tools to help you develop Zendesk Apps.'
   s.description = s.summary
 
-  s.required_ruby_version = '>= 2.6'
+  s.required_ruby_version = '>= 3.1.0'
   s.required_rubygems_version = '>= 3.0.0'
 
   s.add_runtime_dependency 'thor',        '~> 0.19.4'
