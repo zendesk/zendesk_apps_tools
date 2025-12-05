@@ -205,7 +205,7 @@ module ZendeskAppsTools
         @en_yaml ||= begin
           path = "#{destination_root}/translations/en.yml"
           require 'yaml'
-          YAML.load_file(path) if File.exist? path
+          YAML.safe_load_file(path, permitted_classes: [Date]) if File.exist? path
         end
       end
 
