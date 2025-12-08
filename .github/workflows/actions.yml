@@ -15,6 +15,9 @@ jobs:
         ruby-version:
           - "3.1.0"
           - "3.1.5"
+          - "3.2.2"
+          - "3.2.8"
+          - "3.3.5"
     steps:
       - uses: zendesk/checkout@v3
       - uses: zendesk/setup-ruby@v1
