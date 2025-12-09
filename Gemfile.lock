@@ -6,7 +6,7 @@ PATH
       faraday (~> 0.17.5)
       faye-websocket (>= 0.10.7, < 0.12.0)
       listen (~> 2.10)
-      nokogiri (~> 1.18.8)
+      nokogiri (~> 1.18)
       rack (~> 3.0)
       rack-livereload (= 0.3.17)
       rubyzip (>= 1.2.1, < 2.4.0)
