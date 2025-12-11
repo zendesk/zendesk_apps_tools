@@ -5,26 +5,26 @@ module ZendeskAppsTools
         File.expand_path(File.join(app_dir, *file))
       end
 
-      def url_for(package_file)
+      def path_for(package_file)
         relative_path = relative_path_for(package_file)
         path_parts = recursive_pathname_split(relative_path)
         path_parts.shift
-        "http://localhost:4567/guide/#{path_parts.join('/')}"
+        "/guide/#{path_parts.join('/')}"
       end
 
       def relative_path_for(filename)
         Pathname.new(filename).relative_path_from(Pathname.new(File.expand_path(app_dir))).cleanpath
       end
 
-      def assets
+      def assets(base_url)
         assets = Dir.glob(theme_package_path('assets', '*'))
         assets.each_with_object({}) do |asset, asset_payload|
-          asset_payload[File.basename(asset)] = url_for(asset)
+          asset_payload[File.basename(asset)] = "#{base_url}#{path_for(asset)}"
         end
       end
 
-      def assets_hash
-        assets.each_with_object({}) do |(k,v), h|
+      def assets_hash(base_url)
+        assets(base_url).each_with_object({}) do |(k,v), h|
           parametrized = k.gsub(/[^a-z0-9\-_]+/, '-')
           h["assets-#{parametrized}"] = v
         end
@@ -39,9 +39,11 @@ module ZendeskAppsTools
         say_error_and_exit "The manifest file is invalid at #{full_manifest_path}"
       end
 
-      def settings_hash
+      def settings_hash(base_url)
         manifest['settings'].flat_map { |setting_group| setting_group['variables'] }.each_with_object({}) do |variable, result|
-          result[variable.fetch('identifier')] = value_for_setting(variable)
+          value = value_for_setting(variable)
+          value = "#{base_url}#{path_for(value)}" if variable.fetch('type') == 'file'
+          result[variable.fetch('identifier')] = value
         end
       end
 
@@ -49,12 +51,10 @@ module ZendeskAppsTools
         { 'api_version' => manifest['api_version'] }
       end
 
-      def value_for_setting(variable)
+      def value_for_setting(variable, base_url='')
         return variable.fetch('value') unless variable.fetch('type') == 'file'
-
         files = Dir.glob(theme_package_path('settings', '*.*'))
-        file = files.find { |f| File.basename(f, '.*') == variable.fetch('identifier') }
-        url_for(file)
+        files.find { |f| File.basename(f, '.*') == variable.fetch('identifier') }
       end
 
       def recursive_pathname_split(relative_path)
@@ -63,6 +63,7 @@ module ZendeskAppsTools
         return split_path if split_path[0] == joined_directories.split[0]
         [*recursive_pathname_split(joined_directories), split_path[1]]
       end
+
     end
   end
 end
