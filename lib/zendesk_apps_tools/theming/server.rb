@@ -57,7 +57,7 @@ module ZendeskAppsTools
         raise Sinatra::NotFound unless File.exist?(style_css)
         zass_source = File.read(style_css)
         require 'zendesk_apps_tools/theming/zass_formatter'
-        response = ZassFormatter.format(zass_source, settings_hash.merge(assets_hash))
+        response = ZassFormatter.format(zass_source, settings_hash(settings.base_url).merge(assets_hash(settings.base_url)))
         response
       end
 
