@@ -7,7 +7,7 @@ PATH
       faye-websocket (>= 0.10.7, < 0.12.0)
       listen (~> 2.10)
       nokogiri (~> 1.18, >= 1.18.8)
-      rack (~> 3.0)
+      rack (~> 3.2)
       rack-livereload (= 0.3.17)
       rubyzip (>= 1.2.1, < 2.4.0)
       sinatra (~> 4.1)
@@ -102,20 +102,22 @@ GEM
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2023.0218.1)
-    mini_portile2 (2.8.9)
     multi_test (0.1.2)
     multipart-post (2.3.0)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
-    nokogiri (1.18.10)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.18.10-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.10-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (5.0.1)
     racc (1.6.2)
-    rack (3.0.18)
+    rack (3.2.4)
     rack-livereload (0.3.17)
       rack
     rack-protection (4.1.1)
@@ -192,6 +194,7 @@ GEM
       sassc
 
 PLATFORMS
+  arm64-darwin-24
   x86_64-darwin-20
   x86_64-darwin-21
   x86_64-darwin-22

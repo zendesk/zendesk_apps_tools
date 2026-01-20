@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rubyzip',     '>= 1.2.1', '< 2.4.0'
   s.add_runtime_dependency 'thin',        '~> 2.0'
   s.add_runtime_dependency 'sinatra',     '~> 4.1'
-  s.add_runtime_dependency 'rack',        '~> 3.0'
+  s.add_runtime_dependency 'rack',        '~> 3.2'
   s.add_runtime_dependency 'faraday',     '~> 0.17.5'
   s.add_runtime_dependency 'execjs',      '~> 2.7.0'
   s.add_runtime_dependency 'nokogiri',    '~> 1.18', '>= 1.18.8'
