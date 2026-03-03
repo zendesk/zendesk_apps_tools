@@ -2,8 +2,8 @@ name: Ruby Gem Publish
 
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - releases/v*
 
 jobs:
   publish:
