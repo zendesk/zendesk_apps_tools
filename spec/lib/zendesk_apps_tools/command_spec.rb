@@ -264,7 +264,7 @@ describe ZendeskAppsTools::Command do
         allow(Zip::File).to receive(:open) {[mockFile]}
 
         expect(FileUtils).to receive(:mv)
-        expect(mockFile).to receive(:extract).with('TestApp/mockfile.json')
+        expect(mockFile).to receive(:extract).with('mockfile.json', destination_directory: 'TestApp')
 
         @command.new
 

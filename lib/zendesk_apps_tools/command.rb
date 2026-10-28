@@ -306,11 +306,13 @@ module ZendeskAppsTools
         zip_file = Zip::File.open(tmp_download_name)
         zip_file.each do |entry|
           filename = entry.name.sub('app_scaffold-master/','')
+          next if filename.empty?
+
           if manifest_pattern.match(filename)
             manifest_path = filename[0..-14]
           else
             say_status 'info', "Extracting #{filename}"
-            entry.extract("#{app_dir}/#{filename}")
+            entry.extract(filename, destination_directory: app_dir)
           end
         end
         say_status 'info', 'Moving manifest.json'

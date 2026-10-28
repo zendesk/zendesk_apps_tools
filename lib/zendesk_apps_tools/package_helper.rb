@@ -20,7 +20,7 @@ module ZendeskAppsTools
 
     def zip(archive_path)
       require 'zip'
-      Zip::File.open(archive_path, 'w') do |zipfile|
+      Zip::File.open(archive_path, create: true) do |zipfile|
         app_package.files.each do |file|
           relative_path = file.relative_path
           path = relative_path
