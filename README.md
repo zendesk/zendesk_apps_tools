@@ -1,6 +1,7 @@
-# IN MAINTENANCE MODE
+# Deprecated and archived
 
-Zendesk Apps Tools is in maintenance mode. This means no additional feature enhancements or non-security bugs will be fixed. **We recommend switching to using [ZCLI](https://github.com/zendesk/zcli) for our best CLI experience.**
+Zendesk Apps Tools is deprecated and this repository has been archived. It will receive no further updates, including security fixes.
+**We recommend switching to using [ZCLI](https://github.com/zendesk/zcli) for our best CLI experience.**
 
 
 # Zendesk Apps Tools
